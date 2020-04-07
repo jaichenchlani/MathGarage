@@ -1,0 +1,14 @@
+table {
+    width: 100%;
+  }
+  
+  th {
+    /* height: 50px; */
+    text-align: center;
+  }
+
+  td {
+    /* height: 50px; */
+    vertical-align: bottom;
+  }
+  

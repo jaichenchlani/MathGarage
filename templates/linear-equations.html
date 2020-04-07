@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Mathgarage - Linear Equations</title>
+{% endblock %}
+
+{% block body %}
+<div ng-app="linearEquations">
+
+    <div class="container-fluid" ng-controller="LinearEquationsController">
+        <div class="modal-body">
+            <h3>Linear Equations</h3>
+            <form name="linearEquationsForm" novalidate>
+                <span class="alert-danger">{{'{{errorMessage}}'}}</span>
+                <div class = "row border justify-content-center align-items-center">
+                    <div class="col-sm-12">
+                        <h6 class = "text-primary text-center">Difficulty Level:</h6>
+                    </div>
+    
+                    <div class = "row col-sm-12 justify-content-center align-items-center">
+                        <input id="checkboxSuperEasy" type="checkbox" ng-model="difficultyLevel.supereasy" ng-true-value="1" ng-false-value="0"><span>Super Easy</span></input>
+                        <input id="checkboxEasy" type="checkbox" ng-model="difficultyLevel.easy" ng-true-value="1" ng-false-value="0"><span>Easy</span></input>
+                        <input id="checkboxMedium" type="checkbox" ng-model="difficultyLevel.medium" ng-true-value="1" ng-false-value="0"><span>Medium</span></input>
+                        <input id="checkboxHard" type="checkbox" ng-model="difficultyLevel.hard" ng-true-value="1" ng-false-value="0"><span>Hard</span></input>
+                        <input id="checkboxSuperHard" type="checkbox" ng-model="difficultyLevel.superhard" ng-true-value="1" ng-false-value="0"><span>Super Hard</span></input>
+                    </div>
+                </div>
+
+                <div class = "row border justify-content-center align-items-center">
+                         <table class="table">
+                            <tbody>
+                                <tr ng-repeat="(i,equation) in puzzle.question track by $index">
+                                    <div class="col-sm-3">
+                                        <th><span class="form-control text-center text-primary">{{'{{i+1}}'}}</span>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <th><input class="form-control text-center" type="text" ng-model="puzzle.question[i]" ng-disabled="1"></th>
+                                    </div>
+                                </tr>
+                            </tbody class="thead-light">
+                        </table>
+                    <div class="col-sm-12">
+                        <span class="alert-info">Difficulty Level: {{'{{puzzle.config.difficulty_level | uppercase}}'}} | {{'{{puzzle.config.description}}'}}</span>
+                    </div>
+                </div>
+                <br>
+                <div class = "row border justify-content-center align-items-center">
+                    <div class="col-sm-12">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>User Response</th>
+                                    <th ng-show="showSystemAnswer">System Answer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="(i,answer) in puzzle.answer track by $index">
+                                    <th><span ng-class="{'bg-success': puzzle.answer[i].isUserAnswerCorrect}" class="form-control text-center text-primary">{{'{{puzzle.answer[i].variable}}'}}</span>
+                                    <th><input ng-class="{'bg-warning': !puzzle.answer[i].isUserAnswerCorrect}" class="form-control text-center" type="text" ng-model="puzzle.answer[i].user_answer"></th>
+                                    <th><input class="form-control text-center" type="text" ng-model="puzzle.answer[i].system_answer" ng-show="showSystemAnswer"></th>
+                                </tr>
+                            </tbody class="thead-light">
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <br>
+
+                <div class = "row justify-content-center align-items-center">
+                    <span class="col-sm-2"></span>
+                    <input id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle(puzzle, errorMessage)"/>
+                    <span class="col-sm-2"></span>
+                    <input id="checkAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Check Answer" ng-click="checkAnswer(puzzle, errorMessage)"/>
+                    <span class="col-sm-2"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

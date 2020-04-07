@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Mathgarage</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid" ng-controller="MainController">
+  <h1 class="mt-4">Mathgarage</h1>
+  <p id="index-message">Math for fun!!</p>
+  <p>{{message}}</p>
+</div>
+
+{% endblock %}

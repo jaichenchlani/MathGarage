@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Mathgarage - Multiplication Facts</title>
+{% endblock %}
+
+{% block body %}
+
+<div ng-app="multiplicationFacts">
+    <div class="container-fluid" ng-controller="MultiplicationFactsController">
+        <div class="modal-body">
+            <h3>Multiplication Facts</h3>
+            <form name="multiplicationFactsForm" novalidate>
+                <span class="alert-danger">{{'{{errorMessage}}'}}</span>
+                <div class = "row border justify-content-center align-items-center">
+                    <div class="col-sm-6">
+                        <h6>Multiplication Table Of:</h6>
+                        <input id="inputTableof" class="form-control" type="number" ng-model="facts.tableof" ng-init="facts.tableof=131"  required><br>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <h6>Limit:</h6>
+                        <input id="inputLimit" class="form-control" type="number" ng-model="facts.limit" ng-init="facts.limit=50" required><br>
+                    </div>
+                    
+                </div>
+
+                <br>
+
+                <div class = "row justify-content-center align-items-center">
+                    <span class="col-sm-2"></span>
+                    <input id="getMultiplicationFacts" type="submit" value="Get Multiplication Facts" ng-click="generateMultiplicationFacts(facts, errorMessage)"/>
+                    <span class="col-sm-2"></span>
+                    <input id="reset" ng-disabled="!facts.result" class="col-sm-3" type="submit" value="Reset" ng-click="reset()"/>
+                    <span class="col-sm-2"></span>
+                </div>
+
+                <br>
+
+
+            </form>
+
+            <div id="resultsection" ng-hide="!facts.result">
+                <span class="alert-success">{{'{{facts.message}}'}}</span>
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Factor</th>
+                            <th>Multiple</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(key, value) in facts.result">
+                            <th>{{'{{key | number}}'}}</th>
+                            <th>{{'{{value | number}}'}}</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

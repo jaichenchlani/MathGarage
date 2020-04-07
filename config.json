@@ -1,0 +1,302 @@
+{
+    "multiplication_facts_table_of": 52,
+    "multiplication_facts_limit": 10,
+    "puzzle_configurations": [{
+        "id": "1",
+        "active": "1",
+        "type": "arithematic",
+        "size": "5",
+        "missing_elements_count": "1",
+        "first_element_lower_limit": "-50",
+        "first_element_upper_limit": "50",
+        "hop_limit": "10",
+        "difficulty_level": "easy"},
+    {
+        "id": "2",
+        "active": "1",
+        "type": "arithematic",
+        "size": "9",
+        "missing_elements_count": "3",
+        "first_element_lower_limit": "-100",
+        "first_element_upper_limit": "100",
+        "hop_limit": "25",
+        "difficulty_level": "easy"
+    },
+    {
+        "id": "3",
+        "active": "1",
+        "type": "geometric",
+        "size": "4",
+        "missing_elements_count": "1",
+        "first_element_lower_limit": "-5",
+        "first_element_upper_limit": "5",
+        "hop_limit": "4",
+        "difficulty_level": "easy"
+    },
+    {
+        "id": "4",
+        "active": "1",
+        "type": "geometric",
+        "size": "6",
+        "missing_elements_count": "2",
+        "first_element_lower_limit": "-10",
+        "first_element_upper_limit": "10",
+        "hop_limit": "8",
+        "difficulty_level": "medium"
+    },
+    {
+        "id": "5",
+        "active": "1",
+        "type": "hybrid1-arithematic",
+        "size": "9",
+        "missing_elements_count": "2",
+        "first_element_lower_limit": "-10",
+        "first_element_upper_limit": "10",
+        "hop_limit": "20",
+        "difficulty_level": "medium"
+    },
+    {
+        "id": "6",
+        "active": "1",
+        "type": "hybrid2-arithematic",
+        "size": "9",
+        "missing_elements_count": "2",
+        "first_element_lower_limit": "-10",
+        "first_element_upper_limit": "10",
+        "hop_limit": "16",
+        "difficulty_level": "medium"
+    },
+    {
+        "id": "7",
+        "active": "1",
+        "type": "hybrid3-arithematic",
+        "size": "9",
+        "missing_elements_count": "2",
+        "first_element_lower_limit": "-10",
+        "first_element_upper_limit": "10",
+        "hop_limit": "12",
+        "difficulty_level": "hard"
+    },
+    {
+        "id": "8",
+        "active": "1",
+        "type": "hybrid4-arithematic",
+        "size": "9",
+        "missing_elements_count": "2",
+        "first_element_lower_limit": "-10",
+        "first_element_upper_limit": "10",
+        "hop_limit": "8",
+        "difficulty_level": "hard"
+    }],
+    "linear_equation_configurations": [
+    {
+        "id": 1,
+        "active": "1",
+        "number_of_variables": 1,
+        "variables": ["x"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-20","upper": "20"},
+        "difficulty_level": "supereasy",
+        "description": "Single variable, low variable limit, low multipliers limit."
+    },
+    {
+        "id": 2,
+        "active": "1",
+        "number_of_variables": 1,
+        "variables": ["x"],
+        "variable_limits": {"lower": "-20","upper": "20"},
+        "multiplier_limits": {"lower": "-50","upper": "50"},
+        "difficulty_level": "supereasy",
+        "description": "Single variable, low variable limit, medium multipliers limit."
+    },
+    {
+        "id": 3,
+        "active": "1",
+        "number_of_variables": 1,
+        "variables": ["x"],
+        "variable_limits": {"lower": "-50","upper": "50"},
+        "multiplier_limits": {"lower": "-100","upper": "100"},
+        "difficulty_level": "easy",
+        "description": "Single variable, medium variable limit, high multipliers limit."
+    },
+    {
+        "id": 4,
+        "active": "1",
+        "number_of_variables": 2,
+        "variables": ["x","y"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-20","upper": "20"},
+        "difficulty_level": "easy",
+        "description": "Two variable, low variable limit, low multipliers limit."
+    },
+    {
+        "id": 5,
+        "active": "1",
+        "number_of_variables": 2,
+        "variables": ["x","y"],
+        "variable_limits": {"lower": "-20","upper": "20"},
+        "multiplier_limits": {"lower": "-50","upper": "50"},
+        "difficulty_level": "easy",
+        "description": "Two variable, low variable limit, medium multipliers limit."
+    },
+    {
+        "id": 6,
+        "active": "1",
+        "number_of_variables": 2,
+        "variables": ["x","y"],
+        "variable_limits": {"lower": "-50","upper": "50"},
+        "multiplier_limits": {"lower": "-100","upper": "100"},
+        "difficulty_level": "medium",
+        "description": "Two variable, medium variable limit, high multipliers limit."
+    },
+    {
+        "id": 7,
+        "active": "1",
+        "number_of_variables": 3,
+        "variables": ["x","y","z"],
+        "variable_limits": {"lower": "-5","upper": "5"},
+        "multiplier_limits": {"lower": "-10","upper": "10"},
+        "difficulty_level": "medium",
+        "description": "Three variable, low variable limit, low multipliers limit."
+    },
+    {
+        "id": 8,
+        "active": "1",
+        "number_of_variables": 3,
+        "variables": ["x","y","z"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-20","upper": "20"},
+        "difficulty_level": "medium",
+        "description": "Three variable, low variable limit, low multipliers limit."
+    },
+    {
+        "id": 9,
+        "active": "1",
+        "number_of_variables": 3,
+        "variables": ["x","y","z"],
+        "variable_limits": {"lower": "-20","upper": "20"},
+        "multiplier_limits": {"lower": "-30","upper": "30"},
+        "difficulty_level": "hard",
+        "description": "Three variable, low variable limit, medium multipliers limit."
+    },
+    {
+        "id": 10,
+        "active": "1",
+        "number_of_variables": 3,
+        "variables": ["x","y","z"],
+        "variable_limits": {"lower": "-30","upper": "30"},
+        "multiplier_limits": {"lower": "-50","upper": "50"},
+        "difficulty_level": "hard",
+        "description": "Three variable, medium variable limit, high multipliers limit."
+    },
+    {
+        "id": 11,
+        "active": "1",
+        "number_of_variables": 4,
+        "variables": ["a","b","c","d"],
+        "variable_limits": {"lower": "-5","upper": "5"},
+        "multiplier_limits": {"lower": "-5","upper": "5"},
+        "difficulty_level": "medium",
+        "description": "Four variable, low variable limit, low multipliers limit."
+    },
+    {
+        "id": 12,
+        "active": "1",
+        "number_of_variables": 4,
+        "variables": ["a","b","c","d"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-10","upper": "10"},
+        "difficulty_level": "medium",
+        "description": "Four variable, low variable limit, low multipliers limit."
+    },
+    {
+        "id": 13,
+        "active": "1",
+        "number_of_variables": 4,
+        "variables": ["a","b","c","d"],
+        "variable_limits": {"lower": "-20","upper": "20"},
+        "multiplier_limits": {"lower": "-20","upper": "20"},
+        "difficulty_level": "hard",
+        "description": "Four variable, medium variable limit, medium multipliers limit."
+    },
+    {
+        "id": 14,
+        "active": "1",
+        "number_of_variables": 4,
+        "variables": ["a","b","c","d"],
+        "variable_limits": {"lower": "-50","upper": "50"},
+        "multiplier_limits": {"lower": "-50","upper": "50"},
+        "difficulty_level": "superhard",
+        "description": "Four variable, high variable limit, high multipliers limit."
+    },
+    {
+        "id": 15,
+        "active": "1",
+        "number_of_variables": 5,
+        "variables": ["a","b","c","d","e"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-10","upper": "10"},
+        "difficulty_level": "hard",
+        "description": "Five variable, low variable limit, low multipliers limit."
+    },
+    {
+        "id": 16,
+        "active": "1",
+        "number_of_variables": 5,
+        "variables": ["a","b","c","d","e"],
+        "variable_limits": {"lower": "-20","upper": "20"},
+        "multiplier_limits": {"lower": "-20","upper": "20"},
+        "difficulty_level": "superhard",
+        "description": "Five variable, high variable limit, high multipliers limit."
+    },
+    {
+        "id": 17,
+        "active": "1",
+        "number_of_variables": 6,
+        "variables": ["a","b","c","d","e","f"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-10","upper": "10"},
+        "difficulty_level": "hard",
+        "description": "Six variable."
+    },
+    {
+        "id": 18,
+        "active": "1",
+        "number_of_variables": 7,
+        "variables": ["a","b","c","d","e","f","g"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-10","upper": "10"},
+        "difficulty_level": "hard",
+        "description": "Seven variable."
+    },
+    {
+        "id": 19,
+        "active": "1",
+        "number_of_variables": 8,
+        "variables": ["a","b","c","d","e","f","g","h"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-10","upper": "10"},
+        "difficulty_level": "hard",
+        "description": "Eight variable."
+    },
+    {
+        "id": 20,
+        "active": "1",
+        "number_of_variables": 9,
+        "variables": ["a","b","c","d","e","f","g","h","i"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-10","upper": "10"},
+        "difficulty_level": "hard",
+        "description": "Nine variable."
+    },
+    {
+        "id": 21,
+        "active": "1",
+        "number_of_variables": 10,
+        "variables": ["a","b","c","d","e","f","g","h","i","j"],
+        "variable_limits": {"lower": "-10","upper": "10"},
+        "multiplier_limits": {"lower": "-10","upper": "10"},
+        "difficulty_level": "superhard",
+        "description": "Ten variable."
+    }]
+}
