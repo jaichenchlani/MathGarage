@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <meta name="google-signin-client_id" content="949977243982-uhukdhb15ff26j7ngb4eulfkde969ahv.apps.googleusercontent.com">
 
   <title>Mathgarage</title>
 
@@ -21,7 +22,7 @@
 <!--
   <script src="../static/jquery/jquery.min.js"></script>
   <script src="../static/js/bootstrap.bundle.min.js"></script>  -->
-  
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script  type="application/javascript" src="{{ url_for('static', filename='jquery/jquery.slim.min.js') }}"></script>
   <script  type="application/javascript" src="{{ url_for('static', filename='jquery/jquery.slim.js') }}"></script>
   <script  type="application/javascript" src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
@@ -34,6 +35,7 @@
   <script  type="application/javascript" src="{{ url_for('static', filename='js/sequencepuzzles.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/linearequations.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>  
+  <script  type="application/javascript" src="{{ url_for('static', filename='js/signinwithgoogle.js') }}"></script>  
   <!-- <script  type="application/javascript" src="{{ url_for('static', filename='jquery/maincontroller.js') }}"></script>  -->
 
 
@@ -70,6 +72,9 @@
 
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+        
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <a href="#" onclick="signOut();">Sign out</a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>

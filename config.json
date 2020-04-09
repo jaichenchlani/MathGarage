@@ -1,6 +1,7 @@
 {
     "multiplication_facts_table_of": 52,
     "multiplication_facts_limit": 10,
+    "valid_basic_arithmatic_operations_list": ["+","-","x","/"],
     "puzzle_configurations": [{
         "id": "1",
         "active": "1",
