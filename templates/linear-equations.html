@@ -58,7 +58,7 @@
                                 <tr ng-repeat="(i,answer) in puzzle.answer track by $index">
                                     <th><span ng-class="{'bg-success': puzzle.answer[i].isUserAnswerCorrect}" class="form-control text-center text-primary">{{'{{puzzle.answer[i].variable}}'}}</span>
                                     <th><input ng-class="{'bg-warning': !puzzle.answer[i].isUserAnswerCorrect}" class="form-control text-center" type="text" ng-model="puzzle.answer[i].user_answer"></th>
-                                    <th><input class="form-control text-center" type="text" ng-model="puzzle.answer[i].system_answer" ng-show="showSystemAnswer"></th>
+                                    <th><input class="form-control text-center" type="text" ng-model="puzzle.answer[i].system_answer" ng-show="showSystemAnswer" ng-disabled="1"></th>
                                 </tr>
                             </tbody class="thead-light">
                         </table>

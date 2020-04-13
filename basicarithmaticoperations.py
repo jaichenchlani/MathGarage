@@ -42,13 +42,13 @@ def is_valid_configuration(generated_basic_arithmatic_operation):
         generated_basic_arithmatic_operation['validOutputReturned'] = False
         return False
 
-    # Validate 1st_number_lower_limit to be an Integer
+    # Validate first_number_lower_limit to be an Integer
     # validate_all_numbers_in_operation_request(generated_basic_arithmatic_operation)
     number_validation_list = []
-    number_validation_list.append(generated_basic_arithmatic_operation['request']['1st_number_lower_limit'])
-    number_validation_list.append(generated_basic_arithmatic_operation['request']['1st_number_upper_limit'])
-    number_validation_list.append(generated_basic_arithmatic_operation['request']['2nd_number_lower_limit'])
-    number_validation_list.append(generated_basic_arithmatic_operation['request']['2nd_number_upper_limit'])
+    number_validation_list.append(generated_basic_arithmatic_operation['request']['first_number_lower_limit'])
+    number_validation_list.append(generated_basic_arithmatic_operation['request']['first_number_upper_limit'])
+    number_validation_list.append(generated_basic_arithmatic_operation['request']['second_number_lower_limit'])
+    number_validation_list.append(generated_basic_arithmatic_operation['request']['second_number_upper_limit'])
     number_validation_list.append(generated_basic_arithmatic_operation['request']['number_of_questions'])
     # Run each number through a for loop and call the Utilities function to validate
     for temp_str_variable in number_validation_list:
@@ -73,30 +73,32 @@ def generate_basic_arithmatic_operation(generated_basic_arithmatic_operation):
     for i in range(0,number_of_questions):
         # Initialize the questions Dictionary
         question_dictionary = {
-        "1st_number": 0,
-        "2nd_number": 0,
+        "first_number": 0,
+        "second_number": 0,
         "operator": "",
-        "answer": 0
+        "answer": 0,
+        "user_answer": 0,
+        "is_user_answer_correct": 0
         }
         # Generate the first number
-        question_dictionary['1st_number'] = randint(int(generated_basic_arithmatic_operation['request']['1st_number_lower_limit']),
-        int(generated_basic_arithmatic_operation['request']['1st_number_upper_limit']))
+        question_dictionary['first_number'] = randint(int(generated_basic_arithmatic_operation['request']['first_number_lower_limit']),
+        int(generated_basic_arithmatic_operation['request']['first_number_upper_limit']))
         # Generate the second number
-        question_dictionary['2nd_number'] = randint(int(generated_basic_arithmatic_operation['request']['2nd_number_lower_limit']),
-        int(generated_basic_arithmatic_operation['request']['2nd_number_upper_limit']))
+        question_dictionary['second_number'] = randint(int(generated_basic_arithmatic_operation['request']['second_number_lower_limit']),
+        int(generated_basic_arithmatic_operation['request']['second_number_upper_limit']))
         question_dictionary['operator'] = generated_basic_arithmatic_operation['request']['operator']
         # Calculate questions
         if generated_basic_arithmatic_operation['request']['operator'] == "+":
-            question_dictionary['answer'] =  question_dictionary['1st_number'] + question_dictionary['2nd_number']
+            question_dictionary['answer'] =  question_dictionary['first_number'] + question_dictionary['second_number']
         elif generated_basic_arithmatic_operation['request']['operator'] == "-":
-            question_dictionary['answer'] =  question_dictionary['1st_number'] - question_dictionary['2nd_number']
+            question_dictionary['answer'] =  question_dictionary['first_number'] - question_dictionary['second_number']
         elif generated_basic_arithmatic_operation['request']['operator'] == "x":
-            question_dictionary['answer'] =  question_dictionary['1st_number'] * question_dictionary['2nd_number']
+            question_dictionary['answer'] =  question_dictionary['first_number'] * question_dictionary['second_number']
         elif generated_basic_arithmatic_operation['request']['operator'] == "/":
             # Prevent Divide by zero error
-            if question_dictionary['2nd_number'] == 0:
-                question_dictionary['2nd_number'] = 1
-            question_dictionary['answer'] =  question_dictionary['1st_number'] // question_dictionary['2nd_number']
+            if question_dictionary['second_number'] == 0:
+                question_dictionary['second_number'] = 1
+            question_dictionary['answer'] =  question_dictionary['first_number'] // question_dictionary['second_number']
         else:
             user_message = "{} is invalid Math operator; Valid operators are {}.".format(requested_operation,valid_operations)
             generated_basic_arithmatic_operation['message'] = user_message

@@ -6,7 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <meta name="google-signin-client_id" content="949977243982-uhukdhb15ff26j7ngb4eulfkde969ahv.apps.googleusercontent.com">
+  <!-- Prod -->
+  <!-- <meta name="google-signin-client_id" content="949977243982-uhukdhb15ff26j7ngb4eulfkde969ahv.apps.googleusercontent.com"> -->
+  <!-- Localhost -->
+  <meta name="google-signin-client_id" content="949977243982-4fo1sd6i1ags2h1n2knb6uekp8as4rra.apps.googleusercontent.com">
 
   <title>Mathgarage</title>
 
@@ -30,12 +33,15 @@
   <!-- <script src="{{ url_for('static', filename='js/angular.min.js') }}"></script>   -->
   <script  type="application/javascript" src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script> 
   <!-- <script  type="application/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>   -->
+  <script  type="application/javascript" src="{{ url_for('static', filename='js/basicarithematicoperations.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/multiplicationfacts.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/mathfunctions.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/sequencepuzzles.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/linearequations.js') }}"></script>  
+  <script  type="application/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>  
-  <script  type="application/javascript" src="{{ url_for('static', filename='js/signinwithgoogle.js') }}"></script>  
+  <!-- <script  type="application/javascript" src="{{ url_for('static', filename='js/googlesignin.js') }}"></script>   -->
+  <!-- <script  type="application/javascript" src="{{ url_for('static', filename='js/signinwithgoogle.js') }}"></script>   -->
   <!-- <script  type="application/javascript" src="{{ url_for('static', filename='jquery/maincontroller.js') }}"></script>  -->
 
 
@@ -58,6 +64,7 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">Menu </div>
       <div class="list-group list-group-flush">
+          <a href="/basic-arithematic-operations-initial-load" class="list-group-item list-group-item-action bg-light">Basic Arithematic Operations</a>
         <a href="/sequence-puzzles" class="list-group-item list-group-item-action bg-light">Sequence Puzzles</a>
         <a href="/linear-equations" class="list-group-item list-group-item-action bg-light">Linear Equations</a>
         <a href="/multiplication-facts" class="list-group-item list-group-item-action bg-light">Multiplication Facts</a> 
@@ -73,8 +80,12 @@
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
         
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
-        <a href="#" onclick="signOut();">Sign out</a>
+        <!-- <div ng-app="googleSignIn" ng-controller="GoogleSignInController"> -->
+          <!-- <div class="g-signin2" ng-model="userProfile" data-onsuccess="onSignIn"></div> -->
+          <!-- <div class="g-signin2" ng-click="onSignIn(data-onsuccess)"></div> -->
+          <!-- <a href="#" onclick="signOut();">Sign out</a> -->
+          <!-- <a href="#" ng-click="signOut()">Sign out</a> -->
+        <!-- </div> -->
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -86,7 +97,7 @@
               <a class="nav-link" href='/'>Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+              <a class="nav-link" href="/login-initial-load">Login</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -1,5 +1,5 @@
 function onSignIn(googleUser) {
-    console.log("Entering onSignIn...");
+    console.log("Entering non-controller onSignIn...");
     var profile = googleUser.getBasicProfile();
     console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
     console.log('Name: ' + profile.getName());
@@ -8,7 +8,7 @@ function onSignIn(googleUser) {
   }
 
 function signOut() {
-  console.log("Entering signOut...")  
+  console.log("Entering non-controller signOut...")  
   var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(function () {
       console.log('User signed out.');
