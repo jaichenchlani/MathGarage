@@ -15,12 +15,12 @@
                 <div class = "row border justify-content-center align-items-center">
                     <div class="col-sm-6">
                         <h6>Multiplication Table Of:</h6>
-                        <input id="inputTableof" class="form-control" type="number" ng-model="facts.tableof" ng-init="facts.tableof=131"  required><br>
+                        <input id="inputTableof" class="form-control" type="number" ng-model="facts.request.tableof" ng-init="facts.request.tableof=131"  required><br>
                     </div>
 
                     <div class="col-sm-6">
                         <h6>Limit:</h6>
-                        <input id="inputLimit" class="form-control" type="number" ng-model="facts.limit" ng-init="facts.limit=50" required><br>
+                        <input id="inputLimit" class="form-control" type="number" ng-model="facts.request.limit" ng-init="facts.request.limit=50" required><br>
                     </div>
                     
                 </div>
@@ -50,11 +50,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="(key, value) in facts.result">
-                            <th>{{'{{key | number}}'}}</th>
-                            <th>{{'{{value | number}}'}}</th>
+                        <tr ng-repeat="(i,item) in facts.result track by $index">
+                            <div class="col-sm-3">
+                                <th>{{'{{i+1 | number}}'}}</span>
+                            </div>
+                            <div class="col-sm-9">
+                                <th>{{'{{facts.result[i] | number}}'}}</th>
+                            </div>
                         </tr>
-                    </tbody>
+                    </tbody class="thead-light">
                 </table>
             </div>
         </div>

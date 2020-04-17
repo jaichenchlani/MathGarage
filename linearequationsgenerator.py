@@ -1,9 +1,10 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list
+from utilities import identify_valid_items_in_list, create_datastore_entity
+import datetime
 
 def generate_linear_equations(difficultyLevel):
-    print("Entering generate_linear_equations...")
+    print("Start - Entering generate_linear_equations...")
 
     # Declare the output dictionary
     generated_linear_equations = declare_output_dictionary()
@@ -16,14 +17,19 @@ def generate_linear_equations(difficultyLevel):
         # Apply Business Rules on Configuration Values.
         # And, if all good, go ahead with generating the puzzle progression
         if is_valid_configuration(generated_linear_equations):
-            generate_equations(generated_linear_equations)
+            process_request(generated_linear_equations)
     else:
         # No puzzle selected. Cannot move forward.
         pass
 
+    # Insert the generated Output Dictionary in Datastore
+    create_datastore_entity("linear_equations",generated_linear_equations)
+    print("Persisted generated_linear_equations object in Datastore...")
 
-    print(generated_linear_equations)
+    # Return the generated Output Dictionary to the caller.
+    print("End - Returning to caller.")
     return generated_linear_equations
+
 
 def select_random_equation_config(difficultyLevel,generated_linear_equations):
     print("Entering select_random_equation_config...")
@@ -57,16 +63,16 @@ def select_random_equation_config(difficultyLevel,generated_linear_equations):
 def declare_output_dictionary():
     generated_linear_equations = {}
     
+    generated_linear_equations['user'] = "Guest"
+    generated_linear_equations['create_timestamp'] = datetime.datetime.now()
+    generated_linear_equations['last_modified_timestamp'] = datetime.datetime.now()
     generated_linear_equations['config'] = {}
     generated_linear_equations['multipliers'] = []
-    # generated_linear_equations['answer_dictionary'] = {}
-    # generated_linear_equations['answer_list'] = []
     generated_linear_equations['equations'] = []
     generated_linear_equations['question'] = []
     generated_linear_equations['answer'] = []
     generated_linear_equations['message'] = ""
     generated_linear_equations['validOutputReturned'] = True
-    
 
     return generated_linear_equations
 
@@ -89,8 +95,8 @@ def is_valid_configuration(generated_linear_equations):
     # All business rules okay. 
     return True
 
-def generate_equations(generated_linear_equations):
-    print("Entering generate_equations...")
+def process_request(generated_linear_equations):
+    print("Entering process_request...")
     variable_count = int(generated_linear_equations['config']['number_of_variables']) 
     # Generating 1 variable linear equation
     if variable_count == 1:
