@@ -5,6 +5,8 @@ from multiplicationfacts import get_multiplication_facts
 from mathfunctions import convert_decimal_to_binary
 from sequencepuzzlegenerator import generate_sequence_puzzle
 from linearequationsgenerator import generate_linear_equations
+from login import login
+from basicarithmaticoperations import generate_basic_arithmatic_operations
 
 
 print("Entering main.py...")
@@ -61,6 +63,31 @@ def process_generate_linear_equations_puzzle():
     print("Enterning process_generate_linear_equations_puzzle...")
     difficultyLevel = request.json
     data = generate_linear_equations(difficultyLevel)
+    return jsonify(data), 200
+
+@app.route('/login-initial-load')
+def render_login_template():
+    print("Entering render_login_template...")
+    return render_template('login.html')
+
+@app.route('/login', methods=['PUT', 'GET'])
+def process_login():
+    print("Enterning process_login...")
+    login_credentials = request.json
+    data = login(login_credentials)
+    return jsonify(data), 200
+
+@app.route('/basic-arithematic-operations-initial-load')
+def render_basic_arithematic_operations_template():
+    print("Entering render_basic_arithematic_operations_template...")
+    return render_template('basic-arithematic-operations.html')
+
+@app.route('/basic-arithematic-operations', methods=['PUT', 'GET'])
+def process_basic_arithematic_operations():
+    print("Enterning def process_basic_arithematic_operations...")
+    operation_request = request.json
+    print(operation_request)
+    data = generate_basic_arithmatic_operations(operation_request)
     return jsonify(data), 200
 
 if __name__ == "__main__":

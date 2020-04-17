@@ -1,9 +1,10 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list
+from utilities import identify_valid_items_in_list, create_datastore_entity
+import datetime
 
 def generate_sequence_puzzle(difficultyLevel):
-    print("Entering generate_sequence_puzzle...")
+    print("Start - Entering generate_sequence_puzzle...")
 
     # Declare the output dictionary
     generated_sequence_puzzle = declare_output_dictionary()
@@ -17,14 +18,19 @@ def generate_sequence_puzzle(difficultyLevel):
         # Apply Business Rules on Configuration Values.
         # And, if all good, go ahead with generating the puzzle progression
         if is_valid_configuration(selected_random_puzzle, generated_sequence_puzzle):
-            generate_progression(generated_sequence_puzzle)
+            process_request(generated_sequence_puzzle)
     else:
         # No puzzle selected. Cannot move forward.
         pass
-    
-    # Print Final Output
-    print(generated_sequence_puzzle)
+
+    # Insert the generated Output Dictionary in Datastore
+    create_datastore_entity("sequence_puzzles",generated_sequence_puzzle)
+    print("Persisted generated_sequence_puzzle object in Datastore...")
+
+    # Return the generated Output Dictionary to the caller.
+    print("End - Returning to caller.")
     return generated_sequence_puzzle
+
 
 # Apply Business Rules on Configuration Values
 def is_valid_configuration(selected_random_puzzle,generated_sequence_puzzle):
@@ -49,8 +55,8 @@ def is_valid_configuration(selected_random_puzzle,generated_sequence_puzzle):
     return True
 
 
-def generate_progression(generated_sequence_puzzle):
-    print("Entering generate_progression...")
+def process_request(generated_sequence_puzzle):
+    print("Entering process_request...")
     print("Generating {} Sequence...".format(generated_sequence_puzzle['config']['type']))
     
     # Get the first element of the sequence based on the lower and the upper limits from Config
@@ -251,6 +257,9 @@ def select_random_sequence_puzzle(difficultyLevel,generated_sequence_puzzle):
 def declare_output_dictionary():
     generated_sequence_puzzle = {}
     
+    generated_sequence_puzzle['user'] = "Guest"
+    generated_sequence_puzzle['create_timestamp'] = datetime.datetime.now()
+    generated_sequence_puzzle['last_modified_timestamp'] = datetime.datetime.now()
     generated_sequence_puzzle['config'] = {}
     generated_sequence_puzzle['first_element'] = 0
     generated_sequence_puzzle['hop'] = 0

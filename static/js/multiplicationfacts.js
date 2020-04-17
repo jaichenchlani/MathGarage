@@ -6,7 +6,8 @@
         console.log("Entering MultiplicationFactsController...");
         $window.document.getElementById('inputTableof').focus();
         $scope.errorMessage = ""
-        $scope.facts = {
+        $scope.facts = {}
+        $scope.facts.request = {
             "tableof": 131,
             "limit": 50
         }
@@ -18,7 +19,7 @@
             $scope.facts.message = "Multiplication Facts for " 
                                     + $scope.facts.tableof + " upto a limt of " 
                                     + $scope.facts.limit + " generated.";
-            // console.log($scope.facts.result);
+            // console.log($scope.facts);
             // Set the focus on the Get Multiplication Facts button.
             $window.document.getElementById('getMultiplicationFacts').focus();
             $scope.gotoResultSection();
@@ -37,29 +38,29 @@
             $scope.errorMessage = ""
 
             // Validate Inputs
-            if (facts.tableof === undefined) {
+            if (facts.request.tableof === undefined) {
                 $scope.errorMessage = "Table Of Input Cannot be blank.";
                 $window.document.getElementById('inputTableof').focus();
                 return
             }
-            if (facts.tableof < 0) {
+            if (facts.request.tableof < 0) {
                 $scope.errorMessage = "Table Of Input Cannot be negative.";
                 $window.document.getElementById('inputTableof').focus();
                 return
             }
-            if (facts.limit === undefined) {
+            if (facts.request.limit === undefined) {
                 $scope.errorMessage = "Limit Input Cannot be blank.";
                 $window.document.getElementById('inputLimit').focus();
                 return
             }
-            if (facts.limit < 1) {
+            if (facts.request.limit < 1) {
                 $scope.errorMessage = "Limit Input Cannot be zero or negative.";
                 $window.document.getElementById('inputLimit').focus();
                 return
             }
 
             // console.log(facts);
-            calledURL = "/get-multiplication-facts/" + facts.tableof + "/" + facts.limit
+            calledURL = "/get-multiplication-facts/" + facts.request.tableof + "/" + facts.request.limit
             console.log("Calling " + calledURL + "...")
             
             $http.get(calledURL)
@@ -76,8 +77,8 @@
         $scope.gotoResultSection = function() {
             console.log("Entering gotoResultSection...");
             var newHash = 'resultsection';
-            console.log($location.hash());
-            console.log(newHash);
+            // console.log($location.hash());
+            // console.log(newHash);
             if ($location.hash() !== newHash) {
                 console.log($location.hash());
                 console.log(newHash);
