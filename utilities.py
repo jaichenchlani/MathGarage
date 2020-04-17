@@ -1,4 +1,5 @@
 from google.cloud import datastore
+import os
 
 # Shortlist the valid list items from the superset list based on difficulty level
 def identify_valid_items_in_list(allItemsInList,difficultyLevel):
@@ -20,6 +21,7 @@ def is_valid_integer(str_number):
     return True
 
 def create_datastore_entity(entityKind,entityObject):
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
     # Create, populate and persist an entity with keyID passed as argument
     client = datastore.Client()
     key = client.key(entityKind)

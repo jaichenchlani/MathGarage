@@ -17,9 +17,9 @@
             console.log("Entering onUserComplete...");
             $scope.facts = response.data;
             $scope.facts.message = "Multiplication Facts for " 
-                                    + $scope.facts.tableof + " upto a limt of " 
-                                    + $scope.facts.limit + " generated.";
-            // console.log($scope.facts);
+                                    + $scope.facts.request.tableof + " upto a limt of " 
+                                    + $scope.facts.request.limit + " generated.";
+            console.log($scope.facts);
             // Set the focus on the Get Multiplication Facts button.
             $window.document.getElementById('getMultiplicationFacts').focus();
             $scope.gotoResultSection();
@@ -33,34 +33,36 @@
         }
 
         // Action from the HTML View
-        $scope.generateMultiplicationFacts = function (facts, errorMessage) {
+        $scope.generateMultiplicationFacts = function () {
             console.log("Entering generateMultiplicationFacts...");
             $scope.errorMessage = ""
 
+            console.log($scope.facts)
+
             // Validate Inputs
-            if (facts.request.tableof === undefined) {
+            if ($scope.facts.request.tableof === undefined) {
                 $scope.errorMessage = "Table Of Input Cannot be blank.";
                 $window.document.getElementById('inputTableof').focus();
                 return
             }
-            if (facts.request.tableof < 0) {
+            if ($scope.facts.request.tableof < 0) {
                 $scope.errorMessage = "Table Of Input Cannot be negative.";
                 $window.document.getElementById('inputTableof').focus();
                 return
             }
-            if (facts.request.limit === undefined) {
+            if ($scope.facts.request.limit === undefined) {
                 $scope.errorMessage = "Limit Input Cannot be blank.";
                 $window.document.getElementById('inputLimit').focus();
                 return
             }
-            if (facts.request.limit < 1) {
+            if ($scope.facts.request.limit < 1) {
                 $scope.errorMessage = "Limit Input Cannot be zero or negative.";
                 $window.document.getElementById('inputLimit').focus();
                 return
             }
 
             // console.log(facts);
-            calledURL = "/get-multiplication-facts/" + facts.request.tableof + "/" + facts.request.limit
+            calledURL = "/get-multiplication-facts/" + $scope.facts.request.tableof + "/" + $scope.facts.request.limit
             console.log("Calling " + calledURL + "...")
             
             $http.get(calledURL)
@@ -70,7 +72,7 @@
         // Action from the HTML View    
         $scope.reset = function() {
             console.log("Entering reset...");
-            $scope.facts.result = undefined
+            $scope.facts = {}
             $window.document.getElementById('inputTableof').focus();
         };
 
@@ -80,8 +82,8 @@
             // console.log($location.hash());
             // console.log(newHash);
             if ($location.hash() !== newHash) {
-                console.log($location.hash());
-                console.log(newHash);
+                // console.log($location.hash());
+                // console.log(newHash);
                 // set the $location.hash to `newHash` and
                 // $anchorScroll will automatically scroll to it
                 $location.hash(newHash);
