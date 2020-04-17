@@ -24,7 +24,10 @@ def create_datastore_entity(entityKind,entityObject):
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
     # Create, populate and persist an entity with keyID passed as argument
     client = datastore.Client()
+    print("client:{},{}".format(client, type(client)))
     key = client.key(entityKind)
+    print("key:{},{}".format(key, type(key)))
     entity = datastore.Entity(key=key)
+    print("entity:{},{}".format(entity, type(entity)))
     entity.update(entityObject)
     client.put(entity)

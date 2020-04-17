@@ -4,7 +4,9 @@ from sequencepuzzlegenerator import generate_sequence_puzzle
 from linearequationsgenerator import generate_linear_equations
 from basicarithmaticoperations import generate_basic_arithmatic_operations
 from login import login
-from gcpsdkinteractionreference import get_buckets, create_datastore_entity
+from gcpsdkinteractionreference import get_buckets, create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
+import datetime
+from google.cloud import datastore
 
 # Test only. Comment out for Production
 difficultyLevel = { 
@@ -63,28 +65,87 @@ difficultyLevel = {
 # get_buckets()
 
 
-# Test all combined.
-difficultyLevel = { 
-    "supereasy": 1, 
-    "easy": 1, 
-    "medium": 1, 
-    "hard": 1, 
-    "superhard": 1
-    }
-operation_request = {
-    "operator": "x",
-    "first_number_lower_limit": -99,
-    "first_number_upper_limit": 99,
-    "second_number_lower_limit": -9,
-    "second_number_upper_limit": 9,
-    "number_of_questions": 6
+# # Test all combined.
+# difficultyLevel = { 
+#     "supereasy": 1, 
+#     "easy": 1, 
+#     "medium": 1, 
+#     "hard": 1, 
+#     "superhard": 1
+#     }
+# operation_request = {
+#     "operator": "x",
+#     "first_number_lower_limit": -99,
+#     "first_number_upper_limit": 99,
+#     "second_number_lower_limit": -9,
+#     "second_number_upper_limit": 9,
+#     "number_of_questions": 6
+# }
+# for i in range(1,10):
+#     print("\nIteration # {}\n".format(i))
+#     basic_arithematic_object = generate_basic_arithmatic_operations(operation_request)
+#     puzzle = generate_sequence_puzzle(difficultyLevel)
+#     result = generate_linear_equations(difficultyLevel)
+#     generated_multiplication_facts = get_multiplication_facts(i+10,10)
+
+
+# test_object = {
+#     "create_timestamp": datetime.datetime.now(),
+#     "last_modified_timestamp": datetime.datetime.now(),
+#     "first_name": "Sudhir",
+#     "last_name": "Chenchlani",
+#     "employer": "Mindtree",
+#     "year_joined": 2019,
+#     "active": True
+# }
+
+
+
+# Create Datastore Entity
+# datastore_entity = create_datastore_entity("test",test_object)
+# print("datastore_entity.key.id:{},{}".format(datastore_entity.key.id, type(datastore_entity.key.id)))
+# print("datastore_entity.key.kind:{},{}".format(datastore_entity.key.kind, type(datastore_entity.key.kind)))
+
+
+# Delete Datastore Entity
+# entityKind = "linear_equations"
+# id = 5078308135895040
+# return_object = delete_datastore_entity(entityKind,id)
+# print("return_object:{},{}".format(return_object, type(return_object)))
+
+# entityKind = "linear_equations"
+# id = 5071950955151360
+# datastore_entity = get_datastore_entity(entityKind,id)
+# if datastore_entity != None:
+#     id = datastore_entity.key.id
+#     kind = datastore_entity.key.kind
+#     test_item = datastore_entity.items()
+#     # print("datastore_entity:{},{}".format(datastore_entity, type(datastore_entity)))
+#     print("ID:{},{}".format(id, type(id)))
+#     print("Kind:{},{}".format(kind, type(kind)))
+#     for (key,value) in test_item:
+#         print("{}: {}".format(key, value))
+# else:
+#     print("Key not found.")
+
+entityKind = "test"
+id = 5669079989878784
+updated_entity = {
+    "last_name": "Chhatwani",
+    "year_joined": 2021,
+    "last_modified_timestamp": datetime.datetime.now()
 }
-for i in range(1,10):
-    print("\nIteration # {}\n".format(i))
-    basic_arithematic_object = generate_basic_arithmatic_operations(operation_request)
-    puzzle = generate_sequence_puzzle(difficultyLevel)
-    result = generate_linear_equations(difficultyLevel)
-    generated_multiplication_facts = get_multiplication_facts(i+10,10)
+
+# Update Datastore Entity
+return_object = update_datastore_entity(entityKind,id,updated_entity)
+print("return_object:{},{}".format(return_object, type(return_object)))
+
+# # Get Datastore Entities by Kind
+# # entity_list = get_datastore_entities_by_kind('linear_equations')
+# entity_list = get_datastore_entities_by_kind('sequence_puzzles')
+# print("Number of Entities Returned:{}".format(len(entity_list)))
+# for entity in entity_list:
+#     print("entity:{},{}".format(entity, type(entity)))
 
 
 
