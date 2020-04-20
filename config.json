@@ -1,6 +1,10 @@
 {
     "multiplication_facts_table_of": 52,
     "multiplication_facts_limit": 10,
+    "datastore_kind_basic_arithematic_operations": "basic_arithematic_operations",
+    "datastore_kind_linear_equations": "linear_equations",
+    "datastore_kind_multiplication_facts": "multiplication_facts",
+    "datastore_kind_sequence_puzzles": "sequence_puzzles",
     "valid_basic_arithmatic_operations_list": ["+","-","x","/"],
     "puzzle_configurations": [{
         "id": "1",

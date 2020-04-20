@@ -1,7 +1,12 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list, is_valid_integer, create_datastore_entity
+from utilities import identify_valid_items_in_list, is_valid_integer
+from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
+
+# Load Defaults from Config
+envVariables = read_configurations_from_config_file()
+entityKind = envVariables['datastore_kind_basic_arithematic_operations']
 
 def generate_basic_arithmatic_operations(operation_request):
     print("Start - Entering generate_basic_arithmatic_operation...")
@@ -15,10 +20,12 @@ def generate_basic_arithmatic_operations(operation_request):
         process_request(generated_basic_arithmatic_operation)
     
     # Insert the generated Output Dictionary in Datastore
-    create_datastore_entity("basic_arithematic_operations",generated_basic_arithmatic_operation)
+    datastore_entity = create_datastore_entity(entityKind,generated_basic_arithmatic_operation)
     print("Persisted generated_basic_arithmatic_operation object in Datastore...")
 
+    # Update the Datastore ID in the Output Dictionary
     # Return the generated Output Dictionary to the caller.
+    generated_basic_arithmatic_operation['datastore_id'] = datastore_entity.key.id
     print("End - Returning to caller.")
     return generated_basic_arithmatic_operation
 
@@ -26,6 +33,7 @@ def declare_output_dictionary(operation_request):
     print("Entering declare_output_dictionary...")
     
     generated_basic_arithmatic_operation = {}
+    generated_basic_arithmatic_operation['datastore_id'] = 0
     generated_basic_arithmatic_operation['user'] = "Guest"
     generated_basic_arithmatic_operation['create_timestamp'] = datetime.datetime.now()
     generated_basic_arithmatic_operation['last_modified_timestamp'] = datetime.datetime.now()
@@ -38,8 +46,6 @@ def declare_output_dictionary(operation_request):
 
 def is_valid_configuration(generated_basic_arithmatic_operation):
     print("Entering is_valid_configuration...")
-    # Load Defaults from Config
-    envVariables = read_configurations_from_config_file()
 
     # Validate the request operations against the allowed operations in Config
     requested_operation = generated_basic_arithmatic_operation['request']['operator']
@@ -113,3 +119,14 @@ def process_request(generated_basic_arithmatic_operation):
             generated_basic_arithmatic_operation['validOutputReturned'] = False
             return
         generated_basic_arithmatic_operation['questions'].append(question_dictionary)
+
+def update_datastore_basic_arithmatic_operations(input_basic_arithematic_operation):
+    print("Entering update_datastore_basic_arithmatic_operations...")
+    # Update Datastore Entity
+    id = input_basic_arithematic_operation['datastore_id']
+    updated_entity = {
+    "last_modified_timestamp": datetime.datetime.now(),
+    "questions": input_basic_arithematic_operation['questions']
+    }
+    status = update_datastore_entity(entityKind,id,updated_entity)
+    return status

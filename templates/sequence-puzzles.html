@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <input id="puzzle" class="form-control" type="text" ng-disabled="1" ng-model="puzzle.question" required><br>
+                    <input id="puzzle" class="form-control text-center text-primary" type="text" ng-disabled="1" ng-model="puzzle.question" required><br>
                 </div>
                 <br>
                 <div class = "row border justify-content-center align-items-center">
@@ -40,11 +40,18 @@
                             <tbody>
                                 <tr ng-repeat="(i,element) in puzzle.missing_elements track by $index">
                                     <th><span ng-class="{'bg-success': puzzle.missing_elements[i].isUserAnswerCorrect}" class="form-control text-center text-primary">{{'{{i+1}}'}}</span>
-                                    <th><input ng-class="{'bg-warning': !puzzle.missing_elements[i].isUserAnswerCorrect}" class="form-control text-center" type="text" ng-model="puzzle.missing_elements[i].question"></th>
-                                    <th><input class="form-control text-center" type="text" ng-model="puzzle.missing_elements[i].answer" ng-show="showSystemAnswer"></th>
+                                    <th><input ng-class="{'bg-warning': !puzzle.missing_elements[i].isUserAnswerCorrect}" class="form-control text-center" type="text" ng-model="puzzle.missing_elements[i].user_answer"></th>
+                                    <th><input class="form-control text-center" type="text" ng-model="puzzle.missing_elements[i].system_answer" ng-show="showSystemAnswer"></th>
                                 </tr>
                             </tbody class="thead-light">
                         </table>
+                    </div>
+                    <div class="col-sm-12">
+                        <span class="alert-info">Difficulty Level: {{'{{puzzle.config.difficulty_level | uppercase}}'}} | {{'{{puzzle.message}}'}}</span>
+                    </div>
+                    <div class="col-sm-12">
+                        <span ng-if="userAnswerFeedback.result" class="alert-success">{{'{{userAnswerFeedback.message}}'}}</span>
+                        <span ng-if="!userAnswerFeedback.result" class="alert-danger">{{'{{userAnswerFeedback.message}}'}}</span>
                     </div>
                 </div>
                 <br>
@@ -55,7 +62,7 @@
                     <span class="col-sm-2"></span>
                     <input id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle(puzzle, errorMessage)"/>
                     <span class="col-sm-2"></span>
-                    <input id="checkAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Check Answer" ng-click="checkAnswer(puzzle, errorMessage)"/>
+                    <input id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer()"/>
                     <span class="col-sm-2"></span>
                 </div>
 
@@ -63,17 +70,9 @@
 
                 <div ng-show="showSystemAnswer" class = "row border justify-content-center align-items-center">
                     <div class="col-sm-12">
-                        <h5 align="center">System Feedback</h5>
-                        <span ng-if="userAnswerFeedback.result" class="alert-success">{{'{{userAnswerFeedback.message}}'}}</span>
-                        <span ng-if="!userAnswerFeedback.result" class="alert-danger">{{'{{userAnswerFeedback.message}}'}}</span>
-                        <br>
-                        <h6>Puzzle Description:</h6>
-                        <span class="alert-info">Difficulty Level: {{'{{puzzle.puzzle_config.difficulty_level | uppercase}}'}} | {{'{{puzzle.message}}'}}</span>
-                        <br>
+                        <h6 class = "text-primary text-left">Rationale:</h6>
                     </div>
-
                     <div>
-                        <br>
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>

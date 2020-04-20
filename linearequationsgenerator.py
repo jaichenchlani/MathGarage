@@ -1,7 +1,12 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list, create_datastore_entity
+from utilities import identify_valid_items_in_list
+from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
+
+# Load Defaults from Config
+envVariables = read_configurations_from_config_file()
+entityKind = envVariables['datastore_kind_linear_equations']
 
 def generate_linear_equations(difficultyLevel):
     print("Start - Entering generate_linear_equations...")
@@ -23,10 +28,12 @@ def generate_linear_equations(difficultyLevel):
         pass
 
     # Insert the generated Output Dictionary in Datastore
-    create_datastore_entity("linear_equations",generated_linear_equations)
+    datastore_entity = create_datastore_entity(entityKind,generated_linear_equations)
     print("Persisted generated_linear_equations object in Datastore...")
 
+    # Update the Datastore ID in the Output Dictionary
     # Return the generated Output Dictionary to the caller.
+    generated_linear_equations['datastore_id'] = datastore_entity.key.id
     print("End - Returning to caller.")
     return generated_linear_equations
 
@@ -34,9 +41,6 @@ def generate_linear_equations(difficultyLevel):
 def select_random_equation_config(difficultyLevel,generated_linear_equations):
     print("Entering select_random_equation_config...")
     # print("difficultyLevel:{},{}".format(difficultyLevel, type(difficultyLevel)))
-
-    # Load Defaults from Config
-    envVariables = read_configurations_from_config_file()
     
     # All(i.e. all Difficulty Levels) Valid Equation Configurations from Config
     allEquationConfigurations = envVariables['linear_equation_configurations']
@@ -62,7 +66,7 @@ def select_random_equation_config(difficultyLevel,generated_linear_equations):
 
 def declare_output_dictionary():
     generated_linear_equations = {}
-    
+    generated_linear_equations['datastore_id'] = 0
     generated_linear_equations['user'] = "Guest"
     generated_linear_equations['create_timestamp'] = datetime.datetime.now()
     generated_linear_equations['last_modified_timestamp'] = datetime.datetime.now()
@@ -258,5 +262,15 @@ def process_request(generated_linear_equations):
         generated_linear_equations['equations'].append(equation)
         generated_linear_equations['question'].append(equation_text)
 
-
     return generated_linear_equations
+
+def update_datastore_linear_equations(input_linear_equations):
+    print("Entering update_datastore_linear_equations...")
+    # Update Datastore Entity
+    id = input_linear_equations['datastore_id']
+    updated_entity = {
+    "last_modified_timestamp": datetime.datetime.now(),
+    "answer": input_linear_equations['answer']
+    }
+    status = update_datastore_entity(entityKind,id,updated_entity)
+    return status

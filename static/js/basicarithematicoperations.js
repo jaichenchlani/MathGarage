@@ -7,6 +7,7 @@
         $window.document.getElementById('getBasicArithematicOperations').focus();
         $scope.errorMessage = ""
         $scope.showSystemAnswer = false
+        $scope.showResultSection = false
         $scope.operation_request_addition = 1
         $scope.operation_request_subtraction = 0
         $scope.operation_request_multiplication = 0
@@ -28,9 +29,20 @@
             console.log("Entering onUserComplete...");
             $scope.operation = response.data;
             console.log($scope.operation);
-            // Set the focus on the Check Answer button.
-            $window.document.getElementById('checkAnswer').focus();
+            // Set the focus on the Submit Answer button.
+            $scope.showResultSection = true
             $scope.gotoResultSection();
+            $window.document.getElementById('submitAnswer').focus();
+        }
+
+        var onSubmitComplete = function(response) {
+            console.log("Entering onSubmitComplete...");
+            $scope.submit_status = response.data;
+            console.log($scope.submit_status);
+            // Set the focus on the Submit Answer button.
+
+            $scope.showSystemAnswer = true
+            $window.document.getElementById('getBasicArithematicOperations').focus();
         }
 
         // Actions when HTTP call fails.
@@ -42,10 +54,6 @@
 
         var processRadioButtonInput = function() {
             console.log("Entering processRadioButtonInput...");
-            // console.log($scope.operation_request_addition);
-            // console.log($scope.operation_request_subtraction);
-            // console.log($scope.operation_request_multiplication);
-            // console.log($scope.operation_request_division);
 
             if ($scope.operation_request_addition) {
                 $scope.operation_request.operator = "+";
@@ -113,7 +121,7 @@
         };
 
         // Action from the HTML View
-        $scope.checkAnswer = function (showSystemAnswer) {
+        $scope.submitAnswer = function (showSystemAnswer) {
             console.log($scope.operation);
             userMessage = ""
             userResult = 1
@@ -146,19 +154,30 @@
             } else {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": countCorrectAnswers + " of " + totalQuestions + " answers are correct. Please try again."
+                    "message": countCorrectAnswers + " of " + totalQuestions + " answers are correct. Answers updated in Datastore."
                 };
             }
 
             $scope.showSystemAnswer = true
             $window.document.getElementById('getBasicArithematicOperations').focus();
+
+            // Update Backend Datastore with the user answers
+            console.log($scope.operation);
+            calledURL = "/basic-arithematic-operations/submit"
+            console.log("Calling " + calledURL + "...")
+            // console.log($scope.operation)
+            
+            $http.put(calledURL, $scope.operation)
+                .then(onSubmitComplete, onError);
+
         };
 
         $scope.reset = function() {
             $scope.operation = {}
             $window.document.getElementById('getBasicArithematicOperations').focus();
             $scope.errorMessage = ""
-            $scope.showSystemAnswer = true
+            $scope.showSystemAnswer = false
+            $scope.showResultSection = false
             $scope.operation_request_addition = 1
             $scope.operation_request_subtraction = 0
             $scope.operation_request_multiplication = 0

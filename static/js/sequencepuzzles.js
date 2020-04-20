@@ -26,7 +26,7 @@
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
             $scope.puzzle = response.data;
-            $scope.userAnswer = $scope.puzzle.question;
+            // $scope.userAnswer = $scope.puzzle.question;
             console.log($scope.puzzle);
             if (!$scope.puzzle.validOutputReturned) {
                 $scope.errorMessage = $scope.puzzle.message;
@@ -34,6 +34,16 @@
             } else {
                 $window.document.getElementById('getPuzzle').focus();
             }
+        }
+
+        var onSubmitComplete = function(response) {
+            console.log("Entering onSubmitComplete...");
+            $scope.submit_status = response.data;
+            console.log($scope.submit_status);
+            // Set the focus on the Submit Answer button.
+
+            $scope.showSystemAnswer = true
+            $window.document.getElementById('getPuzzle').focus();
         }
 
         // Actions when HTTP call fails.
@@ -48,6 +58,10 @@
             console.log("Entering getPuzzle...");
             // Re-initialize variables on every Generate Puzzle
             $scope.errorMessage = ""
+            $scope.userAnswerFeedback = {
+                "result": 0,
+                "message": ""
+            }
             $scope.showSystemAnswer = false
             $window.document.getElementById('getPuzzle').value = "Get New Puzzle";
             // console.log(puzzle);
@@ -62,7 +76,7 @@
         };
 
         // Action from the HTML View
-        $scope.checkAnswer = function (showSystemAnswer) {
+        $scope.submitAnswer = function () {
             console.log("Entering checkAnswer...");
             // console.log($scope.puzzle.missing_elements_list_question);
             // console.log($scope.puzzle.missing_elements_list_answer);
@@ -70,15 +84,16 @@
             userResult = 1
             for (i = 0; i < $scope.puzzle.config.missing_elements_count; i++ ) {
                 // console.log(i)
+                // console.log($scope.puzzle.missing_elements[i])
                 try {
-                    question = Number($scope.puzzle.missing_elements[i].question);
+                    user_answer = Number($scope.puzzle.missing_elements[i].user_answer);
                 } catch(err) {
                     console.log(err)
                 }
-                answer = $scope.puzzle.missing_elements[i].answer;
+                system_answer = $scope.puzzle.missing_elements[i].system_answer;
                 // console.log(question);
                 // console.log(answer);
-                if (question === answer) {
+                if (user_answer === system_answer) {
                     userMessage += "Element # " + Number(i+1) + ": Correct.";
                     $scope.puzzle.missing_elements[i].isUserAnswerCorrect = 1
                 } else {
@@ -87,20 +102,31 @@
                 }
             }
 
+            messageAddendum = "Answers updated in Datastore. Check rationale below."
+
             if (userResult) {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": "Bravo. Correct Answer!"
+                    "message": "Bravo. Correct Answer! " + messageAddendum
                 };
             } else {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": userMessage
+                    "message": userMessage + " " + messageAddendum
                 };
             }
 
             $scope.showSystemAnswer = true
             $window.document.getElementById('getPuzzle').focus();
+
+            // Update Backend Datastore with the user answers
+            calledURL = "/sequence-puzzles/submit"
+            console.log("Calling " + calledURL + "...")
+            console.log($scope.puzzle)
+            
+            $http.put(calledURL, $scope.puzzle)
+                .then(onSubmitComplete, onError);
+
         };
 
         // Call the function on page load.

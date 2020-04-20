@@ -6,6 +6,7 @@
         console.log("Entering MultiplicationFactsController...");
         $window.document.getElementById('inputTableof').focus();
         $scope.errorMessage = ""
+        $scope.showSystemAnswer = false
         $scope.facts = {}
         $scope.facts.request = {
             "tableof": 131,
@@ -22,6 +23,7 @@
             console.log($scope.facts);
             // Set the focus on the Get Multiplication Facts button.
             $window.document.getElementById('getMultiplicationFacts').focus();
+            $scope.showSystemAnswer = true
             $scope.gotoResultSection();
         }
 
@@ -72,7 +74,8 @@
         // Action from the HTML View    
         $scope.reset = function() {
             console.log("Entering reset...");
-            $scope.facts = {}
+            $scope.facts.result = {}
+            $scope.showSystemAnswer = false
             $window.document.getElementById('inputTableof').focus();
         };
 

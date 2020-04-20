@@ -31,7 +31,7 @@
                     <span class="col-sm-2"></span>
                     <input id="getMultiplicationFacts" type="submit" value="Get Multiplication Facts" ng-click="generateMultiplicationFacts()"/>
                     <span class="col-sm-2"></span>
-                    <input id="reset" ng-disabled="!facts.result" class="col-sm-3" type="submit" value="Reset" ng-click="reset()"/>
+                    <input id="reset" ng-disabled="!showSystemAnswer" class="col-sm-3" type="submit" value="Reset" ng-click="reset()"/>
                     <span class="col-sm-2"></span>
                 </div>
 
@@ -40,7 +40,7 @@
 
             </form>
 
-            <div id="resultsection" ng-hide="!facts.result">
+            <div id="resultsection" ng-show="showSystemAnswer">
                 <span class="alert-success">{{'{{facts.message}}'}}</span>
                 <table class="table table-striped table-bordered">
                     <thead class="thead-light">

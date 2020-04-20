@@ -1,7 +1,12 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list, create_datastore_entity
+from utilities import identify_valid_items_in_list
+from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
+
+# Load Defaults from Config
+envVariables = read_configurations_from_config_file()
+entityKind = envVariables['datastore_kind_sequence_puzzles']
 
 def generate_sequence_puzzle(difficultyLevel):
     print("Start - Entering generate_sequence_puzzle...")
@@ -24,10 +29,12 @@ def generate_sequence_puzzle(difficultyLevel):
         pass
 
     # Insert the generated Output Dictionary in Datastore
-    create_datastore_entity("sequence_puzzles",generated_sequence_puzzle)
+    datastore_entity = create_datastore_entity(entityKind,generated_sequence_puzzle)
     print("Persisted generated_sequence_puzzle object in Datastore...")
 
+    # Update the Datastore ID in the Output Dictionary
     # Return the generated Output Dictionary to the caller.
+    generated_sequence_puzzle['datastore_id'] = datastore_entity.key.id
     print("End - Returning to caller.")
     return generated_sequence_puzzle
 
@@ -196,8 +203,8 @@ def generate_question_list(generated_sequence_puzzle):
         missing_elements = {}
         if elementPositionNumber in missing_elements_list:
             generated_sequence_puzzle['question'].append('?')
-            missing_elements['question'] = "?"
-            missing_elements['answer'] = generated_sequence_puzzle['answer'][elementPositionNumber-1]
+            missing_elements['user_answer'] = "?"
+            missing_elements['system_answer'] = generated_sequence_puzzle['answer'][elementPositionNumber-1]
             missing_elements['isUserAnswerCorrect'] = 0
             generated_sequence_puzzle['missing_elements'].append(missing_elements)
         else:
@@ -227,9 +234,6 @@ def identify_missing_elements_positions(size,count):
 def select_random_sequence_puzzle(difficultyLevel,generated_sequence_puzzle):
     print("Entering select_random_sequence_puzzle...")
     # print("difficultyLevel:{},{}".format(difficultyLevel, type(difficultyLevel)))
-
-    # Load Defaults from Config
-    envVariables = read_configurations_from_config_file()
     
     # All(i.e. all Difficulty Levels) Valid Puzzle Configurations from Config
     allPuzzleConfigurations = envVariables['puzzle_configurations']
@@ -256,7 +260,7 @@ def select_random_sequence_puzzle(difficultyLevel,generated_sequence_puzzle):
 
 def declare_output_dictionary():
     generated_sequence_puzzle = {}
-    
+    generated_sequence_puzzle['datastore_id'] = 0
     generated_sequence_puzzle['user'] = "Guest"
     generated_sequence_puzzle['create_timestamp'] = datetime.datetime.now()
     generated_sequence_puzzle['last_modified_timestamp'] = datetime.datetime.now()
@@ -271,3 +275,16 @@ def declare_output_dictionary():
     generated_sequence_puzzle['validOutputReturned'] = True
 
     return generated_sequence_puzzle
+
+def update_datastore_sequence_puzzles(input_sequence_puzzles):
+    print("Entering update_datastore_sequence_puzzles...")
+    # Update Datastore Entity
+    id = input_sequence_puzzles['datastore_id']
+    updated_entity = {
+    "last_modified_timestamp": datetime.datetime.now(),
+    "missing_elements": input_sequence_puzzles['missing_elements']
+    }
+    status = update_datastore_entity(entityKind,id,updated_entity)
+    return status
+
+

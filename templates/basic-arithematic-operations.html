@@ -50,7 +50,7 @@
                     <span class="col-sm-2"></span>
                     <input id="getBasicArithematicOperations" type="submit" value="Go" ng-click="getBasicArithematicOperations(operation_request, errorMessage)"/>
                     <span class="col-sm-2"></span>
-                    <input id="reset" class="col-sm-3" type="submit" value="Reset" ng-click="reset()"/>
+                    <input id="reset" ng-disabled="!showResultSection" class="col-sm-3" type="submit" value="Reset" ng-click="reset()"/>
                     <span class="col-sm-2"></span>
                 </div>
 
@@ -59,36 +59,37 @@
 
             </form>
 
-            <div id="resultsection">
+            <div id="resultsection" ng-show="showResultSection">
                 <div class="col-sm-12">
                     <span class="alert-info">{{'{{userAnswerFeedback.message}}'}}</span>
                 </div>
                 <table class="table table-striped table-bordered">
                     <thead class="thead-light">
                         <tr>
+                            <th>Question #</th>
                             <th>Number 1</th>
                             <th>Operator</th>
                             <th>Number 2</th>
                             <th></th>
                             <th>User Answer</th>
-                            <th ng-show="showSystemAnswer">System Answer</th>
+                            <th>System Answer</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="(i,question) in operation.questions track by $index">
-                            <th><span ng-class="{'bg-success': operation.questions[i].is_user_answer_correct}" class="form-control text-center text-primary">{{'{{operation.questions[i].first_number}}'}}</span>
-                            <th><span ng-class="{'bg-success': operation.questions[i].is_user_answer_correct}" class="form-control text-center text-primary">{{'{{operation.questions[i].operator}}'}}</span>
-                            <th><span ng-class="{'bg-success': operation.questions[i].is_user_answer_correct}" class="form-control text-center text-primary">{{'{{operation.questions[i].second_number}}'}}</span>
-                            <th><span ng-class="{'bg-success': operation.questions[i].is_user_answer_correct}" class="form-control text-center text-primary"> = </span>
+                            <th><span ng-class="{'bg-success': operation.questions[i].is_user_answer_correct}" class="form-control text-center text-muted">{{'{{i+1}}'}}</span>
+                            <th><span class="form-control text-center text-primary">{{'{{operation.questions[i].first_number}}'}}</span>
+                            <th><span class="form-control text-center text-primary">{{'{{operation.questions[i].operator}}'}}</span>
+                            <th><span class="form-control text-center text-primary">{{'{{operation.questions[i].second_number}}'}}</span>
+                            <th><span class="form-control text-center text-primary"> = </span>
                             <th><input ng-class="{'bg-warning': !operation.questions[i].is_user_answer_correct}" class="form-control text-center" type="text" ng-model="operation.questions[i].user_answer"></th>
                             <th><input class="form-control text-center" type="text" ng-model="operation.questions[i].answer" ng-show="showSystemAnswer" ng-disabled="1"></th>
                             </tr>
                     </tbody>
                 </table>
-            </div>
-
-            <div class = "row justify-content-center align-items-center">
-                <input id="checkAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Check Answer" ng-click="checkAnswer(operation, errorMessage)"/>
+                <div class = "row justify-content-center align-items-center">
+                    <input id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer(operation, errorMessage)"/>
+                </div>
             </div>
 
         </div>

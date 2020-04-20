@@ -3,10 +3,10 @@ from datetime import datetime
 import os
 from multiplicationfacts import get_multiplication_facts
 from mathfunctions import convert_decimal_to_binary
-from sequencepuzzlegenerator import generate_sequence_puzzle
-from linearequationsgenerator import generate_linear_equations
+from sequencepuzzlegenerator import generate_sequence_puzzle, update_datastore_sequence_puzzles
+from linearequationsgenerator import generate_linear_equations, update_datastore_linear_equations
 from login import login
-from basicarithmaticoperations import generate_basic_arithmatic_operations
+from basicarithmaticoperations import generate_basic_arithmatic_operations, update_datastore_basic_arithmatic_operations
 
 
 print("Entering main.py...")
@@ -53,6 +53,13 @@ def process_generate_sequence_puzzle():
     data = generate_sequence_puzzle(difficultyLevel)
     return jsonify(data), 200
 
+@app.route('/sequence-puzzles/submit', methods=['PUT', 'GET'])
+def submit_sequence_puzzles():
+    print("Enterning def submit_sequence_puzzles...")
+    input_sequence_puzzles = request.json
+    status = update_datastore_sequence_puzzles(input_sequence_puzzles)
+    return jsonify(status), 200
+
 @app.route('/linear-equations')
 def render_linear_equations_template():
     print("Entering render_linear_equations_template...")
@@ -64,6 +71,13 @@ def process_generate_linear_equations_puzzle():
     difficultyLevel = request.json
     data = generate_linear_equations(difficultyLevel)
     return jsonify(data), 200
+
+@app.route('/linear-equations/submit', methods=['PUT', 'GET'])
+def submit_linear_equations():
+    print("Enterning def submit_linear_equations...")
+    input_linear_equations = request.json
+    status = update_datastore_linear_equations(input_linear_equations)
+    return jsonify(status), 200
 
 @app.route('/login-initial-load')
 def render_login_template():
@@ -86,9 +100,15 @@ def render_basic_arithematic_operations_template():
 def process_basic_arithematic_operations():
     print("Enterning def process_basic_arithematic_operations...")
     operation_request = request.json
-    print(operation_request)
     data = generate_basic_arithmatic_operations(operation_request)
     return jsonify(data), 200
+
+@app.route('/basic-arithematic-operations/submit', methods=['PUT', 'GET'])
+def submit_basic_arithematic_operations():
+    print("Enterning def submit_basic_arithematic_operations...")
+    input_basic_arithematic_operation = request.json
+    status = update_datastore_basic_arithmatic_operations(input_basic_arithematic_operation)
+    return jsonify(status), 200
 
 if __name__ == "__main__":
     print("Starting MathGarage Python Flask App on Port 5000...")

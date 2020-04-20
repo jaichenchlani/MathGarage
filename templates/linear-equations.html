@@ -34,13 +34,17 @@
                                         <th><span class="form-control text-center text-primary">{{'{{i+1}}'}}</span>
                                     </div>
                                     <div class="col-sm-9">
-                                        <th><input class="form-control text-center" type="text" ng-model="puzzle.question[i]" ng-disabled="1"></th>
+                                        <th><input class="form-control text-center text-primary" type="text" ng-model="puzzle.question[i]" ng-disabled="1"></th>
                                     </div>
                                 </tr>
                             </tbody class="thead-light">
                         </table>
                     <div class="col-sm-12">
                         <span class="alert-info">Difficulty Level: {{'{{puzzle.config.difficulty_level | uppercase}}'}} | {{'{{puzzle.config.description}}'}}</span>
+                    </div>
+                    <div class="col-sm-12">
+                        <span ng-if="userAnswerFeedback.result" class="alert-success">{{'{{userAnswerFeedback.message}}'}}</span>
+                        <span ng-if="!userAnswerFeedback.result" class="alert-danger">{{'{{userAnswerFeedback.message}}'}}</span>
                     </div>
                 </div>
                 <br>
@@ -72,7 +76,7 @@
                     <span class="col-sm-2"></span>
                     <input id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle(puzzle, errorMessage)"/>
                     <span class="col-sm-2"></span>
-                    <input id="checkAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Check Answer" ng-click="checkAnswer(puzzle, errorMessage)"/>
+                    <input id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer(puzzle, errorMessage)"/>
                     <span class="col-sm-2"></span>
                 </div>
             </form>
