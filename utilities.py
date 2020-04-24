@@ -12,7 +12,6 @@ def identify_valid_items_in_list(allItemsInList,difficultyLevel):
 
 # Validate whether the passed string is a valid integer, and return a boolean result
 def is_valid_integer(str_number):
-    # Validate 1st_number_lower_limit to be an Integer
     try:
         temp_int_variable = int(str_number)
     except ValueError:

@@ -7,6 +7,7 @@ from login import login
 from gcpsdkinteractionreference import get_buckets, create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
 import datetime
 from google.cloud import datastore
+from mathfunctions import isEven, isPrime, isPositive, getFactors
 
 # Test only. Comment out for Production
 difficultyLevel = { 
@@ -128,17 +129,17 @@ difficultyLevel = {
 # else:
 #     print("Key not found.")
 
-entityKind = "test"
-id = 5669079989878784
-updated_entity = {
-    "last_name": "Chhatwani",
-    "year_joined": 2021,
-    "last_modified_timestamp": datetime.datetime.now()
-}
+# entityKind = "test"
+# id = 5669079989878784
+# updated_entity = {
+#     "last_name": "Chhatwani",
+#     "year_joined": 2021,
+#     "last_modified_timestamp": datetime.datetime.now()
+# }
 
 # Update Datastore Entity
-return_object = update_datastore_entity(entityKind,id,updated_entity)
-print("return_object:{},{}".format(return_object, type(return_object)))
+# return_object = update_datastore_entity(entityKind,id,updated_entity)
+# print("return_object:{},{}".format(return_object, type(return_object)))
 
 # # Get Datastore Entities by Kind
 # # entity_list = get_datastore_entities_by_kind('linear_equations')
@@ -148,4 +149,26 @@ print("return_object:{},{}".format(return_object, type(return_object)))
 #     print("entity:{},{}".format(entity, type(entity)))
 
 
+# # # Test isEven Function
+# for i in range(-20,20):
+#     print("{}: {}".format(i,isEven(i)))
+# print(isEven("test"))
 
+
+# # Test isPositive Function
+# for i in range(-20,20):
+#     print("{}: {}".format(i,isPositive(i)))
+# print(isPositive("test"))
+
+for i in range(1,200):
+    print("{}: {}".format(i,getFactors(i)))
+
+
+# print(getFactors(1))
+# print(getFactors(2))
+# print(getFactors(3))
+# print(getFactors(4))
+# print(getFactors(10))
+# print(getFactors(12))
+# print(getFactors(24))
+# print(getFactors(25))
