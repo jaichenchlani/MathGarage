@@ -8,14 +8,14 @@ import datetime
 envVariables = read_configurations_from_config_file()
 entityKind = envVariables['datastore_kind_linear_equations']
 
-def generate_linear_equations(difficultyLevel):
+def generate_linear_equations(requestData):
     print("Start - Entering generate_linear_equations...")
 
     # Declare the output dictionary
     generated_linear_equations = declare_output_dictionary()
 
     # Read config file and and load the random selected puzzle type 
-    select_random_equation_config(difficultyLevel,generated_linear_equations)
+    select_random_equation_config(requestData,generated_linear_equations)
     
     # Process only when there is a valid puzzle selected from Config.
     if generated_linear_equations['config']:
@@ -38,17 +38,20 @@ def generate_linear_equations(difficultyLevel):
     return generated_linear_equations
 
 
-def select_random_equation_config(difficultyLevel,generated_linear_equations):
+def select_random_equation_config(requestData,generated_linear_equations):
     print("Entering select_random_equation_config...")
-    # print("difficultyLevel:{},{}".format(difficultyLevel, type(difficultyLevel)))
-    
+    print("requestData:{},{}".format(requestData, type(requestData)))
+    # difficultyLevel = requestData['difficultyLevel']
+    # variableCount = requestData['variableCount']
+
     # All(i.e. all Difficulty Levels) Valid Equation Configurations from Config
     allEquationConfigurations = envVariables['linear_equation_configurations']
     # print("allEquationConfigurations:{},{}".format(allEquationConfigurations, type(allEquationConfigurations)))
     # print("Total Equation Configurations: {}".format(len(allEquationConfigurations)))
 
     # Shortlist the valid puzzle configurations based on difficulty level
-    validEquationConfigurations = identify_valid_items_in_list(allEquationConfigurations,difficultyLevel)
+    # validEquationConfigurations = identify_valid_items_in_list(allEquationConfigurations,difficultyLevel)
+    validEquationConfigurations = identify_valid_equation_configs(allEquationConfigurations,requestData)
     # print("Valid Equation Configurations: {}".format(len(validEquationConfigurations)))
 
 
@@ -77,6 +80,7 @@ def declare_output_dictionary():
     generated_linear_equations['answer'] = []
     generated_linear_equations['message'] = ""
     generated_linear_equations['validOutputReturned'] = True
+    generated_linear_equations['showUserHelp'] = envVariables['showUserHelp']
 
     return generated_linear_equations
 
@@ -112,8 +116,9 @@ def process_request(generated_linear_equations):
     for i in range(1, multipliers_count+1):
         random_index = randint(int(generated_linear_equations['config']['multiplier_limits']['lower']),
         int(generated_linear_equations['config']['multiplier_limits']['upper']))
-        # Special Handling for single variable situation
-        if (variable_count == 1 and random_index == 0):
+        # Don't allow a zero in multipliers
+        # if (variable_count == 1 and random_index == 0):
+        if random_index == 0:
             random_index = 1
         multipliers.append(random_index)    
     generated_linear_equations['multipliers'] = multipliers
@@ -263,6 +268,18 @@ def process_request(generated_linear_equations):
         generated_linear_equations['question'].append(equation_text)
 
     return generated_linear_equations
+
+def identify_valid_equation_configs(allItemsInList,requestData):
+    difficultyLevel = requestData['difficultyLevel']
+    variableCount = requestData['variableCount']
+    print("variableCount:{},{}".format(variableCount, type(variableCount)))
+    validEquationConfigs = []
+    for config in allItemsInList:
+        if variableCount[config['variable_count']] == 1:
+            if difficultyLevel[config['difficulty_level']] == 1:
+                if int(config['active']):
+                    validEquationConfigs.append(config)
+    return validEquationConfigs
 
 def update_datastore_linear_equations(input_linear_equations):
     print("Entering update_datastore_linear_equations...")

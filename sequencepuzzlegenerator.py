@@ -273,6 +273,7 @@ def declare_output_dictionary():
     generated_sequence_puzzle['answer_logic'] = []
     generated_sequence_puzzle['message'] = ""
     generated_sequence_puzzle['validOutputReturned'] = True
+    generated_sequence_puzzle['showUserHelp'] = envVariables['showUserHelp']
 
     return generated_sequence_puzzle
 

@@ -26,7 +26,6 @@ def render_multiplication_facts_template():
 @app.route('/get-multiplication-facts/<int:tableof>/<int:limit>', methods=['POST', 'GET'])
 def process_multiplication_facts(tableof,limit):
     print("Entering process_multiplication_facts...")
-    print("Calling get_multiplication_facts with 2 arguments: table_of({}); limit({}).".format(tableof,limit))
     data = get_multiplication_facts(tableof, limit)
     return jsonify(data), 200
 
@@ -55,7 +54,7 @@ def process_generate_sequence_puzzle():
 
 @app.route('/sequence-puzzles/submit', methods=['PUT', 'GET'])
 def submit_sequence_puzzles():
-    print("Enterning def submit_sequence_puzzles...")
+    print("Enterning submit_sequence_puzzles...")
     input_sequence_puzzles = request.json
     status = update_datastore_sequence_puzzles(input_sequence_puzzles)
     return jsonify(status), 200
@@ -68,13 +67,13 @@ def render_linear_equations_template():
 @app.route('/linear-equations/get', methods=['PUT', 'GET'])
 def process_generate_linear_equations_puzzle():
     print("Enterning process_generate_linear_equations_puzzle...")
-    difficultyLevel = request.json
-    data = generate_linear_equations(difficultyLevel)
+    requestData = request.json
+    data = generate_linear_equations(requestData)
     return jsonify(data), 200
 
 @app.route('/linear-equations/submit', methods=['PUT', 'GET'])
 def submit_linear_equations():
-    print("Enterning def submit_linear_equations...")
+    print("Enterning submit_linear_equations...")
     input_linear_equations = request.json
     status = update_datastore_linear_equations(input_linear_equations)
     return jsonify(status), 200
@@ -99,8 +98,8 @@ def render_basic_arithematic_operations_template():
 @app.route('/basic-arithematic-operations', methods=['PUT', 'GET'])
 def process_basic_arithematic_operations():
     print("Enterning def process_basic_arithematic_operations...")
-    operation_request = request.json
-    data = generate_basic_arithmatic_operations(operation_request)
+    requestData = request.json
+    data = generate_basic_arithmatic_operations(requestData)
     return jsonify(data), 200
 
 @app.route('/basic-arithematic-operations/submit', methods=['PUT', 'GET'])

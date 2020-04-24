@@ -12,39 +12,28 @@
             <h3>Basic Arithematic Operations</h3>
             <form name="basicArithematicOperationsForm" novalidate>
                 <span class="alert-danger">{{'{{errorMessage}}'}}</span>
-                <div class = "row border justify-content-center align-items-center">
-                    <div class = "row col-sm-12 justify-content-center align-items-center">
-                        <h6 class = "text-primary text-center">Operation:    </h6>
-                        <input id="radioAddition" name="optOperation" type="radio" ng-model="operation_request.operator" value="+"><span>Addition</span></input>
-                        <input id="radioSubtraction" name="optOperation" type="radio" ng-model="operation_request.operator" value="-"><span>Subtraction</span></input>
-                        <input id="radioMultiplication" name="optOperation" type="radio" ng-model="operation_request.operator" value="x"><span>Multiplication</span></input>
-                        <input id="radioDivision" name="optOperation" type="radio" ng-model="operation_request.operator" value="/"><span>Division</span></input>
-                    </div>
+                <div class = "row col-sm-12 border justify-content-center align-items-center">
+                        <h6 class = "text-primary text-center">Operation:</h6>
+                        <input id="radioAddition" name="optOperation" type="radio" ng-model="operator" value="+"><span>Addition</span></input>
+                        <input id="radioSubtraction" name="optOperation" type="radio" ng-model="operator" value="-"><span>Subtraction</span></input>
+                        <input id="radioMultiplication" name="optOperation" type="radio" ng-model="operator" value="x"><span>Multiplication</span></input>
+                        <input id="radioDivision" name="optOperation" type="radio" ng-model="operator" value="/"><span>Division</span></input>
                 </div>
-                <div class = "row border justify-content-center align-items-center">
-                    <div class="col-sm-2">
-                        <h7>1st Number Lower Limit:</h7>
-                        <input id="1NumberLowerLimit" class="form-control" type="number" ng-model="operation_request.first_number_lower_limit" required><br>
-                    </div>
-                    <div class="col-sm-2">
-                        <h7>1st Number Upper Limit:</h7>
-                        <input id="1NumberUpperLimit" class="form-control" type="number" ng-model="operation_request.first_number_upper_limit" required><br>
-                    </div>
-                    <div class="col-sm-2">
-                            <h7>2nd Number Lower Limit:</h7>
-                            <input id="2NumberLowerLimit" class="form-control" type="number" ng-model="operation_request.second_number_lower_limit" required><br>
-                        </div>
-                        <div class="col-sm-2">
-                            <h7>2nd Number Upper Limit:</h7>
-                            <input id="2NumberUpperLimit" class="form-control" type="number" ng-model="operation_request.second_number_upper_limit" required><br>
-                        </div>
-                        <div class="col-sm-2">
-                            <h7>Number of questions:</h7>
-                            <input id="numberOfQuestions" class="form-control" type="number" ng-model="operation_request.number_of_questions" required><br>
-                        </div>
-                    </div>
-
-                <br>
+                <div class = "row col-sm-12 border justify-content-center align-items-center">
+                    <h6 class = "text-primary text-center">Number of Questions:</h6>
+                    <input id="radioNumberOfQuestions8" name="optNumberOfQuestions" type="radio" ng-model="number_of_questions" value="8"><span>8</span></input>
+                    <input id="radioNumberOfQuestions16" name="optNumberOfQuestions" type="radio" ng-model="number_of_questions" value="16"><span>16</span></input>
+                    <input id="radioNumberOfQuestions24" name="optNumberOfQuestions" type="radio" ng-model="number_of_questions" value="24"><span>24</span></input>
+                    <input id="radioNumberOfQuestions32" name="optNumberOfQuestions" type="radio" ng-model="number_of_questions" value="32"><span>32</span></input>
+                </div>
+                <div class = "row col-sm-12 border justify-content-center align-items-center">
+                    <h6 class = "text-primary text-center">Difficulty Level:</h6>
+                    <input id="checkboxSuperEasy" type="checkbox" ng-model="difficultyLevel.supereasy" ng-true-value="1" ng-false-value="0"><span>Super Easy</span></input>
+                    <input id="checkboxEasy" type="checkbox" ng-model="difficultyLevel.easy" ng-true-value="1" ng-false-value="0"><span>Easy</span></input>
+                    <input id="checkboxMedium" type="checkbox" ng-model="difficultyLevel.medium" ng-true-value="1" ng-false-value="0"><span>Medium</span></input>
+                    <input id="checkboxHard" type="checkbox" ng-model="difficultyLevel.hard" ng-true-value="1" ng-false-value="0"><span>Hard</span></input>
+                    <input id="checkboxSuperHard" type="checkbox" ng-model="difficultyLevel.superhard" ng-true-value="1" ng-false-value="0"><span>Super Hard</span></input>
+                </div>
 
                 <div class = "row justify-content-center align-items-center">
                     <span class="col-sm-2"></span>

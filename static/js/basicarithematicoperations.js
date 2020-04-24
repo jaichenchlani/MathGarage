@@ -8,18 +8,16 @@
         $scope.errorMessage = ""
         $scope.showSystemAnswer = false
         $scope.showResultSection = false
-        $scope.operation_request_addition = 1
-        $scope.operation_request_subtraction = 0
-        $scope.operation_request_multiplication = 0
-        $scope.operation_request_division = 0
-        $scope.operation_request = {
-            "operator": "+",
-            "first_number_lower_limit": -99,
-            "first_number_upper_limit": 99,
-            "second_number_lower_limit": -9,
-            "second_number_upper_limit": 9,
-            "number_of_questions": 16
-        }
+        $scope.operator = "+";
+        $scope.number_of_questions = "16";
+        $scope.difficultyLevel = {
+            "supereasy": 1,
+            "easy": 1,
+            "medium": 0,
+            "hard": 0,
+            "superhard": 0
+        };
+
         $scope.userAnswerFeedback = {
             "result": 1,
             "message": ""
@@ -52,28 +50,6 @@
             $window.alert("Error fetching data from the server.");
         }
 
-        var processRadioButtonInput = function() {
-            console.log("Entering processRadioButtonInput...");
-
-            if ($scope.operation_request_addition) {
-                $scope.operation_request.operator = "+";
-                return
-            }
-            if ($scope.operation_request_subtraction) {
-                $scope.operation_request.operator = "-";
-                return
-            }
-            if ($scope.operation_request_multiplication) {
-                $scope.operation_request.operator = "x";
-                return
-            }
-            if ($scope.operation_request_division) {
-                $scope.operation_request.operator = "/";
-                return
-            }
-        }
-
-
         // Action from the HTML View
         $scope.getBasicArithematicOperations = function (operation_request, errorMessage) {
             console.log("Entering getBasicArithematicOperations...");
@@ -81,42 +57,17 @@
             $scope.errorMessage = "";
             $scope.showSystemAnswer = false
 
-            // Call the function to set the Operator value to be sent to backend
-            // processRadioButtonInput()
-
-            // Validate Inputs
-            if (operation_request.first_number_lower_limit === undefined) {
-                $scope.errorMessage = "1st Number Lower Limit cannot be blank.";
-                $window.document.getElementById('1NumberLowerLimit').focus();
-                return
+            requestData = {
+                "difficultyLevel": $scope.difficultyLevel,
+                "operator": $scope.operator,
+                "number_of_questions": $scope.number_of_questions
             }
-            if (operation_request.first_number_upper_limit === undefined) {
-                $scope.errorMessage = "1st Number Upper Limit cannot be blank.";
-                $window.document.getElementById('1NumberUpperLimit').focus();
-                return
-            }
-            if (operation_request.second_number_lower_limit === undefined) {
-                $scope.errorMessage = "2nd Number Lower Limit cannot be blank.";
-                $window.document.getElementById('2NumberLowerLimit').focus();
-                return
-            }
-            if (operation_request.second_number_upper_limit === undefined) {
-                $scope.errorMessage = "2nd Number Upper Limit cannot be blank.";
-                $window.document.getElementById('2NumberUpperLimit').focus();
-                return
-            }
-            if (operation_request.number_of_questions === undefined) {
-                $scope.errorMessage = "2nd Number Upper Limit cannot be blank.";
-                $window.document.getElementById('2NumberUpperLimit').focus();
-                return
-            }
-
-            // console.log(facts);
+            
             calledURL = "/basic-arithematic-operations"
             console.log("Calling " + calledURL + "...")
-            // console.log($scope.operation_request)
+            console.log(requestData)
             
-            $http.put(calledURL, $scope.operation_request)
+            $http.put(calledURL, requestData)
                 .then(onUserComplete, onError);
         };
 
@@ -126,7 +77,7 @@
             userMessage = ""
             userResult = 1
             countCorrectAnswers = 0
-            totalQuestions = $scope.operation.request.number_of_questions
+            totalQuestions = $scope.operation.number_of_questions
 
             for (i = 0; i < totalQuestions; i++ ) {
                 try {
@@ -154,7 +105,7 @@
             } else {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": countCorrectAnswers + " of " + totalQuestions + " answers are correct. Answers updated in Datastore."
+                    "message": countCorrectAnswers + " of " + totalQuestions + " answers are correct."
                 };
             }
 
@@ -178,18 +129,21 @@
             $scope.errorMessage = ""
             $scope.showSystemAnswer = false
             $scope.showResultSection = false
-            $scope.operation_request_addition = 1
-            $scope.operation_request_subtraction = 0
-            $scope.operation_request_multiplication = 0
-            $scope.operation_request_division = 0
+            // $scope.operation_request_addition = 1
+            // $scope.operation_request_subtraction = 0
+            // $scope.operation_request_multiplication = 0
+            // $scope.operation_request_division = 0
             $scope.operation_request = {
                 "operator": "+",
-                "first_number_lower_limit": -99,
-                "first_number_upper_limit": 99,
-                "second_number_lower_limit": -9,
-                "second_number_upper_limit": 9,
                 "number_of_questions": 16
-            }
+            };
+            $scope.difficultyLevel = {
+                "supereasy": 1,
+                "easy": 1,
+                "medium": 0,
+                "hard": 0,
+                "superhard": 0
+            };
             $scope.userAnswerFeedback = {
                 "result": 1,
                 "message": ""

@@ -12,18 +12,26 @@
             <h3>Linear Equations</h3>
             <form name="linearEquationsForm" novalidate>
                 <span class="alert-danger">{{'{{errorMessage}}'}}</span>
-                <div class = "row border justify-content-center align-items-center">
-                    <div class="col-sm-12">
-                        <h6 class = "text-primary text-center">Difficulty Level:</h6>
-                    </div>
-    
-                    <div class = "row col-sm-12 justify-content-center align-items-center">
-                        <input id="checkboxSuperEasy" type="checkbox" ng-model="difficultyLevel.supereasy" ng-true-value="1" ng-false-value="0"><span>Super Easy</span></input>
-                        <input id="checkboxEasy" type="checkbox" ng-model="difficultyLevel.easy" ng-true-value="1" ng-false-value="0"><span>Easy</span></input>
-                        <input id="checkboxMedium" type="checkbox" ng-model="difficultyLevel.medium" ng-true-value="1" ng-false-value="0"><span>Medium</span></input>
-                        <input id="checkboxHard" type="checkbox" ng-model="difficultyLevel.hard" ng-true-value="1" ng-false-value="0"><span>Hard</span></input>
-                        <input id="checkboxSuperHard" type="checkbox" ng-model="difficultyLevel.superhard" ng-true-value="1" ng-false-value="0"><span>Super Hard</span></input>
-                    </div>
+                <div class = "row col-sm-12 border justify-content-center align-items-center">
+                        <h6 class = "text-primary text-center">Number of Variables:</h6>
+                        <input id="checkboxVariableCount1" type="checkbox" ng-model="variableCount.one" ng-true-value="1" ng-false-value="0"><span>1</span></input>
+                        <input id="checkboxVariableCount2" type="checkbox" ng-model="variableCount.two" ng-true-value="1" ng-false-value="0"><span>2</span></input>
+                        <input id="checkboxVariableCount3" type="checkbox" ng-model="variableCount.three" ng-true-value="1" ng-false-value="0"><span>3</span></input>
+                        <input id="checkboxVariableCount4" type="checkbox" ng-model="variableCount.four" ng-true-value="1" ng-false-value="0"><span>4</span></input>
+                        <input id="checkboxVariableCount5" type="checkbox" ng-model="variableCount.five" ng-true-value="1" ng-false-value="0"><span>5</span></input>
+                        <input id="checkboxVariableCount6" type="checkbox" ng-model="variableCount.six" ng-true-value="1" ng-false-value="0"><span>6</span></input>
+                        <input id="checkboxVariableCount7" type="checkbox" ng-model="variableCount.seven" ng-true-value="1" ng-false-value="0"><span>7</span></input>
+                        <input id="checkboxVariableCount8" type="checkbox" ng-model="variableCount.eight" ng-true-value="1" ng-false-value="0"><span>8</span></input>
+                        <input id="checkboxVariableCount9" type="checkbox" ng-model="variableCount.nine" ng-true-value="1" ng-false-value="0"><span>9</span></input>
+                        <input id="checkboxVariableCount10" type="checkbox" ng-model="variableCount.ten" ng-true-value="1" ng-false-value="0"><span>10</span></input>
+                </div>
+                <div class = "row col-sm-12 border justify-content-center align-items-center">
+                    <h6 class = "text-primary text-center">Difficulty Level:</h6>
+                    <input id="checkboxSuperEasy" type="checkbox" ng-model="difficultyLevel.supereasy" ng-true-value="1" ng-false-value="0"><span>Super Easy</span></input>
+                    <input id="checkboxEasy" type="checkbox" ng-model="difficultyLevel.easy" ng-true-value="1" ng-false-value="0"><span>Easy</span></input>
+                    <input id="checkboxMedium" type="checkbox" ng-model="difficultyLevel.medium" ng-true-value="1" ng-false-value="0"><span>Medium</span></input>
+                    <input id="checkboxHard" type="checkbox" ng-model="difficultyLevel.hard" ng-true-value="1" ng-false-value="0"><span>Hard</span></input>
+                    <input id="checkboxSuperHard" type="checkbox" ng-model="difficultyLevel.superhard" ng-true-value="1" ng-false-value="0"><span>Super Hard</span></input>
                 </div>
 
                 <div class = "row border justify-content-center align-items-center">
@@ -39,7 +47,7 @@
                                 </tr>
                             </tbody class="thead-light">
                         </table>
-                    <div class="col-sm-12">
+                    <div ng-show="puzzle.showUserHelp" class="col-sm-12">
                         <span class="alert-info">Difficulty Level: {{'{{puzzle.config.difficulty_level | uppercase}}'}} | {{'{{puzzle.config.description}}'}}</span>
                     </div>
                     <div class="col-sm-12">
@@ -74,7 +82,7 @@
 
                 <div class = "row justify-content-center align-items-center">
                     <span class="col-sm-2"></span>
-                    <input id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle(puzzle, errorMessage)"/>
+                    <input id="getEquations" class="col-sm-3" type="submit" value="Get Equation" ng-click="getEquations(puzzle, errorMessage)"/>
                     <span class="col-sm-2"></span>
                     <input id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer(puzzle, errorMessage)"/>
                     <span class="col-sm-2"></span>

@@ -102,7 +102,8 @@
                 }
             }
 
-            messageAddendum = "Answers updated in Datastore. Check rationale below."
+            // messageAddendum = "Answers updated in Datastore. Check rationale below."
+            messageAddendum = ""
 
             if (userResult) {
                 $scope.userAnswerFeedback = {
@@ -112,7 +113,7 @@
             } else {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": userMessage + " " + messageAddendum
+                    "message": "Sorry. Incorrect Answer! See Rationale below." + messageAddendum
                 };
             }
 

@@ -3,7 +3,7 @@
 
     var LinearEquationsController = function($scope, $http, $window) {
         console.log("Entering LinearEquationsController...");
-        $window.document.getElementById('getPuzzle').focus();
+        $window.document.getElementById('getEquations').focus();
         $scope.errorMessage = ""
         $scope.userAnswerFeedback = {
             "result": 0,
@@ -18,6 +18,19 @@
             "superhard": 0
         };
         // console.log($scope.difficultyLevel)
+        $scope.variableCount = {
+            "one": 1,
+            "two": 0,
+            "three": 0,
+            "four": 0,
+            "five": 0,
+            "six": 0,
+            "seven": 0,
+            "eight": 0,
+            "nine": 0,
+            "ten": 0
+        };
+        // console.log($scope.variableCount)
         $scope.userAnswerFeedback = {
             "result": 0,
             "message": ""
@@ -32,7 +45,7 @@
                 $scope.errorMessage = $scope.puzzle.message;
                 $window.document.getElementById('checkboxEasy').focus();
             } else {
-                $window.document.getElementById('getPuzzle').focus();
+                $window.document.getElementById('getEquations').focus();
             }
         }
 
@@ -43,7 +56,7 @@
             // Set the focus on the Submit Answer button.
 
             $scope.showSystemAnswer = true
-            $window.document.getElementById('getPuzzle').focus();
+            $window.document.getElementById('getEquations').focus();
         }
 
         // Actions when HTTP call fails.
@@ -54,8 +67,8 @@
         }
 
         // Action from the HTML View
-        $scope.getPuzzle = function (puzzle, errorMessage) {
-            console.log("Entering getPuzzle...");
+        $scope.getEquations = function (puzzle, errorMessage) {
+            console.log("Entering getEquations...");
             // Re-initialize variables on every Generate Puzzle
             $scope.errorMessage = ""
             $scope.userAnswerFeedback = {
@@ -63,12 +76,17 @@
                 "message": ""
             }
             $scope.showSystemAnswer = false
-            $window.document.getElementById('getPuzzle').value = "Get New Puzzle";
+            $window.document.getElementById('getEquations').value = "Get New Equation";
             // console.log(puzzle);
             calledURL = "/linear-equations/get"
             console.log("Calling " + calledURL + "...")
 
-            $http.put(calledURL, $scope.difficultyLevel)
+            requestData = {
+                "difficultyLevel": $scope.difficultyLevel,
+                "variableCount": $scope.variableCount
+            }
+
+            $http.put(calledURL, requestData)
                 .then(onUserComplete, onError);
         };
 
@@ -95,7 +113,8 @@
 
             }
 
-            databaseUpdatedMessage = "Answers updated in Datastore."
+            // databaseUpdatedMessage = "Answers updated in Datastore."
+            databaseUpdatedMessage = ""
 
             if (userResult) {
                 $scope.userAnswerFeedback = {
@@ -105,12 +124,13 @@
             } else {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": userMessage + " " + databaseUpdatedMessage
+                    // "message": userMessage + " " + databaseUpdatedMessage
+                    "message": "Sorry. Incorrect Answer! See System Answer below." + databaseUpdatedMessage
                 };
             }
 
             $scope.showSystemAnswer = true
-            $window.document.getElementById('getPuzzle').focus();
+            $window.document.getElementById('getEquations').focus();
 
             // Update Backend Datastore with the user answers
             console.log($scope.puzzle);
@@ -124,7 +144,7 @@
         };
 
         // Call the function on page load.
-        $scope.getPuzzle($scope.puzzle, $scope.errorMessage);
+        $scope.getEquations($scope.puzzle, $scope.errorMessage);
     };
 
     // Register the Controller with the app
