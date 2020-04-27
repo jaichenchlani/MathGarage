@@ -9,12 +9,3 @@ def identify_valid_items_in_list(allItemsInList,difficultyLevel):
             if int(config['active']):
                 validItemsInList.append(config)
     return validItemsInList
-
-# Validate whether the passed string is a valid integer, and return a boolean result
-def is_valid_integer(str_number):
-    try:
-        temp_int_variable = int(str_number)
-    except ValueError:
-        return False
-
-    return True

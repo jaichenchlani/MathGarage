@@ -1,5 +1,5 @@
 from config import read_configurations_from_config_file
-from utilities import identify_valid_items_in_list, is_valid_integer
+from utilities import identify_valid_items_in_list
 from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
 

@@ -7,7 +7,7 @@ from login import login
 from gcpsdkinteractionreference import get_buckets, create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
 import datetime
 from google.cloud import datastore
-from mathfunctions import isEven, isPrime, isPositive, getFactors
+from mathfunctions import isEven, isPrime, isPositive, getFactors, getBinary, getPrimeFactors
 
 # Test only. Comment out for Production
 difficultyLevel = { 
@@ -160,15 +160,38 @@ difficultyLevel = {
 #     print("{}: {}".format(i,isPositive(i)))
 # print(isPositive("test"))
 
-for i in range(1,200):
-    print("{}: {}".format(i,getFactors(i)))
+# # Test all Math functions in a loop
+for i in range(1,20):
+    print("Processing {}:".format(i))
+    print("isEven:{}".format(isEven(i)))
+    print("isPositive:{}".format(isPositive(i)))
+    print("getBinary:{}".format(getBinary(i)))
+    print("isPrime:{}".format(isPrime(i)))
+    print("getFactors:{}\n".format(getFactors(i)))
+    print("getPrimeFactors:{}\n".format(getPrimeFactors(i)))
+
+# Test all Math functions for a specific number
+i=9999999
+print("Processing {}:".format(i))
+print("isEven:{}".format(isEven(i)))
+print("isPositive:{}".format(isPositive(i)))
+print("getBinary:{}".format(getBinary(i)))
+print("isPrime:{}".format(isPrime(i)))
+print("getFactors:{}\n".format(getFactors(i)))
+print("getPrimeFactors:{}\n".format(getPrimeFactors(i)))
 
 
-# print(getFactors(1))
-# print(getFactors(2))
-# print(getFactors(3))
-# print(getFactors(4))
-# print(getFactors(10))
-# print(getFactors(12))
-# print(getFactors(24))
-# print(getFactors(25))
+
+# # Test the isPrime function
+# for i in range(1,200):
+#     print("{}: {}".format(i,isPrime(i)))
+
+
+# # Test the getBinary function
+# for i in range(-20,50):
+#     print("{}: {}".format(i,getBinary(i)))
+
+# # Test the getPrimeFactors function
+# for i in range(-20,50):
+#     print("{}: {}".format(i,getPrimeFactors(i)))
+

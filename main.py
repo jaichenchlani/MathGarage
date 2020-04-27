@@ -2,9 +2,10 @@ from flask import Flask, render_template, url_for, jsonify, request, redirect
 from datetime import datetime
 import os
 from multiplicationfacts import get_multiplication_facts
-from mathfunctions import convert_decimal_to_binary
+from mathfunctions import getBinary
 from sequencepuzzlegenerator import generate_sequence_puzzle, update_datastore_sequence_puzzles
 from linearequationsgenerator import generate_linear_equations, update_datastore_linear_equations
+from numberwiki import get_number_wiki
 from login import login
 from basicarithmaticoperations import generate_basic_arithmatic_operations, update_datastore_basic_arithmatic_operations
 
@@ -29,15 +30,15 @@ def process_multiplication_facts(tableof,limit):
     data = get_multiplication_facts(tableof, limit)
     return jsonify(data), 200
 
-@app.route('/math-functions')
-def render_math_functions_template():
+@app.route('/number-wiki')
+def render_number_wiki_template():
     print("Entering render_math_functions_template...")
-    return render_template('math-functions.html')
+    return render_template('number-wiki.html')
 
-@app.route('/math-functions/d2b/<int:decimal_number>')
-def process_decimal_to_binary(decimal_number):
-    print("Enterning process_decimal_to_binary...")
-    data = convert_decimal_to_binary(decimal_number)
+@app.route('/number-wiki/<int:n>')
+def process_number_wiki(n):
+    print("Enterning process_number_wiki...")
+    data = get_number_wiki(n)
     return jsonify(data), 200
 
 @app.route('/sequence-puzzles')

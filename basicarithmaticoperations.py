@@ -1,6 +1,7 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list, is_valid_integer
+from utilities import identify_valid_items_in_list
+from mathfunctions import isInteger
 from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
 
@@ -102,7 +103,7 @@ def is_valid_configuration(generated_basic_arithmatic_operation):
     number_validation_list.append(generated_basic_arithmatic_operation['number_of_questions'])
     # Run each number through a for loop and call the Utilities function to validate
     for temp_str_variable in number_validation_list:
-        if not is_valid_integer(temp_str_variable):
+        if not isInteger(temp_str_variable):
             user_message = "{} is invalid; Only integer values are allowed.".format(temp_str_variable)
             generated_basic_arithmatic_operation['message'] = user_message
             generated_basic_arithmatic_operation['validOutputReturned'] = False
