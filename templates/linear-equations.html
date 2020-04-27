@@ -62,8 +62,8 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>Variable</th>
-                                    <th>User Response</th>
-                                    <th ng-show="showSystemAnswer">System Answer</th>
+                                    <th>Answer</th>
+                                    <th ng-show="showSystemAnswer">Correct Answer</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -88,6 +88,10 @@
                     <span class="col-sm-2"></span>
                 </div>
             </form>
+            <br>
+            <div class = "row justify-content-center align-items-center">
+                <span class="text-primary text-right">Datastore Record Locator:{{'{{puzzle.datastore_id}}'}}</span>
+            </div>
         </div>
     </div>
 </div>

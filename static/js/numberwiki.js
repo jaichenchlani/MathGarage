@@ -45,7 +45,7 @@
             
             $scope.showSystemAnswer = true
 
-            console.log($scope.n);
+            // console.log($scope.n);
             calledURL = "/number-wiki/" + $scope.n
             console.log("Calling " + calledURL + "...")
     

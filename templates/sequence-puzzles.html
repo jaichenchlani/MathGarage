@@ -28,8 +28,8 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>User Response</th>
-                                    <th ng-show="showSystemAnswer">System Answer</th>
+                                    <th>Answer</th>
+                                    <th ng-show="showSystemAnswer">Correct Answer</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,8 +51,6 @@
                 </div>
                 <br>
 
-                <br>
-
                 <div class = "row justify-content-center align-items-center">
                     <span class="col-sm-2"></span>
                     <input id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle(puzzle, errorMessage)"/>
@@ -60,9 +58,12 @@
                     <input id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer()"/>
                     <span class="col-sm-2"></span>
                 </div>
-
                 <br>
-
+                <br>
+                <div class = "row justify-content-center align-items-center">
+                    <span class="text-primary text-right">Datastore Record Locator:{{'{{puzzle.datastore_id}}'}}</span>
+                </div>
+                <br>
                 <div ng-show="showSystemAnswer" class = "row border justify-content-center align-items-center">
                     <div class="col-sm-12">
                         <h6 class = "text-primary text-left">Rationale:</h6>

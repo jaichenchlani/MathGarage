@@ -30,8 +30,12 @@ def get_multiplication_facts(str_table_of, str_limit):
         generated_multiplication_facts["result"] = [tableof*i for i in range(1, limit+1)]
 
     # Insert the generated Output Dictionary in Datastore
-    create_datastore_entity("multiplication_facts",generated_multiplication_facts)
+    datastore_entity = create_datastore_entity("multiplication_facts",generated_multiplication_facts)
     print("Persisted generated_multiplication_facts object in Datastore...")
+
+    # Update the Datastore ID in the Output Dictionary
+    # Return the generated Output Dictionary to the caller.
+    generated_multiplication_facts['datastore_id'] = datastore_entity.key.id
 
     # Return the generated Output Dictionary to the caller.
     print("End - Returning to caller.")
@@ -41,6 +45,7 @@ def declare_output_dictionary(operation_request):
     print("Entering declare_output_dictionary...")
     
     generated_multiplication_facts = {}
+    generated_multiplication_facts['datastore_id'] = ""
     generated_multiplication_facts['user'] = "Guest"
     generated_multiplication_facts['create_timestamp'] = datetime.datetime.now()
     generated_multiplication_facts['last_modified_timestamp'] = datetime.datetime.now()
