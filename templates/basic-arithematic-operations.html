@@ -56,21 +56,15 @@
                     <thead class="thead-light">
                         <tr>
                             <th>Question #</th>
-                            <th>Number 1</th>
-                            <th>Operator</th>
-                            <th>Number 2</th>
-                            <th></th>
-                            <th>User Answer</th>
-                            <th>System Answer</th>
+                            <th>Question</th>
+                            <th>Answer</th>
+                            <th>Correct Answer</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="(i,question) in operation.questions track by $index">
                             <th><span ng-class="{'bg-success': operation.questions[i].is_user_answer_correct}" class="form-control text-center text-muted">{{'{{i+1}}'}}</span>
-                            <th><span class="form-control text-center text-primary">{{'{{operation.questions[i].first_number}}'}}</span>
-                            <th><span class="form-control text-center text-primary">{{'{{operation.questions[i].operator}}'}}</span>
-                            <th><span class="form-control text-center text-primary">{{'{{operation.questions[i].second_number}}'}}</span>
-                            <th><span class="form-control text-center text-primary"> = </span>
+                            <th><span class="form-control text-center text-primary">{{'{{operation.questions[i].text}}'}}</span>
                             <th><input ng-class="{'bg-warning': !operation.questions[i].is_user_answer_correct}" class="form-control text-center" type="text" ng-model="operation.questions[i].user_answer"></th>
                             <th><input class="form-control text-center" type="text" ng-model="operation.questions[i].answer" ng-show="showSystemAnswer" ng-disabled="1"></th>
                             </tr>

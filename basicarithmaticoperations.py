@@ -127,6 +127,7 @@ def process_request(generated_basic_arithmatic_operation):
         "first_number": 0,
         "second_number": 0,
         "operator": "",
+        "text": "",
         "answer": 0,
         "user_answer": 0,
         "is_user_answer_correct": 0
@@ -155,6 +156,8 @@ def process_request(generated_basic_arithmatic_operation):
             generated_basic_arithmatic_operation['message'] = user_message
             generated_basic_arithmatic_operation['validOutputReturned'] = False
             return
+        
+        question_dictionary['text'] = "{} {} {} =".format(question_dictionary['first_number'],question_dictionary['operator'],question_dictionary['second_number'])
         generated_basic_arithmatic_operation['questions'].append(question_dictionary)
 
 def update_datastore_basic_arithmatic_operations(input_basic_arithematic_operation):
