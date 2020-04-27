@@ -7,7 +7,8 @@ from login import login
 from gcpsdkinteractionreference import get_buckets, create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
 import datetime
 from google.cloud import datastore
-from mathfunctions import isEven, isPrime, isPositive, getFactors, getBinary, getPrimeFactors
+from mathfunctions import isEven, isPrime, isPositive, getFactors, getBinary, getPrimeFactors, changeBase
+from numberwiki import get_number_wiki
 
 # Test only. Comment out for Production
 difficultyLevel = { 
@@ -161,24 +162,24 @@ difficultyLevel = {
 # print(isPositive("test"))
 
 # # Test all Math functions in a loop
-for i in range(1,20):
-    print("Processing {}:".format(i))
-    print("isEven:{}".format(isEven(i)))
-    print("isPositive:{}".format(isPositive(i)))
-    print("getBinary:{}".format(getBinary(i)))
-    print("isPrime:{}".format(isPrime(i)))
-    print("getFactors:{}\n".format(getFactors(i)))
-    print("getPrimeFactors:{}\n".format(getPrimeFactors(i)))
+# for i in range(1,20):
+#     print("Processing {}:".format(i))
+#     print("isEven:{}".format(isEven(i)))
+#     print("isPositive:{}".format(isPositive(i)))
+#     print("getBinary:{}".format(getBinary(i)))
+#     print("isPrime:{}".format(isPrime(i)))
+#     print("getFactors:{}\n".format(getFactors(i)))
+#     print("getPrimeFactors:{}\n".format(getPrimeFactors(i)))
 
-# Test all Math functions for a specific number
-i=9999999
-print("Processing {}:".format(i))
-print("isEven:{}".format(isEven(i)))
-print("isPositive:{}".format(isPositive(i)))
-print("getBinary:{}".format(getBinary(i)))
-print("isPrime:{}".format(isPrime(i)))
-print("getFactors:{}\n".format(getFactors(i)))
-print("getPrimeFactors:{}\n".format(getPrimeFactors(i)))
+# # Test all Math functions for a specific number
+# i=9999999
+# print("Processing {}:".format(i))
+# print("isEven:{}".format(isEven(i)))
+# print("isPositive:{}".format(isPositive(i)))
+# print("getBinary:{}".format(getBinary(i)))
+# print("isPrime:{}".format(isPrime(i)))
+# print("getFactors:{}\n".format(getFactors(i)))
+# print("getPrimeFactors:{}\n".format(getPrimeFactors(i)))
 
 
 
@@ -191,7 +192,16 @@ print("getPrimeFactors:{}\n".format(getPrimeFactors(i)))
 # for i in range(-20,50):
 #     print("{}: {}".format(i,getBinary(i)))
 
+
+# # # Test the changeBase function
+# for i in range(2,37):
+#     print("1000 Base {}: {}".format(i,changeBase(1000,i)))
+
+
 # # Test the getPrimeFactors function
 # for i in range(-20,50):
 #     print("{}: {}".format(i,getPrimeFactors(i)))
+
+# Test get_number_wiki
+print(get_number_wiki(1000))
 

@@ -8,6 +8,18 @@
     "datastore_kind_sequence_puzzles": "sequence_puzzles",
     "datastore_kind_number_wiki": "number_wiki",
     "valid_basic_arithmatic_operations_list": ["+","-","x","/"],
+    "change_base_config": {
+        "Binary": 2,
+        "Ternary": 3,
+        "Quaternary": 4,
+        "Quinary": 5,
+        "Senary": 6,
+        "Octal": 8,
+        "Duodecimal": 12,
+        "Hexadecimal": 16,
+        "Vigesimal": 20,
+        "Base36": 36
+    },
     "puzzle_configurations": [{
         "id": "1",
         "active": "1",

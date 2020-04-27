@@ -11,7 +11,7 @@
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
             $scope.number = response.data;
-            $window.document.getElementById('numberInput').focus();
+            $window.document.getElementById('reset').focus();
             console.log($scope.number);
         }
 
@@ -56,7 +56,7 @@
          // Action from the HTML View    
          $scope.reset = function() {
             console.log("Entering reset...");
-            $scope.data = {}
+            $scope.number = {}
             $scope.showSystemAnswer = false
             $window.document.getElementById('numberInput').focus();
         };

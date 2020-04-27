@@ -17,7 +17,7 @@
                     <span class = "col-sm-1"></span>
                     <input id="numberInput" class = "col-sm-3 text-primary text-right" type="number" ng-model="n" ng-init="n=24"  required>
                     <span class = "col-sm-1"></span>
-                    <input type="submit" class = "col-sm-2" value="Go" ng-click="getNumberWikiData()"/>
+                    <input id="go" type="submit" class = "col-sm-2" value="Go" ng-click="getNumberWikiData()"/>
                     <span class = "col-sm-1"></span>
                     <input id="reset" class="col-sm-2" ng-disabled="!showSystemAnswer" type="submit" value="Reset" ng-click="reset()"/>
                 </div>
@@ -26,26 +26,21 @@
             </form>
             <div ng-show="showSystemAnswer" class = "row border justify-content-center align-items-center">
                 <div class="col-sm-12">
-                    <h5>Number Wiki Results:</h5>
+                    <h6>Number Wiki Results:</h6>
                 </div>
 
-                <div class="col-sm-12">
-                    <span class="col-sm-4 form-control text-center text-primary">Even/Odd?</span>
-                    <input class="col-sm-8 form-control text-left text-primary" type="text" ng-model="number.isEven.message" ng-disabled="1">
-                </div>
-                <div class="col-sm-12">
-                    <span class="col-sm-4 form-control text-center text-primary">Prime?</span>
-                    <input class="col-sm-8 form-control text-left text-primary" type="text" ng-model="number.isPrime.result" ng-disabled="1">
-                </div>
-                <!-- <span ng-show="!number.isPrime.result" class="col-sm-12 alert-info">{{'{{number.isPrime.message}}'}}</span> -->
-                <div class="col-sm-12">
-                    <span class="col-sm-4 form-control text-center text-primary">Factors</span>
-                    <input class="col-sm-8 form-control text-left text-primary" type="text" ng-model="number.getFactors.factors" ng-disabled="1">
-                </div>
-                <div class="col-sm-12">
-                    <span class="col-sm-4 form-control text-center text-primary">Prime Factors</span>
-                    <input class="col-sm-8 form-control text-left text-primary" type="text" ng-model="number.getPrimeFactors.primeFactors" ng-disabled="1">
-                </div>
+                <table class="table">
+                    <tbody>
+                        <tr ng-repeat="(i,wiki_item) in number.wiki_list track by $index">
+                            <div class="col-sm-3">
+                                <th><span class="form-control text-left text-primary">{{'{{number.wiki_list[i].key}}'}}</span>
+                            </div>
+                            <div class="col-sm-9">
+                                <th><input class="form-control text-left text-primary" type="text" ng-model="number.wiki_list[i].value" ng-disabled="1"></th>
+                            </div>
+                        </tr>
+                    </tbody class="thead-light">
+                </table>
             </div> 
         </div>
     </div>

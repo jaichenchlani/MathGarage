@@ -2,7 +2,6 @@ from flask import Flask, render_template, url_for, jsonify, request, redirect
 from datetime import datetime
 import os
 from multiplicationfacts import get_multiplication_facts
-from mathfunctions import getBinary
 from sequencepuzzlegenerator import generate_sequence_puzzle, update_datastore_sequence_puzzles
 from linearequationsgenerator import generate_linear_equations, update_datastore_linear_equations
 from numberwiki import get_number_wiki

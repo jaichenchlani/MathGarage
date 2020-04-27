@@ -1,7 +1,8 @@
 import math
 
-def getBinary(n):
+def changeBase(n, base):
     # print("Entering getBinary...")
+    baseReference = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     response = {
         "result": 0,
         "message": "",
@@ -11,7 +12,17 @@ def getBinary(n):
     if not isInteger(n):
         # Invalid Input, Return error message and indicator.
         response = {
-            "message": "Invalid input. Input must be a positive integer.",
+            "message": "Invalid input. Input number must be a positive integer.",
+            "validOutputReturned": False
+            }
+    elif not isInteger(base):
+        response = {
+            "message": "Invalid input. Input base must be a positive integer between 2 and 36.",
+            "validOutputReturned": False
+            }
+    elif base < 2 or base > 36:
+        response = {
+            "message": "Invalid input. Input base must be a positive integer between 2 and 36.",
             "validOutputReturned": False
             }
     elif n == 0 or n == 1:
@@ -29,18 +40,26 @@ def getBinary(n):
         originalNumber = n
 
         while (keepgoing):
-            answer += str(n % 2)
+            index = n % base
+            # answer += str(n % base)
+            answer += baseReference[index]
             # print("KeepGoing:{}; Counter:{}; N:{}; Answer:{}".format(keepgoing,counter,n,answer))
-            n = n//2
-            if (n == 1):
+            n = n//base
+            if (n < base):
                 keepgoing = False
-                answer += "1"
+                answer += str(n)
                 # print("KeepGoing:{}; Counter:{}; N:{}; Answer:{}".format(keepgoing,counter,n,answer))
             counter = counter + 1
         
-        response['result'] = answer[::-1]
+        # Reverse the answer string and store in response dictionary
+        # Remove the trailing zero, if any
+        if answer[-1] == "0":
+            response['result'] = answer[-2::-1]
+        else:
+            response['result'] = answer[::-1]        
     
     return response
+
 
 def isPrime(n):
     # print("Entering isPrime...")
