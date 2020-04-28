@@ -28,12 +28,24 @@ def generate_linear_equations(requestData):
         pass
 
     # Insert the generated Output Dictionary in Datastore
-    datastore_entity = create_datastore_entity(entityKind,generated_linear_equations)
-    print("Persisted generated_linear_equations object in Datastore...")
+    response = create_datastore_entity(entityKind,generated_linear_equations)
+    if not response['validOutputReturned']:
+        # Error creating datastore entity
+        generated_linear_equations['validOutputReturned'] = False
+        generated_linear_equations['message'] = response['message']
+    else:
+        print("Persisted generated_linear_equations object in Datastore...")
+        # Update the Datastore ID in the Output Dictionary
+        id = response['entity'].key.id
+        generated_linear_equations['datastore_id'] = id
+        # Update the Datastore ID in Datastore
+        updated_entity = {
+        "last_modified_timestamp": datetime.datetime.now(),
+        "datastore_id": id
+        }
+        status = update_datastore_entity(entityKind,id,updated_entity)
 
-    # Update the Datastore ID in the Output Dictionary
     # Return the generated Output Dictionary to the caller.
-    generated_linear_equations['datastore_id'] = datastore_entity.key.id
     print("End - Returning to caller.")
     return generated_linear_equations
 

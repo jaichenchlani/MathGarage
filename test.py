@@ -4,11 +4,13 @@ from sequencepuzzlegenerator import generate_sequence_puzzle
 from linearequationsgenerator import generate_linear_equations
 from basicarithmaticoperations import generate_basic_arithmatic_operations
 from login import login
-from gcpsdkinteractionreference import get_buckets, create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
+from datastoreoperations import create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
+from login import isValidLogin, isValidUser, create_user, delete_user, update_user
 import datetime
 from google.cloud import datastore
-from mathfunctions import isEven, isPrime, isPositive, getFactors, getBinary, getPrimeFactors, changeBase
+from mathfunctions import isEven, isPrime, isPositive, getFactors, getPrimeFactors, changeBase
 from numberwiki import get_number_wiki
+from utilities import isValidEmail
 
 # Test only. Comment out for Production
 difficultyLevel = { 
@@ -203,5 +205,95 @@ difficultyLevel = {
 #     print("{}: {}".format(i,getPrimeFactors(i)))
 
 # Test get_number_wiki
-print(get_number_wiki(1000))
+# print(get_number_wiki(1000))
 
+# admin_user = {
+#     "create_timestamp": datetime.datetime.now(),
+#     "last_modified_timestamp": datetime.datetime.now(),
+#     "last_logged_timestamp": datetime.datetime.now(),
+#     "username": "admin",
+#     "first_name": "admin",
+#     "last_name": "admin",
+#     "password": "password",
+# }
+
+
+# # Create Datastore Entity
+# datastore_entity = create_datastore_entity("users",admin_user)
+# print("datastore_entity.key.id:{},{}".format(datastore_entity.key.id, type(datastore_entity.key.id)))
+# print("datastore_entity.key.kind:{},{}".format(datastore_entity.key.kind, type(datastore_entity.key.kind)))
+
+# login_credentials = {
+#     "username": "admin",
+#     "password": "password"
+# }
+
+# return_object = login(login_credentials)
+# print(return_object)
+# Below is how you access each property of a Datastore Entity
+# print(return_object['datastore_entity'][0]['username'])
+# print(return_object['datastore_entity'][0]['password'])
+# print(return_object['datastore_entity'][0]['create_timestamp'])
+# print(return_object['datastore_entity'][0]['last_logged_timestamp'])
+# print(return_object['datastore_entity'][0]['last_modified_timestamp'])
+# print(return_object['datastore_entity'][0]['first_name'])
+# print(return_object['datastore_entity'][0]['last_name'])
+
+
+# entityKind = "users"
+# id = 5167610110935040
+
+# updated_user = {
+#     "first_name": "Jai",
+#     "last_name": "Chenchlani",
+#     "last_modified_timestamp": datetime.datetime.now()
+# }
+
+# updated_user = {
+#     "active": True
+# }
+
+# # Update Datastore Entity
+# return_object = update_datastore_entity(entityKind,id,updated_user)
+# print("return_object:{},{}".format(return_object, type(return_object)))
+
+
+
+# Test Create/Update User
+entityKind = "users"
+
+user = {
+    "username": "Test",
+    "password": "12345678",
+    "first_name": "First",
+    "last_name": "Last",
+    "email": "test@mathgarage.com"
+    }
+# print(create_user(entityKind,user))
+print(update_user(entityKind,user))
+
+id=5652115070386176
+# print(get_datastore_entity(entityKind,id))
+
+# Test isValidUser function
+# entityKind = "users"
+# username = "admin"
+# print(isValidUser(entityKind,username))
+
+
+# Test delete_user function
+# entityKind = "users"
+# username = "admin1"
+# print(delete_user(entityKind,username))
+
+# Test isValidEmail function
+# email = "jaichenchlani@gmail.com"
+# email = "jaichenchlani@gmail.com"
+# email = "test@mathgarage.com"
+# print(isValidEmail(email))
+
+
+# id = 5738420181663744
+# entityKind = "users"
+
+# print(delete_datastore_entity(entityKind,id))

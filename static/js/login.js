@@ -16,7 +16,7 @@
             console.log($scope.loginInfo)
 
             // Redirect to Home Page.
-            $window.location.href = '/';
+            // $window.location.href = '/';
 
         }
 
@@ -28,18 +28,18 @@
         }
 
         // Action from the HTML View
-        $scope.login = function (loginCredentials, errorMessage) {
+        $scope.login = function () {
             console.log("Entering generateMultiplicationFacts...");
             $scope.errorMessage = ""
 
             // Validate Username
-            if (loginCredentials.username === undefined) {
+            if ($scope.loginCredentials.username === undefined) {
                 $scope.errorMessage = "Username Cannot be blank.";
                 $window.document.getElementById('inputUsername').focus();
                 return
             }
             // Validate Password
-            if (loginCredentials.password === undefined) {
+            if ($scope.loginCredentials.password === undefined) {
                 $scope.errorMessage = "Password Cannot be blank.";
                 $window.document.getElementById('inputPassword').focus();
                 return

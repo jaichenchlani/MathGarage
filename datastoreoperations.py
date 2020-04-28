@@ -1,93 +1,175 @@
 from google.cloud import datastore
 import os
 import datetime
+from config import read_configurations_from_config_file
+
+# Load Defaults from Config
+envVariables = read_configurations_from_config_file()
+credential_key_file = envVariables['credential_key_file']
 
 # Create, populate and persist an entity with keyID passed as argument
 def create_datastore_entity(entityKind,entityObject):
     print("Entering create_datastore_entity...")
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
-    key = client.key(entityKind)
-    entity = datastore.Entity(key=key)
-    entity.update(entityObject)
-    client.put(entity)
-    # Update Datastore ID in datastore_id property
-    id = entity.key.id
-    updated_entity = {
-    "last_modified_timestamp": datetime.datetime.now(),
-    "datastore_id": id
+    # Initialize the response dictionary
+    response = {
+        "entity": None,
+        "message": "",
+        "validOutputReturned": True
     }
-    status = update_datastore_entity(entityKind,id,updated_entity)
-    if not status['success_indicator']:
-        entity = None
+    try:
+        # Perform the DB operation
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
+        client = datastore.Client()
+        key = client.key(entityKind)
+        entity = datastore.Entity(key=key)
+        entity.update(entityObject)
+        client.put(entity)
+    except:
+        # Error performing the DB operation
+        response['message'] = "Error creating datastore entity."
+        response['validOutputReturned'] = False
         
-    return entity
+    response['entity'] = entity
+
+    return response
 
 # Delete an entity by ID. Return success indicator and corresponding message.
 def delete_datastore_entity(entityKind,id):
     print("Entering delete_datastore_entity...")
-    return_object = {
+    # Initialize the response dictionary
+    response = {
+        "result": False,
         "message": "",
-        "success_indicator": True
+        "validOutputReturned": True
     }
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
+    # Fetch the entity from datastore
     entity = get_datastore_entity(entityKind,id)
-    if entity == None:
-        # Entity does not exist.
-        return_object = {
-            "message": "Entity {} does not exist in Kind {}.".format(id,entityKind),
-            "success_indicator": False
-        }
+    if not entity['validOutputReturned']:
+        # Error returned from get_datastore_entity
+        response['message'] = entity['message']
     else:
-        key = client.key(entityKind,id)
-        client.delete(key)
-        return_object = {
-            "message": "Entity {} deleted from Kind {}.".format(id,entityKind),
-            "success_indicator": True
-        }
-    return return_object
+        # Valid response returned from get_datastore_entity
+        if not entity['entity']:
+            # Entity does not exist. 
+            response['message'] = "Entity does not exist in the DB."
+        else:
+            # Entity exists. Go ahead with Deletion
+            try:
+                # Perform the DB operation
+                os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
+                client = datastore.Client()
+                key = client.key(entityKind,id)
+                client.delete(key)
+            except:
+                # Error performing the DB operation
+                response['message'] = "Error deleting datastore entity."
+                response['validOutputReturned'] = False
+
+    # Update the success message in the response dictionary.
+    response['result'] = True
+    return response
 
 # Update single/multiple properties of an entity. 
 # Return success indicator and corresponding message.
 def update_datastore_entity(entityKind,id,updatedEntity):
     print("Entering update_datastore_entity...")
-    return_object = {
+    # Initialize the response dictionary
+    response = {
+        "entity": None,
         "message": "",
-        "success_indicator": True
+        "validOutputReturned": True
     }
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
+    # Fetch the entity from datastore
     entity = get_datastore_entity(entityKind,id)
-    if entity == None:
-        # Entity does not exist.
-        return_object = {
-            "message": "Entity {} does not exist in Kind {}.".format(id,entityKind),
-            "success_indicator": False
+    if not entity['validOutputReturned']:
+        # Error returned from get_datastore_entity
+        response = {
+            "result": False,
+            "message": entity['message'],
+            "validOutputReturned": False
         }
     else:
-        entity.update(updatedEntity)
-        client.put(entity)
-        return_object = {
-            "message": "Entity {} updated in Kind {}.".format(id,entityKind),
-            "success_indicator": True
-        }
-    return return_object
+        # Valid response returned from get_datastore_entity
+        try:
+            # Perform the DB update operation
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
+            client = datastore.Client()
+            # Update the entity returned from the fetch, with the updatedEntity from arguments
+            entity['entity'].update(updatedEntity)
+            client.put(entity['entity'])
+        except:
+            # Error performing the DB operation
+            response['result'] = False
+            response['message'] = "Error updating the entity in datstore."
+            response['validOutputReturned'] = False
 
+    response['entity'] = entity['entity']
+    return response
 
 # Fetch an entity by ID
 def get_datastore_entity(entityKind,id):
     print("Entering get_datastore_entity...")
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
-    key = client.key(entityKind,id)
-    entity = client.get(key)
-    return entity
+    # Initialize the response dictionary
+    response = {
+        "entity": None,
+        "message": "",
+        "validOutputReturned": True
+    }
+    try:
+        # Perform the DB operation
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
+        client = datastore.Client()
+        key = client.key(entityKind,id)
+        entity = client.get(key)
+    except:
+        # Error performing the DB operation
+        response['message'] = "Error fetching datastore entity."
+        response['validOutputReturned'] = False
+    
+    response['entity'] = entity
+    return response
 
 # Return the list of all the entities in the supplied Kind.
 def get_datastore_entities_by_kind(entityKind):
     print("Entering get_datastore_entities_by_kind...")
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
-    query = client.query(kind=entityKind)
-    return list(query.fetch())
+    # Initialize the response dictionary
+    response = {
+        "entityList": None,
+        "message": "",
+        "validOutputReturned": True
+    }
+    try:
+        # Perform the DB operation
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
+        client = datastore.Client()
+        query = client.query(kind=entityKind)
+    except:
+        # Error performing the DB operation
+        response['message'] = "Error fetching datastore entity list."
+        response['validOutputReturned'] = False
+    response['entityList'] = list(query.fetch())
+    return response
+
+# Fetch an entity by a property
+def get_datastore_entity_by_property(entityKind,propertyKey,propertyValue):
+    print("Entering get_datastore_entity_by_property...")
+    # Initialize the response dictionary
+    response = {
+        "entityList": None,
+        "message": "",
+        "validOutputReturned": True
+    }
+    try:
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
+        client = datastore.Client()
+        query = client.query(kind=entityKind)
+        query = query.add_filter(propertyKey, '=', propertyValue)
+        query_iter = query.fetch()
+    except:
+        response['message'] = "Error fetching user from the DB."
+        response['validOutputReturned'] = False
+    
+    # response['entity'] = query_iter
+    response['entityList'] = list(query_iter)
+    return response
+
