@@ -1,7 +1,8 @@
 (function() {
-    var app = angular.module('sequencePuzzles', []);
+    // var app = angular.module('sequencePuzzles', []);
+    var app = angular.module('mathgarage', []);
 
-    var SequencePuzzlesController = function($scope, $http, $window, $interval) {
+    var SequencePuzzlesController = function($scope, $http, $window, $interval, $routeParams, $route) {
         console.log("Entering SequencePuzzlesController...");
         
         // Actions when HTTP call is completed successfully.
@@ -43,8 +44,9 @@
             };
         };
 
+        var countdownInterval = null
         var startCountdown = function() {
-            $interval(decrementCountdown, 1000, $scope.countdown);
+            countdownInterval = $interval(decrementCountdown, 1000, $scope.countdown);
         };
 
         // Action from the HTML View
@@ -68,6 +70,11 @@
 
             $http.put(calledURL, $scope.difficultyLevel)
                 .then(onUserComplete, onError);
+
+            // If the user performs the operation ahead of the 5 sec timer, cancel the timer to avoid running 2 requests
+            if (countdownInterval) {
+                $interval.cancel(countdownInterval)
+            }
         };
 
         // Action from the HTML View

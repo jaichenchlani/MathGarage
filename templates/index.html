@@ -1,20 +1,87 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html ng-app="mathgarage">
+  <head>
+    <script data-require="angular.js@1.5.8" data-semver="1.5.8" src="https://code.angularjs.org/1.5.8/angular.js"></script>
+    <script data-require="angular-route@*" data-semver="1.5.8" src="https://code.angularjs.org/1.5.8/angular-route.js"></script>     
+    <script src="//code.angularjs.org/1.6.0/angular-cookies.min.js"></script>
+    <meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+             -->
+    
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/css/simple-sidebar.css" rel="stylesheet">
+    <link href="../static/css/app.css" rel="stylesheet">
+    
+    <script src="../static/js/app.js"></script>
+    <script src="../static/jquery/jquery.slim.min.js"></script>
+    <script src="../static/jquery/jquery.slim.js"></script>
+    <script src="../static/jquery/jquery.min.js"></script>
+    <!-- <script src="../static/js/angular.js"></script> -->
+    <!-- <script src="../static/js/angular.route.js"></script> -->
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/mathgarage.js"></script>
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/mathgarage.js"></script>
+    <script src="../static/js/multiplicationfacts.js"></script>
+    <script src="../static/js/basicarithematicoperations.js"></script>
+    <script src="../static/js/numberwiki.js"></script>
+    <script src="../static/js/sequencepuzzles.js"></script>
+    <script src="../static/js/linearequations.js"></script>
+    <script src="../static/js/login.js"></script>
+    <script src="../static/js/utils.js"></script>
 
-{% block head %}
-<title>Mathgarage</title>
-{% endblock %}
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../static/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../static/images/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../static/images/favicon-16x16.png">
+    <link rel="manifest" href="../static/site.webmanifest">
+   	<title>MathGarage</title>
+  </head>
+  <body>
 
-{% block body %}
+    <div class="d-flex" id="wrapper">
+      <!-- Sidebar -->
+      <div class="bg-light border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">Menu </div>
+        <div class="list-group list-group-flush">
+            <a href="/" class="list-group-item list-group-item-action bg-light">Home</a>
+          <a href="/basic-arithematic-operations-initial-load" class="list-group-item list-group-item-action bg-light">Basic Arithematic Operations</a>
+          <a href="/sequence-puzzles" class="list-group-item list-group-item-action bg-light">Sequence Puzzles</a>
+          <a href="/linear-equations" class="list-group-item list-group-item-action bg-light">Linear Equations</a>
+          <a href="/multiplication-facts" class="list-group-item list-group-item-action bg-light">Multiplication Facts</a> 
+          <a href="/number-wiki" class="list-group-item list-group-item-action bg-light">Number Wiki</a>
+          <!-- <a href="/generate-worksheets" class="list-group-item list-group-item-action bg-light">Generate Worksheets</a> -->
+        </div>
+      </div>
 
-<div ng-app="homePage">
-  <div class="container-fluid" ng-controller="MainController">
-    <h1 class="mt-4">Mathgarage</h1>
-    <p id="index-message">Math for fun!!</p>
-    <p id="index-message">v0.92</p>
-    <p id="index-message">{{'{{testMessage}}'}}</p>
-    <p><a href="/login-initial-load">Login</p>
-      <p><a href="/create-account-initial-load">Create Account</p>
-  </div>
-</div>
+      <div id="page-content-wrapper">
+          <div class="container-fluid">
+              <div class="row">
+                  <div class="col-lg-12">
+                      
+                      <div ng-view class="container-fluid"></div>
+                      
+                      <!--  <a href="#menu-toggle" class="btn btn-info" id="menu-toggle">Toggle Menu</a>  -->
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- /#sidebar-wrapper -->
+    <!-- </div> -->
 
-{% endblock %}
+    </div>
+
+	<!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+   
+  </body>
+</html>

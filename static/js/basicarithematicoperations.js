@@ -1,5 +1,6 @@
 (function() {
-    var app = angular.module('basicArithematicOperations', []);
+    // var app = angular.module('basicArithematicOperations', []);
+    var app = angular.module('mathgarage', []);
 
     // Actions when HTTP call is completed successfully.
     var BasicArithematicOperationsController = function($scope, $http, $window, $location, $interval) {
@@ -33,6 +34,7 @@
         }
 
         var decrementCountdown = function() {
+            console.log("Entering decrementCountdown...");
             $scope.countdown -= 1;
             $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
             if ($scope.countdown < 1) {
@@ -40,8 +42,10 @@
             };
         };
 
+        var countdownInterval = null
         var startCountdown = function() {
-            $interval(decrementCountdown, 1000, $scope.countdown);
+            console.log("Entering startCountdown...");
+            countdownInterval = $interval(decrementCountdown, 1000, $scope.countdown);
         };
 
         // Action from the HTML View
@@ -72,6 +76,11 @@
             userResult = 1
             countCorrectAnswers = 0
             totalQuestions = $scope.operation.number_of_questions
+
+            // If the user performs the operation ahead of the 5 sec timer, cancel the timer to avoid running 2 requests
+            if (countdownInterval) {
+                $interval.cancel(countdownInterval)
+            }
 
             for (i = 0; i < totalQuestions; i++ ) {
                 try {

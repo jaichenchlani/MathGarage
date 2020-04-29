@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="mathgarage>
 <head>
 
   <meta charset="utf-8">
@@ -30,12 +30,15 @@
   <script  type="application/javascript" src="{{ url_for('static', filename='jquery/jquery.slim.js') }}"></script>
   <script  type="application/javascript" src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
   <script  type="application/javascript" src="{{ url_for('static', filename='js/angular.js') }}"></script>  
+  <script  type="application/javascript" src="{{ url_for('static', filename='js/angular.route.js') }}"></script>  
   <!-- <script src="{{ url_for('static', filename='js/angular.min.js') }}"></script>   -->
   <script  type="application/javascript" src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script> 
   <!-- <script  type="application/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>   -->
+  <script  type="application/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script  type="application/javascript" src="{{ url_for('static', filename='js/mathgarage.js') }}"></script>
   <script  type="application/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>  
-  <script  type="application/javascript" src="{{ url_for('static', filename='js/basicarithematicoperations.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/multiplicationfacts.js') }}"></script>  
+  <script  type="application/javascript" src="{{ url_for('static', filename='js/basicarithematicoperations.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/numberwiki.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/sequencepuzzles.js') }}"></script>  
   <script  type="application/javascript" src="{{ url_for('static', filename='js/linearequations.js') }}"></script> 
@@ -53,7 +56,7 @@
   <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
 
 
-  {% block head %}{% endblock %}
+  <!-- {% block head %}{% endblock %} -->
 
 </head>
 
@@ -76,17 +79,31 @@
     <!-- /#sidebar-wrapper -->
 
     <!-- Page Content -->
-    <div id="page-content-wrapper">
+    <!-- <div id="page-content-wrapper"> -->
 
-      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        
+                        <div ng-view="" class="container-fluid"></div>
+                        
+                        <!--  <a href="#menu-toggle" class="btn btn-info" id="menu-toggle">Toggle Menu</a>  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+      <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
-        
+         -->
         <!-- <div ng-app="googleSignIn" ng-controller="GoogleSignInController"> -->
           <!-- <div class="g-signin2" ng-model="userProfile" data-onsuccess="onSignIn"></div> -->
           <!-- <div class="g-signin2" ng-click="onSignIn(data-onsuccess)"></div> -->
           <!-- <a href="#" onclick="signOut();">Sign out</a> -->
           <!-- <a href="#" ng-click="signOut()">Sign out</a> -->
-        <!-- </div> -->
+        <!-- </div>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -112,18 +129,18 @@
                 <a class="dropdown-item" href="#">Something else here</a>
               </div>
             </li> -->
-          </ul>
+          <!-- </ul>
         </div>
-      </nav>
+      </nav> --> -->
 
-      {% block body %}
-      {% endblock %}
+      <!-- {% block body %}
+      {% endblock %} -->
 
 
-    </div>
+    <!-- </div> -->
     <!-- /#page-content-wrapper -->
 
-  </div>
+  <!-- </div> -->
   <!-- /#wrapper --> 
 
 

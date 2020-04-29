@@ -1,7 +1,8 @@
 (function() {
-    var app = angular.module('numberWiki', []);
+    // var app = angular.module('numberWiki', []);
+    var app = angular.module('mathgarage', []);
 
-    var NumberWikiController = function($scope, $http, $window, $interval) {
+    var NumberWikiController = function($scope, $http, $window, $interval, $routeParams, $route) {
         console.log("Entering NumberWikiController...");
         
         
@@ -28,8 +29,9 @@
             };
         };
 
+        var countdownInterval = null
         var startCountdown = function() {
-            $interval(decrementCountdown, 1000, $scope.countdown);
+            countdownInterval = $interval(decrementCountdown, 1000, $scope.countdown);
         };
 
         // Action from the HTML View
@@ -62,6 +64,11 @@
     
             $http.get(calledURL)
                 .then(onUserComplete, onError);
+            
+            // If the user performs the operation ahead of the 5 sec timer, cancel the timer to avoid running 2 requests
+            if (countdownInterval) {
+                $interval.cancel(countdownInterval)
+            }
         };
 
          // Action from the HTML View    

@@ -1,7 +1,8 @@
 (function() {
-    var app = angular.module('linearEquations', []);
+    // var app = angular.module('linearEquations', []);
+    var app = angular.module('mathgarage', []);
 
-    var LinearEquationsController = function($scope, $http, $window, $interval) {
+    var LinearEquationsController = function($scope, $http, $window, $interval, $routeParams, $route) {
         console.log("Entering LinearEquationsController...");
 
         // Actions when HTTP call is completed successfully.
@@ -42,8 +43,9 @@
             };
         };
 
+        var countdownInterval = null
         var startCountdown = function() {
-            $interval(decrementCountdown, 1000, $scope.countdown);
+            countdownInterval = $interval(decrementCountdown, 1000, $scope.countdown);
         };
 
         // Action from the HTML View
@@ -122,6 +124,10 @@
             $http.put(calledURL, $scope.puzzle)
                 .then(onSubmitComplete, onError);
 
+            // If the user performs the operation ahead of the 5 sec timer, cancel the timer to avoid running 2 requests
+            if (countdownInterval) {
+                $interval.cancel(countdownInterval)
+            }
         };
 
         $window.document.getElementById('getEquations').focus();

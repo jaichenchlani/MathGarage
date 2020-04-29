@@ -1,8 +1,9 @@
 (function() {
-    var app = angular.module('loginMathgarage', []);
+    // var app = angular.module('loginMathgarage', []);
+    var app = angular.module('mathgarage', []);
 
     // Actions when HTTP call is completed successfully.
-    var LoginController = function($scope, $http, $window, $location, $rootScope) {
+    var LoginController = function($scope, $http, $window, $interval, $routeParams, $route, $rootScope) {
         console.log("Entering LoginController...");
         $scope.errorMessage = ""
         $scope.loginCredentials = {

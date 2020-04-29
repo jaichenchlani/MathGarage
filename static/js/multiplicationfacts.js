@@ -1,13 +1,16 @@
 (function() {
-    var app = angular.module('multiplicationFacts', []);
+    // var app = angular.module('mathgarage', []);
+    var app = angular.module('mathgarage', []);
 
     // Actions when HTTP call is completed successfully.
-    var MultiplicationFactsController = function($scope, $http, $window, $location, $interval) {
+    var MultiplicationFactsController = function($scope, $http, $window, $interval, $routeParams, $route, mathgarageServices) {
         console.log("Entering MultiplicationFactsController...");
         
-        var onUserComplete = function(response) {
+        // var onUserComplete = function(response) {
+        var onUserComplete = function(data) {
             console.log("Entering onUserComplete...");
-            $scope.facts = response.data;
+            // $scope.facts = response.data;
+            $scope.facts = data;
             $scope.facts.message = "Multiplication Facts for " 
                                     + $scope.facts.request.tableof + " upto a limt of " 
                                     + $scope.facts.request.limit + " generated.";
@@ -33,8 +36,9 @@
             };
         };
 
+        var countdownInterval = null
         var startCountdown = function() {
-            $interval(decrementCountdown, 1000, $scope.countdown);
+            countdownInterval = $interval(decrementCountdown, 1000, $scope.countdown);
         };
 
         // Action from the HTML View
@@ -70,8 +74,14 @@
             calledURL = "/get-multiplication-facts/" + $scope.facts.request.tableof + "/" + $scope.facts.request.limit
             console.log("Calling " + calledURL + "...")
             
-            $http.get(calledURL)
+            // $http.get(calledURL)
+            mathgarage.generateMultiplicationFacts(calledURL)
                 .then(onUserComplete, onError);
+
+            // If the user performs the operation ahead of the 5 sec timer, cancel the timer to avoid running 2 requests
+            if (countdownInterval) {
+                $interval.cancel(countdownInterval)
+            }
         };
 
         // Action from the HTML View    
@@ -86,13 +96,7 @@
         $scope.gotoResultSection = function() {
             console.log("Entering gotoResultSection...");
             var newHash = 'resultsection';
-            // console.log($location.hash());
-            // console.log(newHash);
             if ($location.hash() !== newHash) {
-                // console.log($location.hash());
-                // console.log(newHash);
-                // set the $location.hash to `newHash` and
-                // $anchorScroll will automatically scroll to it
                 $location.hash(newHash);
             }
         };
