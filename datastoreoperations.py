@@ -23,8 +23,6 @@ def create_datastore_entity(entityKind,entityObject):
     }
     try:
         # Perform the DB operation
-        # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
-        # client = datastore.Client()
         key = client.key(entityKind)
         entity = datastore.Entity(key=key)
         entity.update(entityObject)
@@ -61,8 +59,6 @@ def delete_datastore_entity(entityKind,id):
             # Entity exists. Go ahead with Deletion
             try:
                 # Perform the DB operation
-                # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
-                # client = datastore.Client()
                 key = client.key(entityKind,id)
                 client.delete(key)
             except:
@@ -97,8 +93,6 @@ def update_datastore_entity(entityKind,id,updatedEntity):
         # Valid response returned from get_datastore_entity
         try:
             # Perform the DB update operation
-            # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
-            # client = datastore.Client()
             # Update the entity returned from the fetch, with the updatedEntity from arguments
             entity['entity'].update(updatedEntity)
             client.put(entity['entity'])
@@ -122,8 +116,6 @@ def get_datastore_entity(entityKind,id):
     }
     try:
         # Perform the DB operation
-        # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
-        # client = datastore.Client()
         key = client.key(entityKind,id)
         entity = client.get(key)
     except:
@@ -145,8 +137,6 @@ def get_datastore_entities_by_kind(entityKind):
     }
     try:
         # Perform the DB operation
-        # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
-        # client = datastore.Client()
         query = client.query(kind=entityKind)
     except:
         # Error performing the DB operation
@@ -165,8 +155,6 @@ def get_datastore_entity_by_property(entityKind,propertyKey,propertyValue):
         "validOutputReturned": True
     }
     try:
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
-        client = datastore.Client()
         query = client.query(kind=entityKind)
         query = query.add_filter(propertyKey, '=', propertyValue)
         query_iter = query.fetch()
