@@ -1,5 +1,5 @@
 from utilities import identify_valid_items_in_list
-from multiplicationfacts import get_multiplication_facts
+# from multiplicationfacts import get_multiplication_facts
 from sequencepuzzlegenerator import generate_sequence_puzzle
 from linearequationsgenerator import generate_linear_equations
 from basicarithmaticoperations import generate_basic_arithmatic_operations
@@ -263,16 +263,16 @@ difficultyLevel = {
 entityKind = "users"
 
 user = {
-    "username": "Test",
+    "username": "TEst",
     "password": "12345678",
-    "first_name": "First",
-    "last_name": "Last",
-    "email": "test@mathgarage.com"
+    "first_name": "FIRST_NAME_3",
+    "last_name": "LAST_name_3",
+    "email": "TEST@mathgarage.com"
     }
 # print(create_user(entityKind,user))
-print(update_user(entityKind,user))
+# print(update_user(entityKind,user))
 
-id=5652115070386176
+# id=5652115070386176
 # print(get_datastore_entity(entityKind,id))
 
 # Test isValidUser function
@@ -281,9 +281,9 @@ id=5652115070386176
 # print(isValidUser(entityKind,username))
 
 
-# Test delete_user function
+# # Test delete_user function
 # entityKind = "users"
-# username = "admin1"
+# username = "TEST"
 # print(delete_user(entityKind,username))
 
 # Test isValidEmail function
@@ -297,3 +297,10 @@ id=5652115070386176
 # entityKind = "users"
 
 # print(delete_datastore_entity(entityKind,id))
+
+
+# Test isValidLogin function
+entityKind = "users"
+username = "TESt"
+password = "12345678"
+print(isValidLogin(entityKind,username.lower(),password))

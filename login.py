@@ -14,7 +14,7 @@ flag_user_hard_delete = envVariables['flag_user_hard_delete']
 def login(login_credentials):
     print("Entering login..")
 
-    login_response = isValidLogin(entityKind,login_credentials['username'],login_credentials['password'])
+    login_response = isValidLogin(entityKind,login_credentials['username'].lower(),login_credentials['password'])
     return login_response
 
 def isValidUser(entityKind,username):
@@ -27,49 +27,56 @@ def isValidUser(entityKind,username):
         "userDetails": {}
     }
     # Fetch entity from the datastore by property
-    entity = get_datastore_entity_by_property(entityKind,entityProperty,username)  
-    if not entity['validOutputReturned']:
+    entityList = get_datastore_entity_by_property(entityKind,entityProperty,username.lower())  
+    if not entityList['validOutputReturned']:
         # Error returned from get_datastore_entity_by_property
-        response['message'] = entity['message']
-    else:
-        # Valid response returned from get_datastore_entity_by_property
-        number_of_records = 0
-        for entity in entity['entityList']:
-            username = entity['username']
-            password = entity['password']
-            id = entity.key.id
-            first_name = entity['first_name']
-            last_name = entity['last_name']
-            email = entity['email']
-            create_timestamp = entity['create_timestamp'],
-            last_logged_timestamp = ['last_logged_timestamp'],
-            last_modified_timestamp = ['last_modified_timestamp']
-            number_of_records += 1
+        response['message'] = entityList['message']
+        # Return. Don't move forward.
+        return response
 
-        if number_of_records == 0:
-            # User record does not exist. Return False
-            response['message'] = "User does not exist in DB."
-        elif number_of_records > 1:
-            # More than 1 records exist in the DB. Something wrong. Return False.
-            response['message'] = "Multiple records exist for the user in DB. Invalid User."
-        else:
-            # Valid User. Build the response dictionary.
-            response = {
-                "result": True,
-                "message": "Valid User.",
-                "validOutputReturned": True,
-                "userDetails": {
-                    "id": id,
-                    "username": username,
-                    "password": password,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "email": email,
-                    "create_timestamp": create_timestamp,
-                    "last_logged_timestamp": last_logged_timestamp,
-                    "last_modified_timestamp": last_modified_timestamp
-                }
-            }
+    # Valid response returned from get_datastore_entity_by_property
+    number_of_records = 0
+    for entity in entityList['entityList']:
+        username = entity['username']
+        password = entity['password']
+        id = entity.key.id
+        first_name = entity['first_name']
+        last_name = entity['last_name']
+        email = entity['email']
+        create_timestamp = entity['create_timestamp'],
+        last_logged_timestamp = ['last_logged_timestamp'],
+        last_modified_timestamp = ['last_modified_timestamp']
+        number_of_records += 1
+
+    if number_of_records == 0:
+        # User record does not exist. 
+        response['message'] = "User does not exist in DB."
+        # Return. Don't move forward.
+        return response
+        
+    if number_of_records > 1:
+        # More than 1 records exist in the DB. Something wrong. Return False.
+        response['message'] = "Multiple records exist for the user in DB. Invalid User."
+        # Return. Don't move forward.
+        return response
+    
+    # Valid User. Build the response dictionary.
+    response = {
+        "result": True,
+        "message": "Valid User.",
+        "validOutputReturned": True,
+        "userDetails": {
+            "id": id,
+            "username": username,
+            "password": password,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "create_timestamp": create_timestamp,
+            "last_logged_timestamp": last_logged_timestamp,
+            "last_modified_timestamp": last_modified_timestamp
+        }
+    }
     return response
 
 def isValidLogin(entityKind,username,password):
@@ -85,19 +92,23 @@ def isValidLogin(entityKind,username,password):
     if not user['result']:
         # Invalid User. Return False.
         response['message'] = user['message']
-    else:
-        # User is valid. Validate the password.
-        if not user['userDetails']['password'] == password:
-            # Incorrect password. Return False
-            response['message'] = login_failure_message
-        else:
-             # All good. Valid user, correct password. Return True
-            response = {
-                "result": True,
-                "message": login_success_message,
-                "validOutputReturned": True,
-                "userDetails": user['userDetails']
-            }  
+        # Return. Don't move forward.
+        return response
+
+    # User is valid. Validate the password.
+    if not user['userDetails']['password'] == password:
+        # Incorrect password. Return False
+        response['message'] = login_failure_message
+        # Return. Don't move forward.
+        return response
+
+    # All good. Valid user, correct password. Return True
+    response = {
+        "result": True,
+        "message": login_success_message,
+        "validOutputReturned": True,
+        "userDetails": user['userDetails']
+    }  
     return response
 
 def create_user(entityKind,user_details):
@@ -106,8 +117,8 @@ def create_user(entityKind,user_details):
     response = {
         "entity": None,
         "message": "",
-        "validOutputReturned": True,
-        "userDetails": {}
+        "validOutputReturned": True
+        # "userDetails": {}
     }
     # Validate User Data: Username, Password, First Name, Last Name and Email are mandatory fields.
     attribute_validation = validate_user_attributes(user_details)
@@ -115,33 +126,44 @@ def create_user(entityKind,user_details):
         # Error returned from validate_user_attributes
         response['message'] = attribute_validation['message']
         response['validOutputReturned'] = False
-    else:
-        # Valid output returned from validate_user_attributes
-        response['message'] = attribute_validation['message']
-        if attribute_validation['result']:
-            # All attributes are valid. Check whether the user is already in the DB.
-            if isValidUser(entityKind,user_details['username'])['result']:
-            # User already exists in the DB. Cannot create.
-                response['message'] = "Cannot create user. User already exists."
-            else:
-                user_entity = {
-                        "username": user_details['username'],
-                        "password": user_details['password'],
-                        "first_name": user_details['first_name'],
-                        "last_name": user_details['last_name'],
-                        "email": user_details['email'],
-                        "active": True,
-                        "create_timestamp": datetime.datetime.now(),
-                        "last_logged_timestamp": datetime.datetime.now(),
-                        "last_modified_timestamp": datetime.datetime.now()
-                    }
-                entity = create_datastore_entity(entityKind,user_entity)
-                if not entity['validOutputReturned']:
-                    # Error returned from create_datastore_entity
-                    response['message'] = entity['message']
-                else:
-                    # Valid output returned from create_datastore_entity
-                    response['entity'] = entity['entity']
+        # Return. Don't move forward.
+        return response
+
+    # Valid output returned from validate_user_attributes
+    response['message'] = attribute_validation['message']
+    if attribute_validation['result']:
+        # All attributes are valid. Check whether the user is already in the DB.
+        if isValidUser(entityKind,user_details['username'].lower())['result']:
+        # User already exists in the DB. Cannot create.
+            response['message'] = "Cannot create user. User already exists."
+            # Return. Don't move forward.
+            return response
+
+    # All good. Proceed with creating user in datastore    
+    user_entity = {
+            # username should always be stored in lowercase.
+            "username": user_details['username'].lower(),
+            "password": user_details['password'],
+            # first_name and last_name should be first letter capital
+            "first_name": user_details['first_name'].title(),
+            "last_name": user_details['last_name'].title(),
+            # email should always be stored in lowercase.
+            "email": user_details['email'].lower(),
+            "active": True,
+            "create_timestamp": datetime.datetime.now(),
+            "last_logged_timestamp": datetime.datetime.now(),
+            "last_modified_timestamp": datetime.datetime.now()
+        }
+    entity = create_datastore_entity(entityKind,user_entity)
+    if not entity['validOutputReturned']:
+        # Error returned from create_datastore_entity
+        response['message'] = entity['message']
+        response['validOutputReturned'] = False
+        # Return. Don't move forward.
+        return response
+
+    # Valid output returned from create_datastore_entity
+    response['entity'] = entity['entity']
 
     return response
         
@@ -154,40 +176,52 @@ def delete_user(entityKind,username):
         "validOutputReturned": True
     }
     # Check whether user exists, and fetch the ID.
-    user = isValidUser(entityKind,username)
+    user = isValidUser(entityKind,username.lower())
     if not user['validOutputReturned']:
-        # User does not exist in the DB. Cannot delete.
+        # Error returned from isValidUser. Cannot delete.
         response['message'] = user['message']
-    else:
-        # User exists. Go ahead with delete.
-        id = user['userDetails']['id']
-        if flag_user_hard_delete:
-            # HARD delete from Datastore
-            delete_user = delete_datastore_entity(entityKind,id)
-            if not delete_user['validOutputReturned']:
-                # Error returned from delete_user
-                response['message'] = delete_user['message']
-                response['validOutputReturned'] = False
-            else:
-                # Valid output returned from delete_user
-                response['message'] = "User HARD deleted from the DB."
-                response['result'] = True
+        response['validOutputReturned'] = False
+        # Return. Don't move forward.
+        return response
+
+    # Valid output returned from isValidUser
+    if not user['result']:
+        # User does not exist. Cannot update.
+        response['message'] = user['message']
+        # Return. Don't move forward.
+        return response
+
+    # User exists. Go ahead with delete.
+    id = user['userDetails']['id']
+    if flag_user_hard_delete:
+        # HARD delete from Datastore
+        delete_user = delete_datastore_entity(entityKind,id)
+        if not delete_user['validOutputReturned']:
+            # Error returned from delete_user
+            response['message'] = delete_user['message']
+            response['validOutputReturned'] = False
         else:
-            # SOFT delete from Datastore
-            # Update the Active flag to False in Datastore
-            updated_user = {
-                "active": False
-            }
-            updated_user = update_datastore_entity(entityKind,id,updated_user)
-            if not updated_user['validOutputReturned']:
-                # Error returned from update_datastore_entity
-                response['message'] = updated_user['message']
-                response['validOutputReturned'] = False
-            else:
-                # Valid output returned from update_datastore_entity
-                response['message'] = "User SOFT deleted from the DB."
-                response['result'] = True
-        
+            # Valid output returned from delete_user
+            response['message'] = "User HARD deleted from the DB."
+            response['result'] = True
+        return response
+
+    if not flag_user_hard_delete:
+        # SOFT delete from Datastore
+        # Update the Active flag to False in Datastore
+        updated_user = {
+            "active": False
+        }
+        updated_user = update_datastore_entity(entityKind,id,updated_user)
+        if not updated_user['validOutputReturned']:
+            # Error returned from update_datastore_entity
+            response['message'] = updated_user['message']
+            response['validOutputReturned'] = False
+        else:
+            # Valid output returned from update_datastore_entity
+            response['message'] = "User SOFT deleted from the DB."
+            response['result'] = True
+    
     return response
 
 def validate_user_attributes(user_details):
@@ -199,17 +233,17 @@ def validate_user_attributes(user_details):
         "validOutputReturned": True
     }
     if user_details['username'] is None or user_details['username'] == "":
-        response['message'] = "Cannot create user. Username missing."
+        response['message'] = "Invalid attribute. Username missing."
     elif user_details['password'] is None  or user_details['password'] == "":
-        response['message'] = "Cannot create user. password missing."
+        response['message'] = "Invalid attribute. password missing."
     elif len(user_details['password']) < 8:
-        response['message'] = "Cannot create user. password should be atleast 8 characters."
+        response['message'] = "Invalid attribute. Password should be atleast 8 characters."
     elif user_details['first_name'] is None or user_details['first_name'] == "":
-        response['message'] = "Cannot create user. First Name missing."
+        response['message'] = "Invalid attribute. First Name missing."
     elif user_details['last_name'] is None  or user_details['last_name'] == "":
-        response['message'] = "Cannot create user. Last Name missing."
+        response['message'] = "Invalid attribute. Last Name missing."
     elif user_details['email'] is None  or user_details['email'] == "":
-        response['message'] = "Cannot create user. email missing."
+        response['message'] = "Invalid attribute. email missing."
     elif not isValidEmail(user_details['email'])['result']:
         response['message'] = isValidEmail(user_details['email'])['message']
     else:
@@ -233,27 +267,55 @@ def update_user(entityKind,user_details):
         # Error returned from validate_user_attributes
         response['message'] = attribute_validation['message']
         response['validOutputReturned'] = False
-    else:
-        # Valid output returned from validate_user_attributes
+        # Return. Don't move forward.
+        return response
+    
+    # Valid output returned from validate_user_attributes
+    if not attribute_validation['result']:
+        # Attribute validation result failed. Cannot proceed with update.
         response['message'] = attribute_validation['message']
-        if attribute_validation['result']:
-            # All attributes are valid. Go ahead with updating the User in Datastore.
-            updated_user_entity = {
-                    "username": user_details['username'],
-                    "password": user_details['password'],
-                    "first_name": user_details['first_name'],
-                    "last_name": user_details['last_name'],
-                    "email": user_details['email'],
-                    "active": True,
-                    "last_modified_timestamp": datetime.datetime.now()
-                }
-            # entity = create_datastore_entity(entityKind,user_entity)
-            entity = update_datastore_entity(entityKind,id,updated_user_entity)
-            if not entity['validOutputReturned']:
-                # Error returned from create_datastore_entity
-                response['message'] = entity['message']
-            else:
-                # Valid output returned from create_datastore_entity
-                response['message'] = "User updated successfully in the DB."
-                response['entity'] = entity['entity']
+        # Return. Don't move forward.
+        return response
+
+    # All attributes are valid. 
+    # Check whether the user is already in the DB.
+    user = isValidUser(entityKind,user_details['username'].lower())
+    if not user['validOutputReturned']:
+        # Error returned from isValidUser
+        response['message'] = user['message']
+        # Return. Don't move forward.
+        return response
+    
+    # Valid output returned from isValidUser
+    if not user['result']:
+        # User does not exist. Cannot update.
+        response['message'] = user['message']
+        # Return. Don't move forward.
+        return response
+
+    # User exists; proceed with update.
+    id = user['userDetails']['id']
+    updated_user_entity = {
+            # username should always be stored in lowercase.
+            "username": user_details['username'].lower(),
+            "password": user_details['password'],
+            # first_name and last_name should always be stored with first letter Capital.
+            "first_name": user_details['first_name'].title(),
+            "last_name": user_details['last_name'].title(),
+            # email should always be stored in lowercase.
+            "email": user_details['email'].lower(),
+            "active": True,
+            "last_modified_timestamp": datetime.datetime.now()
+        }
+    entity = update_datastore_entity(entityKind,id,updated_user_entity)
+    if not entity['validOutputReturned']:
+        # Error returned from update_datastore_entity
+        response['message'] = entity['message']
+        # Return. Don't move forward.
+        return response
+    
+    # Valid output returned from update_datastore_entity
+    response['message'] = "User updated successfully in the DB."
+    response['entity'] = entity['entity']
+    
     return response
