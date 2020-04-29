@@ -14,11 +14,36 @@ login_user_message_codes = envVariables['login_user_message_codes']
 
 def login(login_credentials):
     print("Entering login..")
-    login_response = isValidLogin(entityKind,login_credentials['username'].lower(),login_credentials['password'])
+
+    # Declare the output dictionary
+    login_response = declare_login_response_dictionary(login_credentials)
+
+    login_response['is_valid_login_response'] = isValidLogin(entityKind,login_credentials['username'].lower(),login_credentials['password'])
+
     return login_response
 
-def create_account(user):
-    pass
+def declare_login_response_dictionary(login_credentials):
+    print("Entering declare_login_response_dictionary..")
+    login_response = {}
+    login_response['login_credentials'] = login_credentials
+    login_response['is_valid_login_response'] = {}
+    return login_response
+
+def create_account(userInfo):
+    print("Entering create_account..")
+
+    # Declare the output dictionary
+    create_account_response = declare_create_account_response_dictionary(userInfo)
+    create_account_response['created_userInfo'] = create_user(entityKind,userInfo)
+    return create_account_response
+
+def declare_create_account_response_dictionary(userInfo):
+    print("Entering declare_create_account_response_dictionary..")
+    create_account_response = {}
+    create_account_response['userInfo'] = userInfo
+    create_account_response['created_userInfo'] = {}
+    return create_account_response
+
 
 def isValidUser(entityKind,username):
     print("Entering isValidUser...")
@@ -130,6 +155,7 @@ def create_user(entityKind,user_details):
     print("Entering create_user...")
     # Initialize the response dictionary
     response = {
+        "datastore_id": None,
         "entity": None,
         "message": "",
         "validOutputReturned": True
@@ -146,13 +172,18 @@ def create_user(entityKind,user_details):
 
     # Valid output returned from validate_user_attributes
     response['message'] = attribute_validation['message']
-    if attribute_validation['result']:
-        # All attributes are valid. Check whether the user is already in the DB.
-        if isValidUser(entityKind,user_details['username'].lower())['result']:
-        # User already exists in the DB. Cannot create.
-            response['message'] = "Cannot create user. User already exists."
-            # Return. Don't move forward.
-            return response
+    if not attribute_validation['result']:
+        # Invalid attributes.
+        response['message'] = attribute_validation['message']
+        # Return. Don't move forward.
+        return response
+
+    # All attributes are valid. Check whether the user is already in the DB.
+    if isValidUser(entityKind,user_details['username'].lower())['result']:
+    # User already exists in the DB. Cannot create.
+        response['message'] = "Cannot create user. User already exists."
+        # Return. Don't move forward.
+        return response
 
     # All good. Proceed with creating user in datastore    
     user_entity = {
@@ -179,6 +210,7 @@ def create_user(entityKind,user_details):
 
     # Valid output returned from create_datastore_entity
     response['entity'] = entity['entity']
+    response['datastore_id'] = entity['entity'].key.id
 
     return response
         

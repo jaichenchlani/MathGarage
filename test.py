@@ -263,13 +263,13 @@ adminUser = {
     }
 
 testUser = {
-    "username": "TEst",
-    "password": "12345678",
+    "username": "Test",
+    "password": "123678",
     "first_name": "FIRST_NAME_3",
     "last_name": "LAST_name_3",
-    "email": "TEST@mathgarage.com"
+    "email": "testmathgaragecom"
     }
-print(create_user(entityKind,adminUser))
+print(create_user(entityKind,testUser))
 # print(update_user(entityKind,user))
 
 # id=5652115070386176

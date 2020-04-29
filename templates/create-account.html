@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Mathgarage - Create Account</title>
+{% endblock %}
+
+{% block body %}
+
+<div ng-app="createAccountMathgarage">
+    <div class="container-fluid" ng-controller="CreateAccountController">
+        <div class="modal-body">
+            <h3>Mathgarage - Create Account</h3>
+            <form name="createAccountForm" novalidate>
+                <span class="alert-danger">{{'{{errorMessage}}'}}</span>
+                <div class = "row border justify-content-left align-items-left">
+                    <h6>Username:</h6>
+                    <input id="inputUsername" class="form-control" type="text" ng-model="user.userInfo.username" placeholder="Username"  required><br>
+                    <h6>Password:</h6>
+                    <input id="inputPassword" class="form-control" type="password" ng-model="user.userInfo.password" placeholder="Password"  required><br>
+                    <h6>First Name:</h6>
+                    <input id="inputFirstName" class="form-control" type="text" ng-model="user.userInfo.first_name" placeholder="First Name"  required><br>
+                    <h6>Last Name:</h6>
+                    <input id="inputLastName" class="form-control" type="text" ng-model="user.userInfo.last_name" placeholder="Last Name"  required><br>
+                    <h6>Email ID:</h6>
+                    <input id="inputEmail" class="form-control" type="text" ng-model="user.userInfo.email" placeholder="test@mathgarage.com"  required><br>
+                </div>
+
+                <br>
+
+                <div class = "row justify-content-center align-items-center">
+                    <span class="col-sm-2"></span>
+                    <input id="submitUserInfo" type="submit" value="Create Account" ng-click="createAccount()"/>
+                    <span class="col-sm-2"></span>
+                    <input id="reset" class="col-sm-3" type="submit" value="Reset" ng-click="reset()"/>
+                    <span class="col-sm-2"></span>
+                </div>
+                <br>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

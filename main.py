@@ -98,8 +98,8 @@ def render_create_account_template():
 @app.route('/create-account', methods=['PUT', 'GET'])
 def process_create_account():
     print("Enterning process_create_account...")
-    user = request.json
-    data = create_account(user)
+    userInfo = request.json
+    data = create_account(userInfo)
     return jsonify(data), 200
 
 @app.route('/basic-arithematic-operations-initial-load')
