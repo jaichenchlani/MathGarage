@@ -1,6 +1,7 @@
 from mathfunctions import isEven, isPrime, isPositive, getFactors, changeBase, getPrimeFactors
 from config import read_configurations_from_config_file
 from datastoreoperations import create_datastore_entity, update_datastore_entity
+from utilities import insert_in_datastore_and_get_id
 import datetime
 
 # Load Defaults from Config
@@ -18,14 +19,19 @@ def get_number_wiki(n):
     process_request(number_wiki)
 
     # Insert the generated Output Dictionary in Datastore
-    datastore_entity = create_datastore_entity(entityKind,number_wiki)
-    print("Persisted number_wiki object in Datastore...")
+    insert_response = insert_in_datastore_and_get_id(entityKind,number_wiki)
+    if not insert_response['validOutputReturned']:
+        # Error creating datastore entity
+        number_wiki['validOutputReturned'] = False
+        number_wiki['message'] = insert_response['message']
+    else:
+        pass
+        print("Persisted generated_linear_equations object in Datastore...")
+        # Update the Datastore ID in the Output Dictionary
+        number_wiki['datastore_id'] = insert_response['id']
 
-    # Update the Datastore ID in the Output Dictionary
     # Return the generated Output Dictionary to the caller.
-    number_wiki['datastore_id'] = datastore_entity.key.id
     print("End - Returning to caller.")
-    
     return number_wiki
 
 def declare_output_dictionary(n):

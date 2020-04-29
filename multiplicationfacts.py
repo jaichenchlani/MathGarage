@@ -1,19 +1,19 @@
 from config import read_configurations_from_config_file
-from utilities import identify_valid_items_in_list
+from utilities import identify_valid_items_in_list, insert_in_datastore_and_get_id
 from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
+
+# Load Defaults from Config
+envVariables = read_configurations_from_config_file()
+default_table_of = envVariables['multiplication_facts_table_of']
+default_limit = envVariables['multiplication_facts_limit']
+entityKind = envVariables['datastore_kind_multiplication_facts']
 
 def get_multiplication_facts(str_table_of, str_limit):
 
     print("Start - Entering get_multiplication_facts...")
     generated_multiplication_facts = {}
     warning_counter = 0
-
-    # Load Defaults from Config
-    envVariables = read_configurations_from_config_file()
-
-    default_table_of = envVariables['multiplication_facts_table_of']
-    default_limit = envVariables['multiplication_facts_limit']
 
     operation_request = {
         "tableof": str_table_of,
@@ -30,12 +30,16 @@ def get_multiplication_facts(str_table_of, str_limit):
         generated_multiplication_facts["result"] = [tableof*i for i in range(1, limit+1)]
 
     # Insert the generated Output Dictionary in Datastore
-    datastore_entity = create_datastore_entity("multiplication_facts",generated_multiplication_facts)
-    print("Persisted generated_multiplication_facts object in Datastore...")
-
-    # Update the Datastore ID in the Output Dictionary
-    # Return the generated Output Dictionary to the caller.
-    generated_multiplication_facts['datastore_id'] = datastore_entity.key.id
+    insert_response = insert_in_datastore_and_get_id(entityKind,generated_multiplication_facts)
+    if not insert_response['validOutputReturned']:
+        # Error creating datastore entity
+        generated_multiplication_facts['validOutputReturned'] = False
+        generated_multiplication_facts['message'] = insert_response['message']
+    else:
+        pass
+        print("Persisted generated_linear_equations object in Datastore...")
+        # Update the Datastore ID in the Output Dictionary
+        generated_multiplication_facts['datastore_id'] = insert_response['id']
 
     # Return the generated Output Dictionary to the caller.
     print("End - Returning to caller.")

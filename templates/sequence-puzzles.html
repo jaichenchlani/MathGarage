@@ -21,7 +21,7 @@
                 <div class="col-sm-12">
                     <input id="puzzle" class="form-control text-center text-primary" type="text" ng-disabled="1" ng-model="puzzle.question" required><br>
                 </div>
-                <br>
+                <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span><br>
                 <div class = "row border justify-content-center align-items-center">
                     <div class="col-sm-12">
                         <table class="table">
@@ -53,7 +53,7 @@
 
                 <div class = "row justify-content-center align-items-center">
                     <span class="col-sm-2"></span>
-                    <input id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle(puzzle, errorMessage)"/>
+                    <input id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle()"/>
                     <span class="col-sm-2"></span>
                     <input id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer()"/>
                     <span class="col-sm-2"></span>

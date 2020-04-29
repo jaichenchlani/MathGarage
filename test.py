@@ -207,15 +207,7 @@ difficultyLevel = {
 # Test get_number_wiki
 # print(get_number_wiki(1000))
 
-# admin_user = {
-#     "create_timestamp": datetime.datetime.now(),
-#     "last_modified_timestamp": datetime.datetime.now(),
-#     "last_logged_timestamp": datetime.datetime.now(),
-#     "username": "admin",
-#     "first_name": "admin",
-#     "last_name": "admin",
-#     "password": "password",
-# }
+
 
 
 # # Create Datastore Entity
@@ -262,14 +254,22 @@ difficultyLevel = {
 # Test Create/Update User
 entityKind = "users"
 
-user = {
+adminUser = {
+    "username": "admin",
+    "password": "password",
+    "first_name": "jai",
+    "last_name": "chenchlani",
+    "email": "jaichenchlani@gmail.com"
+    }
+
+testUser = {
     "username": "TEst",
     "password": "12345678",
     "first_name": "FIRST_NAME_3",
     "last_name": "LAST_name_3",
     "email": "TEST@mathgarage.com"
     }
-# print(create_user(entityKind,user))
+print(create_user(entityKind,adminUser))
 # print(update_user(entityKind,user))
 
 # id=5652115070386176
@@ -282,9 +282,7 @@ user = {
 
 
 # # Test delete_user function
-# entityKind = "users"
-# username = "TEST"
-# print(delete_user(entityKind,username))
+# print(delete_user(entityKind,"admin"))
 
 # Test isValidEmail function
 # email = "jaichenchlani@gmail.com"
@@ -300,7 +298,7 @@ user = {
 
 
 # Test isValidLogin function
-entityKind = "users"
-username = "TESt"
-password = "12345678"
-print(isValidLogin(entityKind,username.lower(),password))
+# entityKind = "users"
+# username = "TESt"
+# password = "12345678"
+# print(isValidLogin(entityKind,username.lower(),password))

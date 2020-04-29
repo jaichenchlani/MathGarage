@@ -10,12 +10,15 @@ login_success_message = envVariables['login_success_message']
 entityKind = envVariables['datastore_kind_users']
 entityProperty = envVariables['datastore_property_username']
 flag_user_hard_delete = envVariables['flag_user_hard_delete']
+login_user_message_codes = envVariables['login_user_message_codes']
 
 def login(login_credentials):
     print("Entering login..")
-
     login_response = isValidLogin(entityKind,login_credentials['username'].lower(),login_credentials['password'])
     return login_response
+
+def create_account(user):
+    pass
 
 def isValidUser(entityKind,username):
     print("Entering isValidUser...")
@@ -44,8 +47,8 @@ def isValidUser(entityKind,username):
         last_name = entity['last_name']
         email = entity['email']
         create_timestamp = entity['create_timestamp'],
-        last_logged_timestamp = ['last_logged_timestamp'],
-        last_modified_timestamp = ['last_modified_timestamp']
+        last_logged_timestamp = entity['last_logged_timestamp'],
+        last_modified_timestamp = entity['last_modified_timestamp']
         number_of_records += 1
 
     if number_of_records == 0:
@@ -83,15 +86,26 @@ def isValidLogin(entityKind,username,password):
     print("Entering isValidLogin...")
     # Initialize the response dictionary
     response = {
-        "result": False,
+        "result": login_user_message_codes['LOGIN_FAILURE'],
         "message": "",
         "validOutputReturned": True,
         "userDetails": {}
     }
+
     user = isValidUser(entityKind,username)
+    if not user['validOutputReturned']:
+        # Error returned from isValidUser. 
+        response['message'] = user['message']
+        response['validOutputReturned'] = False
+        response['result'] = login_user_message_codes['LOGIN_SERVER_ERROR']
+        # Return. Don't move forward.
+        return response
+    
+    # Valid response returned from isValidUser.
     if not user['result']:
         # Invalid User. Return False.
         response['message'] = user['message']
+        response['result'] = login_user_message_codes['LOGIN_USER_DOES_NOT_EXIST']
         # Return. Don't move forward.
         return response
 
@@ -99,12 +113,13 @@ def isValidLogin(entityKind,username,password):
     if not user['userDetails']['password'] == password:
         # Incorrect password. Return False
         response['message'] = login_failure_message
+        response['result'] = login_user_message_codes['LOGIN_FAILURE']
         # Return. Don't move forward.
         return response
 
     # All good. Valid user, correct password. Return True
     response = {
-        "result": True,
+        "result": login_user_message_codes['LOGIN_SUCCESS'],
         "message": login_success_message,
         "validOutputReturned": True,
         "userDetails": user['userDetails']

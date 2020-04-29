@@ -2,7 +2,7 @@
     var app = angular.module('loginMathgarage', []);
 
     // Actions when HTTP call is completed successfully.
-    var LoginController = function($scope, $http, $window, $location) {
+    var LoginController = function($scope, $http, $window, $location, $rootScope) {
         console.log("Entering LoginController...");
         $scope.errorMessage = ""
         $scope.loginCredentials = {
@@ -14,6 +14,7 @@
             console.log("Entering onUserComplete...");
             $scope.loginInfo = response.data;
             console.log($scope.loginInfo)
+            $rootScope.loginInfo = $scope.loginInfo
 
             // Redirect to Home Page.
             // $window.location.href = '/';
@@ -66,6 +67,6 @@
     };
 
     // Register the Controller with the app
-    app.controller('LoginController', ['$scope', '$http', '$window', '$location', LoginController]);
+    app.controller('LoginController', ['$scope', '$http', '$window', '$location', '$rootScope', LoginController]);
 
 })();

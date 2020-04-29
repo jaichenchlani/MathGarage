@@ -2,26 +2,8 @@
     var app = angular.module('basicArithematicOperations', []);
 
     // Actions when HTTP call is completed successfully.
-    var BasicArithematicOperationsController = function($scope, $http, $window, $location) {
+    var BasicArithematicOperationsController = function($scope, $http, $window, $location, $interval) {
         console.log("Entering BasicArithematicOperationsController...");
-        $window.document.getElementById('getBasicArithematicOperations').focus();
-        $scope.errorMessage = ""
-        $scope.showSystemAnswer = false
-        $scope.showResultSection = false
-        $scope.operator = "+";
-        $scope.number_of_questions = "16";
-        $scope.difficultyLevel = {
-            "supereasy": 1,
-            "easy": 1,
-            "medium": 0,
-            "hard": 0,
-            "superhard": 0
-        };
-
-        $scope.userAnswerFeedback = {
-            "result": 1,
-            "message": ""
-        };
 
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
@@ -50,10 +32,22 @@
             $window.alert("Error fetching data from the server.");
         }
 
+        var decrementCountdown = function() {
+            $scope.countdown -= 1;
+            $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+            if ($scope.countdown < 1) {
+                $scope.getBasicArithematicOperations()        
+            };
+        };
+
+        var startCountdown = function() {
+            $interval(decrementCountdown, 1000, $scope.countdown);
+        };
+
         // Action from the HTML View
-        $scope.getBasicArithematicOperations = function (operation_request, errorMessage) {
+        $scope.getBasicArithematicOperations = function () {
             console.log("Entering getBasicArithematicOperations...");
-            console.log(operation_request)
+            $scope.countdownMessage = undefined;
             $scope.errorMessage = "";
             $scope.showSystemAnswer = false
 
@@ -129,16 +123,13 @@
             $scope.errorMessage = ""
             $scope.showSystemAnswer = false
             $scope.showResultSection = false
-            // $scope.operation_request_addition = 1
-            // $scope.operation_request_subtraction = 0
-            // $scope.operation_request_multiplication = 0
-            // $scope.operation_request_division = 0
+            $scope.countdownMessage = undefined;
             $scope.operation_request = {
                 "operator": "+",
-                "number_of_questions": 16
+                "number_of_questions": 8
             };
             $scope.difficultyLevel = {
-                "supereasy": 1,
+                "supereasy": 0,
                 "easy": 1,
                 "medium": 0,
                 "hard": 0,
@@ -164,12 +155,30 @@
             }
         };
 
-        // Call the function on page load.
-        $scope.getBasicArithematicOperations($scope.operation_request, $scope.errorMessage);
+        $window.document.getElementById('getBasicArithematicOperations').focus();
+        $scope.errorMessage = ""
+        $scope.showSystemAnswer = false
+        $scope.showResultSection = false
+        $scope.operator = "+";
+        $scope.number_of_questions = "8";
+        $scope.difficultyLevel = {
+            "supereasy": 0,
+            "easy": 1,
+            "medium": 0,
+            "hard": 0,
+            "superhard": 0
+        };
 
+        $scope.userAnswerFeedback = {
+            "result": 1,
+            "message": ""
+        };
+        $scope.countdown = 5;
+        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        startCountdown();
     };
 
     // Register the Controller with the app
-    app.controller('BasicArithematicOperationsController', ['$scope', '$http', '$window', '$location', BasicArithematicOperationsController]);
+    app.controller('BasicArithematicOperationsController', BasicArithematicOperationsController);
 
 })();

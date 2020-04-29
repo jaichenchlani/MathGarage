@@ -1,6 +1,6 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list
+from utilities import identify_valid_items_in_list, insert_in_datastore_and_get_id
 from mathfunctions import isInteger
 from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
@@ -25,12 +25,18 @@ def generate_basic_arithmatic_operations(requestData):
         process_request(generated_basic_arithmatic_operation)
     
     # Insert the generated Output Dictionary in Datastore
-    datastore_entity = create_datastore_entity(entityKind,generated_basic_arithmatic_operation)
-    print("Persisted generated_basic_arithmatic_operation object in Datastore...")
+    insert_response = insert_in_datastore_and_get_id(entityKind,generated_basic_arithmatic_operation)
+    if not insert_response['validOutputReturned']:
+        # Error creating datastore entity
+        generated_basic_arithmatic_operation['validOutputReturned'] = False
+        generated_basic_arithmatic_operation['message'] = insert_response['message']
+    else:
+        pass
+        print("Persisted generated_linear_equations object in Datastore...")
+        # Update the Datastore ID in the Output Dictionary
+        generated_basic_arithmatic_operation['datastore_id'] = insert_response['id']
 
-    # Update the Datastore ID in the Output Dictionary
     # Return the generated Output Dictionary to the caller.
-    generated_basic_arithmatic_operation['datastore_id'] = datastore_entity.key.id
     print("End - Returning to caller.")
     return generated_basic_arithmatic_operation
 

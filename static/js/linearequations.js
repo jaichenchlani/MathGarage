@@ -1,40 +1,8 @@
 (function() {
     var app = angular.module('linearEquations', []);
 
-    var LinearEquationsController = function($scope, $http, $window) {
+    var LinearEquationsController = function($scope, $http, $window, $interval) {
         console.log("Entering LinearEquationsController...");
-        $window.document.getElementById('getEquations').focus();
-        $scope.errorMessage = ""
-        $scope.userAnswerFeedback = {
-            "result": 0,
-            "message": ""
-        }
-        $scope.showSystemAnswer = false;
-        $scope.difficultyLevel = {
-            "supereasy": 1,
-            "easy": 1,
-            "medium": 0,
-            "hard": 0,
-            "superhard": 0
-        };
-        // console.log($scope.difficultyLevel)
-        $scope.variableCount = {
-            "one": 1,
-            "two": 0,
-            "three": 0,
-            "four": 0,
-            "five": 0,
-            "six": 0,
-            "seven": 0,
-            "eight": 0,
-            "nine": 0,
-            "ten": 0
-        };
-        // console.log($scope.variableCount)
-        $scope.userAnswerFeedback = {
-            "result": 0,
-            "message": ""
-        }
 
         // Actions when HTTP call is completed successfully.
         var onUserComplete = function(response) {
@@ -66,10 +34,23 @@
             $window.alert("Error fetching data from the server.");
         }
 
+        var decrementCountdown = function() {
+            $scope.countdown -= 1;
+            $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+            if ($scope.countdown < 1) {
+                $scope.getEquations()        
+            };
+        };
+
+        var startCountdown = function() {
+            $interval(decrementCountdown, 1000, $scope.countdown);
+        };
+
         // Action from the HTML View
-        $scope.getEquations = function (puzzle, errorMessage) {
+        $scope.getEquations = function () {
             console.log("Entering getEquations...");
             // Re-initialize variables on every Generate Puzzle
+            $scope.countdownMessage = undefined
             $scope.errorMessage = ""
             $scope.userAnswerFeedback = {
                 "result": 0,
@@ -143,11 +124,44 @@
 
         };
 
-        // Call the function on page load.
-        $scope.getEquations($scope.puzzle, $scope.errorMessage);
+        $window.document.getElementById('getEquations').focus();
+        $scope.errorMessage = ""
+        $scope.userAnswerFeedback = {
+            "result": 0,
+            "message": ""
+        }
+        $scope.showSystemAnswer = false;
+        $scope.difficultyLevel = {
+            "supereasy": 0,
+            "easy": 1,
+            "medium": 0,
+            "hard": 0,
+            "superhard": 0
+        };
+        // console.log($scope.difficultyLevel)
+        $scope.variableCount = {
+            "one": 0,
+            "two": 1,
+            "three": 0,
+            "four": 0,
+            "five": 0,
+            "six": 0,
+            "seven": 0,
+            "eight": 0,
+            "nine": 0,
+            "ten": 0
+        };
+        // console.log($scope.variableCount)
+        $scope.userAnswerFeedback = {
+            "result": 0,
+            "message": ""
+        }
+        $scope.countdown = 5;
+        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        startCountdown();
     };
 
     // Register the Controller with the app
-    app.controller('LinearEquationsController', ['$scope', '$http', '$window', LinearEquationsController]);
+    app.controller('LinearEquationsController', LinearEquationsController);
 
 })();

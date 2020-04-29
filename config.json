@@ -1,4 +1,10 @@
 {
+    "login_user_message_codes": {
+        "LOGIN_SUCCESS": 0,
+        "LOGIN_FAILURE": 1,
+        "LOGIN_USER_DOES_NOT_EXIST": 2,
+        "LOGIN_SERVER_ERROR": 3
+    },
     "credential_key_file": "keys/Credentials.json",
     "multiplication_facts_table_of": 52,
     "multiplication_facts_limit": 10,

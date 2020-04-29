@@ -33,7 +33,7 @@
                     <input id="checkboxHard" type="checkbox" ng-model="difficultyLevel.hard" ng-true-value="1" ng-false-value="0"><span>Hard</span></input>
                     <input id="checkboxSuperHard" type="checkbox" ng-model="difficultyLevel.superhard" ng-true-value="1" ng-false-value="0"><span>Super Hard</span></input>
                 </div>
-
+                <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span><br>
                 <div class = "row border justify-content-center align-items-center">
                          <table class="table">
                             <tbody>
@@ -84,7 +84,7 @@
                     <span class="col-sm-2"></span>
                     <input id="getEquations" class="col-sm-3" type="submit" value="Get Equation" ng-click="getEquations(puzzle, errorMessage)"/>
                     <span class="col-sm-2"></span>
-                    <input id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer(puzzle, errorMessage)"/>
+                    <input id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer()"/>
                     <span class="col-sm-2"></span>
                 </div>
             </form>

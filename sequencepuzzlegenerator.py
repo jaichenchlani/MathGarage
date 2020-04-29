@@ -1,6 +1,6 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list
+from utilities import identify_valid_items_in_list, insert_in_datastore_and_get_id
 from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
 
@@ -29,12 +29,18 @@ def generate_sequence_puzzle(difficultyLevel):
         pass
 
     # Insert the generated Output Dictionary in Datastore
-    datastore_entity = create_datastore_entity(entityKind,generated_sequence_puzzle)
-    print("Persisted generated_sequence_puzzle object in Datastore...")
+    insert_response = insert_in_datastore_and_get_id(entityKind,generated_sequence_puzzle)
+    if not insert_response['validOutputReturned']:
+        # Error creating datastore entity
+        generated_sequence_puzzle['validOutputReturned'] = False
+        generated_sequence_puzzle['message'] = insert_response['message']
+    else:
+        pass
+        print("Persisted generated_linear_equations object in Datastore...")
+        # Update the Datastore ID in the Output Dictionary
+        generated_sequence_puzzle['datastore_id'] = insert_response['id']
 
-    # Update the Datastore ID in the Output Dictionary
     # Return the generated Output Dictionary to the caller.
-    generated_sequence_puzzle['datastore_id'] = datastore_entity.key.id
     print("End - Returning to caller.")
     return generated_sequence_puzzle
 

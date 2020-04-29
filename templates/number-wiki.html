@@ -22,6 +22,7 @@
                     <input id="reset" class="col-sm-2" ng-disabled="!showSystemAnswer" type="submit" value="Reset" ng-click="reset()"/>
                 </div>
                 <span class="col-sm-12 alert-info">{{'{{userMessage}}'}}</span><br>
+                <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span><br>
                 <span class = "col-sm-12"></span>
             </form>
             <div ng-show="showSystemAnswer" class = "row border justify-content-center align-items-center">

@@ -1,6 +1,6 @@
 from google.cloud import datastore
-import os
-import re
+import os, re, datetime
+from datastoreoperations import create_datastore_entity, update_datastore_entity
 
 # Shortlist the valid list items from the superset list based on difficulty level
 def identify_valid_items_in_list(allItemsInList,difficultyLevel):
@@ -45,4 +45,41 @@ def isValidEmail(email):
             "email_rules": email_rules
         }
 
+    return response
+
+def insert_in_datastore_and_get_id(entityKind,entity):
+    print("Entering insert_in_datastore_and_get_id...")
+    # Initialize the response dictionary
+    response = {
+        "id": 0,
+        "message": "",
+        "validOutputReturned": True
+    }
+    entity = create_datastore_entity(entityKind,entity)
+    if not entity['validOutputReturned']:
+        # Error creating datastore entity
+        response['validOutputReturned'] = False
+        response['message'] = entity['message']
+        # Return. Don't move forward.
+        return response
+    
+    id = entity['entity'].key.id
+    # entity['datastore_id'] = id
+    # Update the Datastore ID in Datastore
+    updated_entity = {
+        "last_modified_timestamp": datetime.datetime.now(),
+        "datastore_id": id
+        }
+    entity = update_datastore_entity(entityKind,id,updated_entity)
+    
+    if not entity['validOutputReturned']:
+        # Error creating datastore entity
+        response['validOutputReturned'] = False
+        response['message'] = entity['message']
+        # Return. Don't move forward.
+        return response
+
+    # Update the Datastore ID in the Output Dictionary
+    response['id'] = entity['entity'].key.id
+    response['message'] = "Successfully inserted into the Datastore."
     return response

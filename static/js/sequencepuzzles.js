@@ -1,26 +1,8 @@
 (function() {
     var app = angular.module('sequencePuzzles', []);
 
-    var SequencePuzzlesController = function($scope, $http, $window) {
+    var SequencePuzzlesController = function($scope, $http, $window, $interval) {
         console.log("Entering SequencePuzzlesController...");
-        $window.document.getElementById('getPuzzle').focus();
-        $scope.errorMessage = ""
-        $scope.userAnswerFeedback = {
-            "result": 0,
-            "message": ""
-        }
-        $scope.showSystemAnswer = false;
-        $scope.difficultyLevel = {
-            "easy": 1,
-            "medium": 1,
-            "hard": 1
-        };
-        // console.log($scope.difficultyLevel)
-        $scope.userAnswerFeedback = {
-            "result": 0,
-            "message": ""
-        }
-
         
         // Actions when HTTP call is completed successfully.
         var onUserComplete = function(response) {
@@ -53,10 +35,23 @@
             $window.alert("Error fetching data from the server.");
         }
 
+        var decrementCountdown = function() {
+            $scope.countdown -= 1;
+            $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+            if ($scope.countdown < 1) {
+                $scope.getPuzzle()        
+            };
+        };
+
+        var startCountdown = function() {
+            $interval(decrementCountdown, 1000, $scope.countdown);
+        };
+
         // Action from the HTML View
-        $scope.getPuzzle = function (puzzle, errorMessage) {
+        $scope.getPuzzle = function () {
             console.log("Entering getPuzzle...");
             // Re-initialize variables on every Generate Puzzle
+            $scope.countdownMessage = undefined
             $scope.errorMessage = ""
             $scope.userAnswerFeedback = {
                 "result": 0,
@@ -130,11 +125,29 @@
 
         };
 
-        // Call the function on page load.
-        $scope.getPuzzle($scope.puzzle, $scope.errorMessage);
+        $window.document.getElementById('getPuzzle').focus();
+        $scope.errorMessage = ""
+        $scope.userAnswerFeedback = {
+            "result": 0,
+            "message": ""
+        }
+        $scope.showSystemAnswer = false;
+        $scope.difficultyLevel = {
+            "easy": 0,
+            "medium": 1,
+            "hard": 0
+        };
+        // console.log($scope.difficultyLevel)
+        $scope.userAnswerFeedback = {
+            "result": 0,
+            "message": ""
+        }
+        $scope.countdown = 5;
+        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        startCountdown();
     };
 
     // Register the Controller with the app
-    app.controller('SequencePuzzlesController', ['$scope', '$http', '$window', SequencePuzzlesController]);
+    app.controller('SequencePuzzlesController', SequencePuzzlesController);
 
 })();

@@ -5,7 +5,7 @@ from multiplicationfacts import get_multiplication_facts
 from sequencepuzzlegenerator import generate_sequence_puzzle, update_datastore_sequence_puzzles
 from linearequationsgenerator import generate_linear_equations, update_datastore_linear_equations
 from numberwiki import get_number_wiki
-from login import login
+from login import login, create_account
 from basicarithmaticoperations import generate_basic_arithmatic_operations, update_datastore_basic_arithmatic_operations
 
 
@@ -88,6 +88,18 @@ def process_login():
     print("Enterning process_login...")
     login_credentials = request.json
     data = login(login_credentials)
+    return jsonify(data), 200
+
+@app.route('/create-account-initial-load')
+def render_create_account_template():
+    print("Entering render_create_account_template...")
+    return render_template('create-account.html')
+
+@app.route('/create-account', methods=['PUT', 'GET'])
+def process_create_account():
+    print("Enterning process_create_account...")
+    user = request.json
+    data = create_account(user)
     return jsonify(data), 200
 
 @app.route('/basic-arithematic-operations-initial-load')

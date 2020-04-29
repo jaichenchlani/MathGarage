@@ -35,9 +35,11 @@
                     <input id="checkboxSuperHard" type="checkbox" ng-model="difficultyLevel.superhard" ng-true-value="1" ng-false-value="0"><span>Super Hard</span></input>
                 </div>
 
+                <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span><br>
+
                 <div class = "row justify-content-center align-items-center">
                     <span class="col-sm-2"></span>
-                    <input id="getBasicArithematicOperations" type="submit" value="Go" ng-click="getBasicArithematicOperations(operation_request, errorMessage)"/>
+                    <input id="getBasicArithematicOperations" type="submit" value="Go" ng-click="getBasicArithematicOperations()"/>
                     <span class="col-sm-2"></span>
                     <input id="reset" ng-disabled="!showResultSection" class="col-sm-3" type="submit" value="Reset" ng-click="reset()"/>
                     <span class="col-sm-2"></span>

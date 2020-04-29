@@ -2,18 +2,9 @@
     var app = angular.module('multiplicationFacts', []);
 
     // Actions when HTTP call is completed successfully.
-    var MultiplicationFactsController = function($scope, $http, $window, $location) {
+    var MultiplicationFactsController = function($scope, $http, $window, $location, $interval) {
         console.log("Entering MultiplicationFactsController...");
-        $window.document.getElementById('inputTableof').focus();
-        $scope.errorMessage = ""
-        $scope.showSystemAnswer = false
-        $scope.facts = {}
-        $scope.facts.request = {
-            "tableof": 131,
-            "limit": 50
-        }
-
-
+        
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
             $scope.facts = response.data;
@@ -34,11 +25,23 @@
             $window.alert("Error fetching data from the server.");
         }
 
+        var decrementCountdown = function() {
+            $scope.countdown -= 1;
+            $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+            if ($scope.countdown < 1) {
+                $scope.generateMultiplicationFacts()        
+            };
+        };
+
+        var startCountdown = function() {
+            $interval(decrementCountdown, 1000, $scope.countdown);
+        };
+
         // Action from the HTML View
         $scope.generateMultiplicationFacts = function () {
             console.log("Entering generateMultiplicationFacts...");
             $scope.errorMessage = ""
-
+            $scope.countdownMessage = undefined
             console.log($scope.facts)
 
             // Validate Inputs
@@ -75,6 +78,7 @@
         $scope.reset = function() {
             console.log("Entering reset...");
             $scope.facts.result = {}
+            $scope.countdownMessage = undefined
             $scope.showSystemAnswer = false
             $window.document.getElementById('inputTableof').focus();
         };
@@ -93,12 +97,20 @@
             }
         };
 
-        // Call the function on page load.
-        $scope.generateMultiplicationFacts($scope.facts, $scope.errorMessage);
-
+        $window.document.getElementById('inputTableof').focus();
+        $scope.errorMessage = ""
+        $scope.showSystemAnswer = false
+        $scope.facts = {}
+        $scope.facts.request = {
+            "tableof": 131,
+            "limit": 50
+        }
+        $scope.countdown = 5;
+        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        startCountdown();
     };
 
     // Register the Controller with the app
-    app.controller('MultiplicationFactsController', ['$scope', '$http', '$window', '$location', MultiplicationFactsController]);
+    app.controller('MultiplicationFactsController', MultiplicationFactsController);
 
 })();

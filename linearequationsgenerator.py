@@ -1,6 +1,6 @@
 from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list
+from utilities import identify_valid_items_in_list, insert_in_datastore_and_get_id
 from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
 
@@ -28,22 +28,16 @@ def generate_linear_equations(requestData):
         pass
 
     # Insert the generated Output Dictionary in Datastore
-    response = create_datastore_entity(entityKind,generated_linear_equations)
-    if not response['validOutputReturned']:
+    insert_response = insert_in_datastore_and_get_id(entityKind,generated_linear_equations)
+    if not insert_response['validOutputReturned']:
         # Error creating datastore entity
         generated_linear_equations['validOutputReturned'] = False
-        generated_linear_equations['message'] = response['message']
+        generated_linear_equations['message'] = insert_response['message']
     else:
+        pass
         print("Persisted generated_linear_equations object in Datastore...")
         # Update the Datastore ID in the Output Dictionary
-        id = response['entity'].key.id
-        generated_linear_equations['datastore_id'] = id
-        # Update the Datastore ID in Datastore
-        updated_entity = {
-        "last_modified_timestamp": datetime.datetime.now(),
-        "datastore_id": id
-        }
-        status = update_datastore_entity(entityKind,id,updated_entity)
+        generated_linear_equations['datastore_id'] = insert_response['id']
 
     # Return the generated Output Dictionary to the caller.
     print("End - Returning to caller.")
