@@ -1,7 +1,6 @@
 from google.cloud import datastore
 import os
 import datetime
-import traceback
 from config import read_configurations_from_config_file
 
 # Load Defaults from Config
@@ -161,7 +160,6 @@ def get_datastore_entity_by_property(entityKind,propertyKey,propertyValue):
     except:
         response['message'] = "Error fetching user from the DB."
         response['validOutputReturned'] = False
-        print(traceback.format_exception(None,e,e.__traceback__))
     
     # response['entity'] = query_iter
     response['entityList'] = list(query_iter)
