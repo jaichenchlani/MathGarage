@@ -1,6 +1,12 @@
 from google.cloud import storage
-from google.cloud import datastore
+from google.cloud import datastore, kms_v1
 import os
+from config import read_configurations_from_config_file
+
+# Load Defaults from Config
+envVariables = read_configurations_from_config_file()
+credential_key_file = envVariables['credential_key_file']
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
 
 def get_buckets():
     # Instantiates a client
@@ -18,85 +24,54 @@ def get_buckets():
     buckets = list(storage_client.list_buckets())
     print(buckets)
 
-# Create, populate and persist an entity with keyID passed as argument
-def create_datastore_entity(entityKind,entityObject):
-    print("Entering create_datastore_entity...")
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
-    key = client.key(entityKind)
-    entity = datastore.Entity(key=key)
-    entity.update(entityObject)
-    client.put(entity)
-    return entity
+def get_keyrings(project_id, location):
+    
+    client = kms_v1.KeyManagementServiceClient()
+    parent = client.location_path(project_id,location)
+    key_rings = client.list_key_rings(parent)
+    print("key_rings:{},{}".format(key_rings,type(key_rings)))
+    key_rings_list = list(key_rings)
+    print("key_rings_list:{},{}".format(key_rings_list,type(key_rings_list)))
+    for key_ring in key_rings_list:
+        print("key_ring:{},{}".format(key_ring,type(key_ring)))
+    
+    # crypto_keys = client.list_crypto_keys(parent)
+    # print("crypto_keys:{},{}".format(crypto_keys,type(crypto_keys)))
+    # crypto_keys_list = list(crypto_keys)
+    # print("crypto_keys_list:{},{}".format(crypto_keys_list,type(crypto_keys_list)))
+    # # for crypto_key in crypto_keys_list:
+    # #     print("crypto_key:{},{}".format(crypto_key,type(crypto_key)))
 
-# Delete an entity by ID. Return success indicator and corresponding message.
-def delete_datastore_entity(entityKind,id):
-    print("Entering delete_datastore_entity...")
-    return_object = {
-        "message": "",
-        "success_indicator": True
-    }
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
-    entity = get_datastore_entity(entityKind,id)
-    if entity == None:
-        # Entity does not exist.
-        return_object = {
-            "message": "Entity {} does not exist in Kind {}.".format(id,entityKind),
-            "success_indicator": False
-        }
-    else:
-        key = client.key(entityKind,id)
-        client.delete(key)
-        return_object = {
-            "message": "Entity {} deleted from Kind {}.".format(id,entityKind),
-            "success_indicator": True
-        }
-    return return_object
+def  encrypt_symmetric(project_id, location_id, key_ring_id, crypto_key_id, plaintext):
+    # Creates an API client for the KMS API.
+    client = kms_v1.KeyManagementServiceClient()
 
-# Update single/multiple properties of an entity. 
-# Return success indicator and corresponding message.
-def update_datastore_entity(entityKind,id,updatedEntity):
-    print("Entering update_datastore_entity...")
-    return_object = {
-        "message": "",
-        "success_indicator": True
-    }
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
-    entity = get_datastore_entity(entityKind,id)
-    if entity == None:
-        # Entity does not exist.
-        return_object = {
-            "message": "Entity {} does not exist in Kind {}.".format(id,entityKind),
-            "success_indicator": False
-        }
-    else:
-        entity.update(updatedEntity)
-        client.put(entity)
-        return_object = {
-            "message": "Entity {} updated in Kind {}.".format(id,entityKind),
-            "success_indicator": True
-        }
-    return return_object
+    # The resource name of the CryptoKey.
+    name = client.crypto_key_path(project_id, location_id, key_ring_id, crypto_key_id)
+    # print("name:{},{}".format(name,type(name)))
+
+    # Use the KMS API to encrypt the data.
+    response = client.encrypt(name, plaintext)
+    return response.ciphertext
+
+def decrypt_symmetric(project_id, location_id, key_ring_id, crypto_key_id,
+                      ciphertext):
+    """Decrypts input ciphertext using the provided symmetric CryptoKey."""
+
+    # Creates an API client for the KMS API.
+    client = kms_v1.KeyManagementServiceClient()
+
+    # The resource name of the CryptoKey.
+    name = client.crypto_key_path(project_id, location_id, key_ring_id, crypto_key_id)
+
+    # Use the KMS API to decrypt the data.
+    response = client.decrypt(name, ciphertext)
+    return response.plaintext
+    
 
 
-# Fetch an entity by ID
-def get_datastore_entity(entityKind,id):
-    print("Entering get_datastore_entity...")
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
-    key = client.key(entityKind,id)
-    entity = client.get(key)
-    return entity
 
-# Return the list of all the entities in the supplied Kind.
-def get_datastore_entities_by_kind(entityKind):
-    print("Entering get_datastore_entities_by_kind...")
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys/Credentials.json"
-    client = datastore.Client()
-    query = client.query(kind=entityKind)
-    return list(query.fetch())
+
 
 
     

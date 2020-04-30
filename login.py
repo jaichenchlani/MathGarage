@@ -2,6 +2,7 @@ from config import read_configurations_from_config_file
 from datastoreoperations import create_datastore_entity, get_datastore_entity_by_property, delete_datastore_entity, update_datastore_entity
 import datetime
 from utilities import isValidEmail
+from encryptionoperations import encrypt_symmetric, decrypt_symmetric
 
 # Load Defaults from Config
 envVariables = read_configurations_from_config_file()
@@ -11,6 +12,8 @@ entityKind = envVariables['datastore_kind_users']
 entityProperty = envVariables['datastore_property_username']
 flag_user_hard_delete = envVariables['flag_user_hard_delete']
 login_user_message_codes = envVariables['login_user_message_codes']
+USERNAME_MINIMUM_LENGTH = envVariables['USERNAME_MINIMUM_LENGTH']
+PASSWORD_MINIMUM_LENGTH = envVariables['PASSWORD_MINIMUM_LENGTH']
 
 def login(login_credentials):
     print("Entering login..")
@@ -189,7 +192,8 @@ def create_user(entityKind,user_details):
     user_entity = {
             # username should always be stored in lowercase.
             "username": user_details['username'].lower(),
-            "password": user_details['password'],
+            # "password": user_details['password'],
+            "password": encrypt_password(user_details['password'])['encrypted_password'],
             # first_name and last_name should be first letter capital
             "first_name": user_details['first_name'].title(),
             "last_name": user_details['last_name'].title(),
@@ -281,10 +285,12 @@ def validate_user_attributes(user_details):
     }
     if user_details['username'] is None or user_details['username'] == "":
         response['message'] = "Invalid attribute. Username missing."
+    elif len(user_details['username']) < USERNAME_MINIMUM_LENGTH:
+        response['message'] = "Invalid attribute. Username should be atleast 4 characters."
     elif user_details['password'] is None  or user_details['password'] == "":
         response['message'] = "Invalid attribute. password missing."
-    elif len(user_details['password']) < 8:
-        response['message'] = "Invalid attribute. Password should be atleast 8 characters."
+    elif len(user_details['password']) < PASSWORD_MINIMUM_LENGTH:
+        response['message'] = "Invalid attribute. Password should be atleast 4 characters."
     elif user_details['first_name'] is None or user_details['first_name'] == "":
         response['message'] = "Invalid attribute. First Name missing."
     elif user_details['last_name'] is None  or user_details['last_name'] == "":
@@ -365,4 +371,53 @@ def update_user(entityKind,user_details):
     response['message'] = "User updated successfully in the DB."
     response['entity'] = entity['entity']
     
+    return response
+
+def encrypt_password(plaintext_password):
+    print("Entering encrypt_password...")
+    # Initialize the response dictionary
+    response = {
+        "encrypted_password": None,
+        "message": "Password encryption successful.",
+        "validOutputReturned": True,
+    }
+    encryption = encrypt_symmetric(plaintext_password)
+    if not encryption['validOutputReturned']:
+        # Error returned from encrypt_symmetric
+        response['message'] = encryption['message']
+        # Return. Don't move forward.
+        return response
+
+    if not encryption['result']:
+        # Invalid output returned from encrypt_symmetric
+        response['message'] = encryption['message']
+        # Return. Don't move forward.
+        return response
+    # All good. Return the response dictionary
+    response['encrypted_password'] = encryption['ciphertext']
+    return response
+    
+def decrypt_password(encrypted_password):
+    print("Entering encrypt_password...")
+    # Initialize the response dictionary
+    response = {
+        "decrypted_password": None,
+        "message": "Password decryption successful.",
+        "validOutputReturned": True,
+    }
+    decryption = decrypt_symmetric(encrypted_password)
+    if not decryption['validOutputReturned']:
+        # Error returned from encrypt_symmetric
+        response['message'] = decryption['message']
+        # Return. Don't move forward.
+        return response
+
+    if not decryption['result']:
+        # Invalid output returned from encrypt_symmetric
+        response['message'] = decryption['message']
+        # Return. Don't move forward.
+        return response
+        
+    # All good. Return the response dictionary
+    response['decrypted_password'] = decryption['plaintext']
     return response

@@ -3,14 +3,24 @@ from utilities import identify_valid_items_in_list
 from sequencepuzzlegenerator import generate_sequence_puzzle
 from linearequationsgenerator import generate_linear_equations
 from basicarithmaticoperations import generate_basic_arithmatic_operations
-from login import login
 from datastoreoperations import create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
 from login import isValidLogin, isValidUser, create_user, delete_user, update_user
 import datetime
+import os
 from google.cloud import datastore
 from mathfunctions import isEven, isPrime, isPositive, getFactors, getPrimeFactors, changeBase
 from numberwiki import get_number_wiki
 from utilities import isValidEmail
+# from gcpsdkinteractionreference import get_keyrings, encrypt_symmetric, decrypt_symmetric
+from config import read_configurations_from_config_file
+from encryptionoperations import encrypt_symmetric, decrypt_symmetric
+from login import encrypt_password, decrypt_password
+
+# Load Defaults from Config
+envVariables = read_configurations_from_config_file()
+credential_key_file = envVariables['credential_key_file']
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
+password_encryption_codes = envVariables['password_encryption_codes']
 
 # Test only. Comment out for Production
 difficultyLevel = { 
@@ -263,11 +273,11 @@ adminUser = {
     }
 
 testUser = {
-    "username": "Test",
-    "password": "123678",
-    "first_name": "FIRST_NAME_3",
-    "last_name": "LAST_name_3",
-    "email": "testmathgaragecom"
+    "username": "testencryption",
+    "password": "1234",
+    "first_name": "FIRST_NAME_1",
+    "last_name": "LAST_name_1",
+    "email": "test@mathgarage.com"
     }
 print(create_user(entityKind,testUser))
 # print(update_user(entityKind,user))
@@ -302,3 +312,40 @@ print(create_user(entityKind,testUser))
 # username = "TESt"
 # password = "12345678"
 # print(isValidLogin(entityKind,username.lower(),password))
+
+# project_id = "mathgarage"
+# location_id = "global"
+# key_ring_id = "passwords"
+# crypto_key_id = "user_password"
+
+# project_id = password_encryption_codes['project_id']
+# location_id = password_encryption_codes['location_id']
+# key_ring_id = password_encryption_codes['key_ring_id']
+# crypto_key_id = password_encryption_codes['crypto_key_id']
+
+
+# password = "12345678".encode()
+
+# # get_keyrings(PROJECT_ID, LOCATION_ID)
+# encrypted_password = encrypt_symmetric(password)
+# print("encrypted_password:{},{}".format(encrypted_password,type(encrypted_password)))
+
+# # projects/mathgarage/locations/global/keyRings/test/cryptoKeys/quickstart
+# decrypted_password = decrypt_symmetric(encrypted_password['ciphertext'])
+# print("decrypted_password:{},{}".format(decrypted_password,type(decrypted_password)))
+
+
+# password = "12345678"
+
+# print("password:{},{}".format(password,type(password)))
+
+# encryption = encrypt_password(password)
+# # print("encryption:{},{}".format(encryption,type(encryption)))
+# encrypted_password = encryption['encrypted_password']
+# print("encrypted_password:{},{}".format(encrypted_password,type(encrypted_password)))
+
+# decryption = decrypt_password(encrypted_password)
+# # print("decryption:{},{}".format(decryption,type(decryption)))
+
+# decrypted_password = decryption['decrypted_password']
+# print("decrypted_password:{},{}".format(decrypted_password,type(decrypted_password)))
