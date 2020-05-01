@@ -9,6 +9,7 @@
             "username": "",
             "password": ""
         }
+        $scope.forgotPassword = undefined
 
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
@@ -21,29 +22,26 @@
                   // LOGIN_SUCCESS
                   $scope.errorMessage = $scope.loginInfo.is_valid_login_response.message
                   $window.location.href = '/'
-                    //$location.url("/")
-
                   break;
                 case 1:
                   // LOGIN_FAILURE
                   $scope.errorMessage = $scope.loginInfo.is_valid_login_response.message
+                  $window.document.getElementById('forgotPassword').focus();
                   break;
                 case 2:
                   // LOGIN_USER_DOES_NOT_EXIST
                   $scope.errorMessage = $scope.loginInfo.is_valid_login_response.message
+                  $window.document.getElementById('createAccount').focus();
                   break;
                 case 3:
                   // LOGIN_SERVER_ERROR
                   $scope.errorMessage = $scope.loginInfo.is_valid_login_response.message
+                  $window.document.getElementById('inputUsername').focus();
                   break;
                 default:
                 $scope.errorMessage = "Something unexpected occcured."
                   // SOMETHING ELSE WENT WRONG.
               }
-
-            // Redirect to Home Page.
-            // $window.location.href = '/';
-
         }
 
         // Actions when HTTP call fails.

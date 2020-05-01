@@ -13,6 +13,8 @@
     },
     "USERNAME_MINIMUM_LENGTH": 4,
     "PASSWORD_MINIMUM_LENGTH": 4,
+    "FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH": 4,
+    "FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH": 4,
     "credential_key_file": "keys/Credentials.json",
     "multiplication_facts_table_of": 52,
     "multiplication_facts_limit": 10,

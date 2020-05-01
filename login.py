@@ -14,6 +14,8 @@ flag_user_hard_delete = envVariables['flag_user_hard_delete']
 login_user_message_codes = envVariables['login_user_message_codes']
 USERNAME_MINIMUM_LENGTH = envVariables['USERNAME_MINIMUM_LENGTH']
 PASSWORD_MINIMUM_LENGTH = envVariables['PASSWORD_MINIMUM_LENGTH']
+FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH = envVariables['FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH']
+FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH = envVariables['FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH']
 
 def login(login_credentials):
     print("Entering login..")
@@ -74,6 +76,8 @@ def isValidUser(entityKind,username):
         first_name = entity['first_name']
         last_name = entity['last_name']
         email = entity['email']
+        forgot_password_question = entity['forgot_password_question']
+        forgot_password_answer = entity['forgot_password_answer']
         create_timestamp = entity['create_timestamp'],
         last_logged_timestamp = entity['last_logged_timestamp'],
         last_modified_timestamp = entity['last_modified_timestamp']
@@ -103,6 +107,8 @@ def isValidUser(entityKind,username):
             "first_name": first_name,
             "last_name": last_name,
             "email": email,
+            "forgot_password_question": forgot_password_question,
+            "forgot_password_answer": forgot_password_answer,
             "create_timestamp": create_timestamp,
             "last_logged_timestamp": last_logged_timestamp,
             "last_modified_timestamp": last_modified_timestamp
@@ -138,12 +144,17 @@ def isValidLogin(entityKind,username,password):
         return response
 
     # User is valid. Validate the password.
-    if not user['userDetails']['password'] == password:
+    if not decrypt_password(user['userDetails']['password'])['decrypted_password'] == password:
         # Incorrect password. Return False
         response['message'] = login_failure_message
         response['result'] = login_user_message_codes['LOGIN_FAILURE']
         # Return. Don't move forward.
         return response
+
+    # Take the password and forgot password question/answer off from the response 
+    user['userDetails']['password'] = None
+    user['userDetails']['forgot_password_question'] = None
+    user['userDetails']['forgot_password_answer'] = None
 
     # All good. Valid user, correct password. Return True
     response = {
@@ -158,26 +169,27 @@ def create_user(entityKind,user_details):
     print("Entering create_user...")
     # Initialize the response dictionary
     response = {
+        "result": True,
         "datastore_id": None,
-        "entity": None,
-        "message": "",
+        # "userDetails": {},
+        "message": "User created in the DB.",
         "validOutputReturned": True
-        # "userDetails": {}
     }
-    # Validate User Data: Username, Password, First Name, Last Name and Email are mandatory fields.
+    # Validate User Data
     attribute_validation = validate_user_attributes(user_details)
     if not attribute_validation['validOutputReturned']:
         # Error returned from validate_user_attributes
         response['message'] = attribute_validation['message']
         response['validOutputReturned'] = False
+        response['result'] = False
         # Return. Don't move forward.
         return response
 
     # Valid output returned from validate_user_attributes
-    response['message'] = attribute_validation['message']
     if not attribute_validation['result']:
         # Invalid attributes.
         response['message'] = attribute_validation['message']
+        response['result'] = False
         # Return. Don't move forward.
         return response
 
@@ -185,6 +197,7 @@ def create_user(entityKind,user_details):
     if isValidUser(entityKind,user_details['username'].lower())['result']:
     # User already exists in the DB. Cannot create.
         response['message'] = "Cannot create user. User already exists."
+        response['result'] = False
         # Return. Don't move forward.
         return response
 
@@ -192,13 +205,14 @@ def create_user(entityKind,user_details):
     user_entity = {
             # username should always be stored in lowercase.
             "username": user_details['username'].lower(),
-            # "password": user_details['password'],
             "password": encrypt_password(user_details['password'])['encrypted_password'],
             # first_name and last_name should be first letter capital
             "first_name": user_details['first_name'].title(),
             "last_name": user_details['last_name'].title(),
             # email should always be stored in lowercase.
             "email": user_details['email'].lower(),
+            "forgot_password_question": user_details['forgot_password_question'],
+            "forgot_password_answer": encrypt_password(user_details['forgot_password_answer'])['encrypted_password'],
             "active": True,
             "create_timestamp": datetime.datetime.now(),
             "last_logged_timestamp": datetime.datetime.now(),
@@ -209,13 +223,12 @@ def create_user(entityKind,user_details):
         # Error returned from create_datastore_entity
         response['message'] = entity['message']
         response['validOutputReturned'] = False
+        response['result'] = False
         # Return. Don't move forward.
         return response
 
     # Valid output returned from create_datastore_entity
-    response['entity'] = entity['entity']
     response['datastore_id'] = entity['entity'].key.id
-
     return response
         
 def delete_user(entityKind,username):
@@ -286,11 +299,11 @@ def validate_user_attributes(user_details):
     if user_details['username'] is None or user_details['username'] == "":
         response['message'] = "Invalid attribute. Username missing."
     elif len(user_details['username']) < USERNAME_MINIMUM_LENGTH:
-        response['message'] = "Invalid attribute. Username should be atleast 4 characters."
+        response['message'] = "Invalid attribute. Username should be atleast {} characters.".format(USERNAME_MINIMUM_LENGTH)
     elif user_details['password'] is None  or user_details['password'] == "":
         response['message'] = "Invalid attribute. password missing."
     elif len(user_details['password']) < PASSWORD_MINIMUM_LENGTH:
-        response['message'] = "Invalid attribute. Password should be atleast 4 characters."
+        response['message'] = "Invalid attribute. Password should be atleast {}} characters.".format(PASSWORD_MINIMUM_LENGTH)
     elif user_details['first_name'] is None or user_details['first_name'] == "":
         response['message'] = "Invalid attribute. First Name missing."
     elif user_details['last_name'] is None  or user_details['last_name'] == "":
@@ -299,6 +312,14 @@ def validate_user_attributes(user_details):
         response['message'] = "Invalid attribute. email missing."
     elif not isValidEmail(user_details['email'])['result']:
         response['message'] = isValidEmail(user_details['email'])['message']
+    elif user_details['forgot_password_question'] is None  or user_details['forgot_password_question'] == "":
+        response['message'] = "Invalid attribute. Forgot Password Question missing."
+    elif len(user_details['forgot_password_question']) < FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH:
+        response['message'] = "Invalid attribute. Forgot Password Question should be atleast {} characters.".format(FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH)
+    elif user_details['forgot_password_answer'] is None  or user_details['forgot_password_answer'] == "":
+        response['message'] = "Invalid attribute. Forgot Password Answer missing."
+    elif len(user_details['forgot_password_answer']) < FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH:
+        response['message'] = "Invalid attribute. Forgot Password Answer should be atleast {} characters.".format(FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH)
     else:
         response['message'] = "All attributes are valid."
         response['result'] = True
@@ -314,7 +335,7 @@ def update_user(entityKind,user_details):
         "validOutputReturned": True,
         "userDetails": {}
     }
-    # Validate User Data: Username, Password, First Name, Last Name and Email are mandatory fields.
+    # Validate User Data
     attribute_validation = validate_user_attributes(user_details)
     if not attribute_validation['validOutputReturned']:
         # Error returned from validate_user_attributes
@@ -357,6 +378,8 @@ def update_user(entityKind,user_details):
             "last_name": user_details['last_name'].title(),
             # email should always be stored in lowercase.
             "email": user_details['email'].lower(),
+            "forgot_password_question": user_details['forgot_password_question'],
+            "forgot_password_answer": user_details['forgot_password_answer'],
             "active": True,
             "last_modified_timestamp": datetime.datetime.now()
         }

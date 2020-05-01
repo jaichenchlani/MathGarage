@@ -17,15 +17,12 @@
             console.log("Entering onUserComplete...");
             $scope.user = response.data;
             console.log($scope.user)
-            if ($scope.user.created_userInfo.entity) {
+            if ($scope.user.created_userInfo.result) {
                 // All good. User got created in Data Store. Redirect to Home Page.
                 $window.location.href = '/';
             } else {
                 $scope.errorMessage = $scope.user.created_userInfo.message
             }
-            // Redirect to Home Page.
-            // $window.location.href = '/';
-
         }
 
         // Actions when HTTP call fails.
