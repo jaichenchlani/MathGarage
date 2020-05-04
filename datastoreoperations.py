@@ -26,9 +26,12 @@ def create_datastore_entity(entityKind,entityObject):
         entity = datastore.Entity(key=key)
         entity.update(entityObject)
         client.put(entity)
-    except:
+    except Exception as e:
         # Error performing the DB operation
-        response['message'] = "Error creating datastore entity."
+        errorMessage = "Error creating datastore entity."
+        errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+        print(errorMessage)
+        response['message'] = errorMessage
         response['validOutputReturned'] = False
         
     response['entity'] = entity
@@ -60,9 +63,12 @@ def delete_datastore_entity(entityKind,id):
                 # Perform the DB operation
                 key = client.key(entityKind,id)
                 client.delete(key)
-            except:
+            except Exception as e:
                 # Error performing the DB operation
-                response['message'] = "Error deleting datastore entity."
+                errorMessage = "Error deleting datastore entity."
+                errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+                print(errorMessage)
+                response['message'] = errorMessage
                 response['validOutputReturned'] = False
 
     # Update the success message in the response dictionary.
@@ -95,10 +101,13 @@ def update_datastore_entity(entityKind,id,updatedEntity):
             # Update the entity returned from the fetch, with the updatedEntity from arguments
             entity['entity'].update(updatedEntity)
             client.put(entity['entity'])
-        except:
+        except Exception as e:
             # Error performing the DB operation
+            errorMessage = "Error updating the entity in datstore."
+            errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+            print(errorMessage)
             response['result'] = False
-            response['message'] = "Error updating the entity in datstore."
+            response['message'] = errorMessage
             response['validOutputReturned'] = False
 
     response['entity'] = entity['entity']
@@ -117,9 +126,12 @@ def get_datastore_entity(entityKind,id):
         # Perform the DB operation
         key = client.key(entityKind,id)
         entity = client.get(key)
-    except:
+    except Exception as e:
         # Error performing the DB operation
-        response['message'] = "Error fetching datastore entity."
+        errorMessage = "Error fetching datastore entity."
+        errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+        print(errorMessage)
+        response['message'] = errorMessage
         response['validOutputReturned'] = False
     
     response['entity'] = entity
@@ -137,9 +149,12 @@ def get_datastore_entities_by_kind(entityKind):
     try:
         # Perform the DB operation
         query = client.query(kind=entityKind)
-    except:
+    except Exception as e:
         # Error performing the DB operation
-        response['message'] = "Error fetching datastore entity list."
+        errorMessage = "Error fetching datastore entity list."
+        errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+        print(errorMessage)
+        response['message'] = errorMessage
         response['validOutputReturned'] = False
     response['entityList'] = list(query.fetch())
     return response
@@ -157,8 +172,12 @@ def get_datastore_entity_by_property(entityKind,propertyKey,propertyValue):
         query = client.query(kind=entityKind)
         query = query.add_filter(propertyKey, '=', propertyValue)
         query_iter = query.fetch()
-    except:
-        response['message'] = "Error fetching user from the DB."
+    except Exception as e:
+        # Error performing the DB operation
+        errorMessage = "Error fetching user from the DB."
+        errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+        print(errorMessage)
+        response['message'] = errorMessage
         response['validOutputReturned'] = False
     
     # response['entity'] = query_iter

@@ -5,7 +5,7 @@ from multiplicationfacts import get_multiplication_facts
 from sequencepuzzlegenerator import generate_sequence_puzzle, update_datastore_sequence_puzzles
 from linearequationsgenerator import generate_linear_equations, update_datastore_linear_equations
 from numberwiki import get_number_wiki
-from login import login, create_account
+from login import login, create_account, reset_password, get_forgot_password_question
 from basicarithmaticoperations import generate_basic_arithmatic_operations, update_datastore_basic_arithmatic_operations
 
 
@@ -88,6 +88,20 @@ def process_login():
     print("Enterning process_login...")
     login_credentials = request.json
     data = login(login_credentials)
+    return jsonify(data), 200
+
+@app.route('/reset-password', methods=['PUT', 'GET'])
+def process_reset_password():
+    print("Enterning process_reset_password...")
+    login_credentials = request.json
+    data = reset_password(login_credentials)
+    return jsonify(data), 200
+
+@app.route('/get-forgot-password-question', methods=['PUT', 'GET'])
+def process_get_forgot_password_question():
+    print("Enterning process_get_forgot_password_question...")
+    login_credentials = request.json
+    data = get_forgot_password_question(login_credentials)
     return jsonify(data), 200
 
 @app.route('/create-account-initial-load')

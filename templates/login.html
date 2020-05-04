@@ -15,12 +15,12 @@
                 <div class = "row border justify-content-center align-items-center">
                     <div class="col-sm-6">
                         <h6>Username:</h6>
-                        <input id="inputUsername" class="form-control" type="text" ng-model="loginCredentials.username" placeholder="Username"  required><br>
+                        <input id="inputUsername" class="form-control" type="text" ng-model="loginCredentials.username" placeholder="Username" ng-disabled="showForgotPasswordSection" required><br>
                     </div>
 
                     <div class="col-sm-6">
-                        <h6>Password:(<a id="forgotPassword" href="/forgot-password">Forgot Password?</a>)</h6>
-                        <input id="inputPassword" class="form-control" type="password" ng-model="loginCredentials.password"  required><br>
+                        <h6>Password:(<a id="forgotPassword" href="#" ng-click="forgotPassword()">Forgot Password?</a>)</h6>
+                        <input id="inputPassword" class="form-control" type="password" ng-model="loginCredentials.password"  ng-disabled="showForgotPasswordSection" required><br>
                     </div>
                 </div>
                 <div class = "row justify-content-left align-items-left">
@@ -35,17 +35,18 @@
                 </div>
                 <br>
                 
-                <div ng-show="forgotPassword" class = "row border justify-content-center align-items-center">
+                <div ng-show="showForgotPasswordSection" class = "row border justify-content-center align-items-center">
+                    <span class="alert-danger">{{'{{resetPasswordErrorMessage}}'}}</span><br>
                     <div class="col-sm-6">
                         <h6>Forgot Password Question:</h6>
-                        <input id="forgotPasswordQuestion" class="form-control" type="text" ng-model="loginCredentials.forgot_password_question" ng-disabled=1><br>
+                        <input id="inputForgotPasswordQuestion" class="form-control" type="text" ng-model="loginCredentials.forgot_password_question" ng-disabled=1><br>
                     </div>
 
                     <div class="col-sm-6">
                         <h6>Forgot Password Answer:</h6>
-                        <input id="forgotPasswordAnswer" class="form-control" type="text" ng-model="loginCredentials.forgot_password_answer"  required><br>
+                        <input id="inputForgotPasswordAnswer" class="form-control" type="text" ng-model="loginCredentials.forgot_password_answer"  required><br>
                     </div>
-                    <input class="btn-primary" id="submitForgotPasswordAnswer" type="submit" value="Get Password" ng-click="getPassword()"/>
+                    <input class="btn-primary" id="submitResetPassword" type="submit" value="Reset Password" ng-click="resetPassword()"/>
                 </div>
             </form>
         </div>

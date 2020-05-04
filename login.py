@@ -1,7 +1,7 @@
 from config import read_configurations_from_config_file
 from datastoreoperations import create_datastore_entity, get_datastore_entity_by_property, delete_datastore_entity, update_datastore_entity
 import datetime
-from utilities import isValidEmail
+import gmail, utilities
 from encryptionoperations import encrypt_symmetric, decrypt_symmetric
 
 # Load Defaults from Config
@@ -16,17 +16,26 @@ USERNAME_MINIMUM_LENGTH = envVariables['USERNAME_MINIMUM_LENGTH']
 PASSWORD_MINIMUM_LENGTH = envVariables['PASSWORD_MINIMUM_LENGTH']
 FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH = envVariables['FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH']
 FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH = envVariables['FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH']
+admin_email_id = envVariables['admin_email_id']
+password_reset_email_subject = envVariables['password_reset_email_subject']
+password_reset_email_body = envVariables['password_reset_email_body']
 
+# Validate username and password
 def login(login_credentials):
     print("Entering login..")
-
     # Declare the output dictionary
     login_response = declare_login_response_dictionary(login_credentials)
-
-    login_response['is_valid_login_response'] = isValidLogin(entityKind,login_credentials['username'].lower(),login_credentials['password'])
-
+    # Validate login against the Password
+    login_response['is_valid_login_response'] = isValidLogin("login",entityKind,
+        login_credentials['username'].lower(),
+        login_credentials['password'])
+    # Take the password and forgot password question/answer off from the response     
+    if login_response['is_valid_login_response']['userDetails']:
+        login_response['is_valid_login_response']['userDetails']['password'] = None
+        login_response['is_valid_login_response']['userDetails']['forgot_password_answer'] = None
     return login_response
 
+# Helper function for login
 def declare_login_response_dictionary(login_credentials):
     print("Entering declare_login_response_dictionary..")
     login_response = {}
@@ -34,9 +43,61 @@ def declare_login_response_dictionary(login_credentials):
     login_response['is_valid_login_response'] = {}
     return login_response
 
+# Reset password functionality. 
+# Send the clear text user password to the registered email id.
+def reset_password(login_credentials):
+    print("Entering forgot_password..")
+    # Declare the output dictionary
+    reset_password_response = declare_reset_response_dictionary(login_credentials)
+    # Declare the output dictionary
+    reset_password_response['is_valid_login_response'] = isValidLogin("reset_password",entityKind,
+        login_credentials['username'].lower(),
+        login_credentials['forgot_password_answer'])
+    # Check if the user got authenticate from isValidLogin
+    if not reset_password_response['is_valid_login_response']['userDetails']:
+        reset_password_response['result'] = False
+        reset_password_response['message'] = "Invlid response from isValidLogin."
+        return reset_password_response
+
+    # Send the email with the password in clear text
+    emailTo = reset_password_response['is_valid_login_response']['userDetails']['email']
+    emailCC = admin_email_id
+    emailSubject = password_reset_email_subject
+    decrypted_password = utilities.decrypt_password(reset_password_response['is_valid_login_response']['userDetails']['password'])['decrypted_password']
+    emailBody = "{}\n\n\n{}".format(password_reset_email_body,decrypted_password)
+    email = gmail.send_email(emailTo, emailCC, emailSubject, emailBody)
+    if not email['result']:
+        reset_password_response['result'] = False
+        reset_password_response['message'] = email['message']
+        return reset_password_response
+
+    # Take the password and forgot password question/answer off from the response     
+    reset_password_response['is_valid_login_response']['userDetails']['password'] = None
+    reset_password_response['is_valid_login_response']['userDetails']['forgot_password_answer'] = None
+    return reset_password_response
+
+# Helper function for Reset Password
+def declare_reset_response_dictionary(login_credentials):
+    print("Entering declare_reset_response_dictionary..")
+    reset_password_response = {}
+    reset_password_response['result'] = True
+    reset_password_response['message'] = "Reset password successful."
+    reset_password_response['login_credentials'] = login_credentials
+    reset_password_response['is_valid_login_response'] = {}
+    return reset_password_response
+
+def get_forgot_password_question(login_credentials):
+    print("Entering get_forgot_password_question..")
+    user = isValidUser(entityKind,login_credentials['username'])
+    login_credentials['validOutputReturned'] = user['validOutputReturned']
+    login_credentials['isValidUser'] = user['result']
+    login_credentials['message'] = user['message']
+    if login_credentials['isValidUser']:
+        login_credentials['forgot_password_question'] = user['userDetails']['forgot_password_question']
+    return login_credentials
+
 def create_account(userInfo):
     print("Entering create_account..")
-
     # Declare the output dictionary
     create_account_response = declare_create_account_response_dictionary(userInfo)
     create_account_response['created_userInfo'] = create_user(entityKind,userInfo)
@@ -48,7 +109,6 @@ def declare_create_account_response_dictionary(userInfo):
     create_account_response['userInfo'] = userInfo
     create_account_response['created_userInfo'] = {}
     return create_account_response
-
 
 def isValidUser(entityKind,username):
     print("Entering isValidUser...")
@@ -116,7 +176,7 @@ def isValidUser(entityKind,username):
     }
     return response
 
-def isValidLogin(entityKind,username,password):
+def isValidLogin(callingFrom,entityKind,username,password):
     print("Entering isValidLogin...")
     # Initialize the response dictionary
     response = {
@@ -127,6 +187,7 @@ def isValidLogin(entityKind,username,password):
     }
 
     user = isValidUser(entityKind,username)
+    print(user)
     if not user['validOutputReturned']:
         # Error returned from isValidUser. 
         response['message'] = user['message']
@@ -144,17 +205,20 @@ def isValidLogin(entityKind,username,password):
         return response
 
     # User is valid. Validate the password.
-    if not decrypt_password(user['userDetails']['password'])['decrypted_password'] == password:
+    # Validate the password against the right password field
+    if callingFrom == "login":
+        # Calling from login. Validate against "password" field
+        dbPassword = utilities.decrypt_password(user['userDetails']['password'])['decrypted_password']
+    else:
+        # Calling from login. Validate against "forgot_password_answer" field
+        dbPassword = utilities.decrypt_password(user['userDetails']['forgot_password_answer'])['decrypted_password']
+
+    if not dbPassword == password:
         # Incorrect password. Return False
         response['message'] = login_failure_message
         response['result'] = login_user_message_codes['LOGIN_FAILURE']
         # Return. Don't move forward.
         return response
-
-    # Take the password and forgot password question/answer off from the response 
-    user['userDetails']['password'] = None
-    user['userDetails']['forgot_password_question'] = None
-    user['userDetails']['forgot_password_answer'] = None
 
     # All good. Valid user, correct password. Return True
     response = {
@@ -205,14 +269,14 @@ def create_user(entityKind,user_details):
     user_entity = {
             # username should always be stored in lowercase.
             "username": user_details['username'].lower(),
-            "password": encrypt_password(user_details['password'])['encrypted_password'],
+            "password": utilities.encrypt_password(user_details['password'])['encrypted_password'],
             # first_name and last_name should be first letter capital
             "first_name": user_details['first_name'].title(),
             "last_name": user_details['last_name'].title(),
             # email should always be stored in lowercase.
             "email": user_details['email'].lower(),
             "forgot_password_question": user_details['forgot_password_question'],
-            "forgot_password_answer": encrypt_password(user_details['forgot_password_answer'])['encrypted_password'],
+            "forgot_password_answer": utilities.encrypt_password(user_details['forgot_password_answer'])['encrypted_password'],
             "active": True,
             "create_timestamp": datetime.datetime.now(),
             "last_logged_timestamp": datetime.datetime.now(),
@@ -310,8 +374,8 @@ def validate_user_attributes(user_details):
         response['message'] = "Invalid attribute. Last Name missing."
     elif user_details['email'] is None  or user_details['email'] == "":
         response['message'] = "Invalid attribute. email missing."
-    elif not isValidEmail(user_details['email'])['result']:
-        response['message'] = isValidEmail(user_details['email'])['message']
+    elif not utilities.isValidEmail(user_details['email'])['result']:
+        response['message'] = utilities.isValidEmail(user_details['email'])['message']
     elif user_details['forgot_password_question'] is None  or user_details['forgot_password_question'] == "":
         response['message'] = "Invalid attribute. Forgot Password Question missing."
     elif len(user_details['forgot_password_question']) < FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH:
@@ -394,53 +458,4 @@ def update_user(entityKind,user_details):
     response['message'] = "User updated successfully in the DB."
     response['entity'] = entity['entity']
     
-    return response
-
-def encrypt_password(plaintext_password):
-    print("Entering encrypt_password...")
-    # Initialize the response dictionary
-    response = {
-        "encrypted_password": None,
-        "message": "Password encryption successful.",
-        "validOutputReturned": True,
-    }
-    encryption = encrypt_symmetric(plaintext_password)
-    if not encryption['validOutputReturned']:
-        # Error returned from encrypt_symmetric
-        response['message'] = encryption['message']
-        # Return. Don't move forward.
-        return response
-
-    if not encryption['result']:
-        # Invalid output returned from encrypt_symmetric
-        response['message'] = encryption['message']
-        # Return. Don't move forward.
-        return response
-    # All good. Return the response dictionary
-    response['encrypted_password'] = encryption['ciphertext']
-    return response
-    
-def decrypt_password(encrypted_password):
-    print("Entering encrypt_password...")
-    # Initialize the response dictionary
-    response = {
-        "decrypted_password": None,
-        "message": "Password decryption successful.",
-        "validOutputReturned": True,
-    }
-    decryption = decrypt_symmetric(encrypted_password)
-    if not decryption['validOutputReturned']:
-        # Error returned from encrypt_symmetric
-        response['message'] = decryption['message']
-        # Return. Don't move forward.
-        return response
-
-    if not decryption['result']:
-        # Invalid output returned from encrypt_symmetric
-        response['message'] = decryption['message']
-        # Return. Don't move forward.
-        return response
-        
-    # All good. Return the response dictionary
-    response['decrypted_password'] = decryption['plaintext']
     return response

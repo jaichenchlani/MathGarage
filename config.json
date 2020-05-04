@@ -11,6 +11,12 @@
         "key_ring_id": "passwords",
         "crypto_key_id": "user_password"
     },
+    "password_vault_entityKind": "password_vault",
+    "password_vault_account_field_name": "account",
+    "admin_email_id": "jaichenchlani@gmail.com",
+    "gmail_smtp": "smtp.gmail.com:587",
+    "password_reset_email_subject": "Mathgarage Password Reset",
+    "password_reset_email_body": "Dear Mathgarage User - You've requested a password reset. Below is your password. Please log into your account and change the password ASAP.",
     "USERNAME_MINIMUM_LENGTH": 4,
     "PASSWORD_MINIMUM_LENGTH": 4,
     "FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH": 4,

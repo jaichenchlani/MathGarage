@@ -1,26 +1,30 @@
-from utilities import identify_valid_items_in_list
+# from utilities import identify_valid_items_in_list
 # from multiplicationfacts import get_multiplication_facts
-from sequencepuzzlegenerator import generate_sequence_puzzle
-from linearequationsgenerator import generate_linear_equations
-from basicarithmaticoperations import generate_basic_arithmatic_operations
-from datastoreoperations import create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
-from login import isValidLogin, isValidUser, create_user, delete_user, update_user
+import login, config, utilities, gmail
 import datetime
 import os
-from google.cloud import datastore
-from mathfunctions import isEven, isPrime, isPositive, getFactors, getPrimeFactors, changeBase
-from numberwiki import get_number_wiki
-from utilities import isValidEmail
-# from gcpsdkinteractionreference import get_keyrings, encrypt_symmetric, decrypt_symmetric
-from config import read_configurations_from_config_file
-from encryptionoperations import encrypt_symmetric, decrypt_symmetric
-from login import encrypt_password, decrypt_password
+# from sequencepuzzlegenerator import generate_sequence_puzzle
+# from linearequationsgenerator import generate_linear_equations
+# from basicarithmaticoperations import generate_basic_arithmatic_operations
+# from datastoreoperations import create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
+# # from login import isValidLogin, isValidUser, create_user, delete_user, update_user, encrypt_password, decrypt_password
+# from google.cloud import datastore
+# from mathfunctions import isEven, isPrime, isPositive, getFactors, getPrimeFactors, changeBase
+# from numberwiki import get_number_wiki
+# # from utilities import isValidEmail, create_password_in_password_vault
+# import utilities
+# # from gcpsdkinteractionreference import get_keyrings, encrypt_symmetric, decrypt_symmetric
+# from config import read_configurations_from_config_file
+# from encryptionoperations import encrypt_symmetric, decrypt_symmetric
+# from gmail import send_email
 
 # Load Defaults from Config
-envVariables = read_configurations_from_config_file()
+envVariables = config.read_configurations_from_config_file()
 credential_key_file = envVariables['credential_key_file']
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
 password_encryption_codes = envVariables['password_encryption_codes']
+admin_email_id = envVariables['admin_email_id']
+
 
 # Test only. Comment out for Production
 difficultyLevel = { 
@@ -279,7 +283,7 @@ testUser = {
     "last_name": "LAST_name_1",
     "email": "test@mathgarage.com"
     }
-print(create_user(entityKind,testUser))
+# print(create_user(entityKind,testUser))
 # print(update_user(entityKind,user))
 
 # id=5652115070386176
@@ -349,3 +353,39 @@ print(create_user(entityKind,testUser))
 
 # decrypted_password = decryption['decrypted_password']
 # print("decrypted_password:{},{}".format(decrypted_password,type(decrypted_password)))
+
+# TEST EMAIL
+emailTo = "jai.chenchlani@mindtree.com"
+emailCC = "jaichenchlani@gmail.com"
+emailSubject = "Test Email Utility"
+emailBody = "Test Email Body"
+gmail.send_email(emailTo, emailCC, emailSubject, emailBody)
+
+# "password": "CiQAJ4B9l+ssDcKwAQ4XbEFSwvLxQZna6DbJnMLh3rmlkkyuS4ESMQClP4o2kJiyqwZs7QNwQs5QGCNqANMhjOKraqIO7fRVUrUcPck125KYKGvTDvHYcxc="
+
+
+# account = admin_email_id
+
+# encryption = login.encrypt_password(password)
+# # print("encryption:{},{}".format(encryption,type(encryption)))
+# encrypted_password = encryption['encrypted_password']
+# print("encrypted_password:{},{}".format(encrypted_password,type(encrypted_password)))
+
+
+# decryption = login.decrypt_password(encrypted_password)
+# # print("decryption:{},{}".format(decryption,type(decryption)))
+# decrypted_password = decryption['decrypted_password']
+# print("decrypted_password:{},{}".format(decrypted_password,type(decrypted_password)))
+
+# # Create Password Vault Entry
+# create_datastore_entity(entityKind,encrypted_password)
+
+# utilities.create_password_in_password_vault(account,password)
+
+
+# entityList = utilities.get_password_from_password_vault(account)
+# print(entityList['entityList'][0]['password'])
+
+
+# password = utilities.get_password_from_password_vault(account)
+# print("password:{},{}".format(password,type(password)))

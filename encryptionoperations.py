@@ -27,9 +27,12 @@ def  encrypt_symmetric(plaintext):
     try:
         # Use the KMS API to encrypt the data.
         encryption = client.encrypt(crypto_key_name, plaintext.encode())
-    except:
+    except Exception as e:
         # Error performing the KMS operation
-        response['message'] = "Error performing encryption."
+        errorMessage = "Error performing encryption."
+        errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+        print(errorMessage)
+        response['message'] = errorMessage
         response['validOutputReturned'] = False
     
     # All good. Return the encrypted value
@@ -48,9 +51,12 @@ def decrypt_symmetric(ciphertext):
     try:
         # Use the KMS API to decrypt the data.
         decryption = client.decrypt(crypto_key_name, ciphertext)
-    except:
+    except Exception as e:
         # Error performing the KMS operation
-        response['message'] = "Error performing decryption."
+        errorMessage = "Error performing decryption."
+        errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+        print(errorMessage)
+        response['message'] = errorMessage
         response['validOutputReturned'] = False
     
     # All good. Return the encrypted value
