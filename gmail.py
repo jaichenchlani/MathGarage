@@ -1,7 +1,6 @@
 import smtplib, imaplib, email
 from email.message import EmailMessage
 from config import read_configurations_from_config_file
-# from login import decrypt_password
 import utilities
 
 # Load Defaults from Config
