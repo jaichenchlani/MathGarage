@@ -354,12 +354,12 @@ testUser = {
 # decrypted_password = decryption['decrypted_password']
 # print("decrypted_password:{},{}".format(decrypted_password,type(decrypted_password)))
 
-# TEST EMAIL
-emailTo = "jai.chenchlani@mindtree.com"
-emailCC = "jaichenchlani@gmail.com"
-emailSubject = "Test Email Utility"
-emailBody = "Test Email Body"
-gmail.send_email(emailTo, emailCC, emailSubject, emailBody)
+# # TEST EMAIL
+# emailTo = "jai.chenchlani@mindtree.com"
+# emailCC = "jaichenchlani@gmail.com"
+# emailSubject = "Test Email Utility"
+# emailBody = "Test Email Body"
+# gmail.send_email(emailTo, emailCC, emailSubject, emailBody)
 
 # "password": "CiQAJ4B9l+ssDcKwAQ4XbEFSwvLxQZna6DbJnMLh3rmlkkyuS4ESMQClP4o2kJiyqwZs7QNwQs5QGCNqANMhjOKraqIO7fRVUrUcPck125KYKGvTDvHYcxc="
 
@@ -389,3 +389,6 @@ gmail.send_email(emailTo, emailCC, emailSubject, emailBody)
 
 # password = utilities.get_password_from_password_vault(account)
 # print("password:{},{}".format(password,type(password)))
+
+
+

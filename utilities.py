@@ -94,6 +94,61 @@ def insert_in_datastore_and_get_id(entityKind,entity):
     response['message'] = "Successfully inserted into the Datastore."
     return response
 
+# Get the ID from the datastore for key passed as parameter.
+def read_datastore_and_get_id(entityKind,key):
+    print("Entering read_datastore_and_get_id...")
+    # Initialize the response dictionary
+    response = {
+        "id": None,
+        "message": "Process completed successfully. ID returned.",
+        "validOutputReturned": True
+    }
+    entityList = datastoreoperations.get_datastore_entity_by_property(entityKind,"key",key)  
+    number_of_records = 0
+    for entity in entityList['entityList']:
+        number_of_records += 1
+
+    if number_of_records > 1:
+        # More than 1 records exist in the DB. Something wrong. Return False.
+        response['message'] = "More than 1 record for key {} exist in the DB. No action taken.".format(key)
+        response['validOutputReturned'] = False
+        return response
+    
+    if number_of_records == 0:
+        # Entity does not exist. 
+        response['message'] = "Entity does not exist. Cannot get the ID."
+        return response
+
+    if number_of_records == 1:
+        response['id'] = entity.key.id
+
+    return response
+
+
+def create_key_value_pair_in_datastore(entityKind,key,value):
+    print("Entering create_key_value_pair_in_datastore...")
+    # Initialize the response dictionary
+    response = {
+        "result": True,
+        "message": "pair successfully created in Datastore.",
+    }
+    # Create Key/Value entity
+    entity = {
+        "key": key,
+        "value": value
+    }
+    # Create a datastore entry with the created entity.
+    entity = datastoreoperations.create_datastore_entity(entityKind,entity)
+    if not entity['validOutputReturned']:
+        # Error returned from create_datastore_entity
+        response['result'] = False
+        response['message'] = entity['message']
+
+    response['message'] = "{}:{} {}".format(key,value,response['message'])
+    return response
+
+
+
 
 def create_password_in_password_vault(account,password):
     print("Entering password_in_password_vault...")

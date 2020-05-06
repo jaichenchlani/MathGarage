@@ -75,6 +75,9 @@ def process_request(generated_sequence_puzzle):
     # Get the first element of the sequence based on the lower and the upper limits from Config
     firstElement = randint(int(generated_sequence_puzzle['config']['first_element_lower_limit']),
     int(generated_sequence_puzzle['config']['first_element_upper_limit']))
+    # if the random firstElement turns out to be 0, hard code it to 1(any other for that matter).
+    if firstElement == 0:
+        firstElement = 1
     # print("firstElement:{},{}".format(firstElement, type(firstElement)))
     generated_sequence_puzzle['first_element'] = firstElement
 
