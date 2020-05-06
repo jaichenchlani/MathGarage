@@ -12,11 +12,11 @@ def update_datastore_config_from_json(entityKind):
     count = 0
     for (key,value) in envVariables.items():
         # Check whether the key already exists in the DB.
-        entity = utilities.read_datastore_and_get_id(entityKind,key)
-        if not entity['validOutputReturned']:
-            # Not a valid output from read_datastore_and_get_id. Print message and proceed.
-            print(entity['message'])
-        elif not entity['id']:
+        entity = utilities.read_datastore_and_get_id(entityKind,"key",key)
+        # if not entity['validOutputReturned']:
+        #     # Not a valid output from read_datastore_and_get_id. Print message and proceed.
+        #     print(entity['message'])
+        if not entity['id']:
             # Key not found. Create.
             create = utilities.create_key_value_pair_in_datastore(entityKind,key,value)
             print(create)

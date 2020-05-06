@@ -391,4 +391,5 @@ testUser = {
 # print("password:{},{}".format(password,type(password)))
 
 
-
+entityKind = utilities.get_value_by_entityKind_and_key("mathgarage-prod","change_base_config")['config_value']
+print(entityKind)

@@ -1,13 +1,18 @@
 from mathfunctions import isEven, isPrime, isPositive, getFactors, changeBase, getPrimeFactors
-from config import read_configurations_from_config_file
+import config, utilities
 from datastoreoperations import create_datastore_entity, update_datastore_entity
 from utilities import insert_in_datastore_and_get_id
 import datetime
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-entityKind = envVariables['datastore_kind_number_wiki']
-changeBaseConfig = envVariables['change_base_config']
+    # Load Defaults from Config
+    # envVariables = config.read_configurations_from_config_file()
+    # entityKind = envVariables['datastore_kind_number_wiki']
+    # changeBaseConfig = envVariables['change_base_config']
+
+# Load Environment
+env = config.get_environment_from_env_file()
+datastore_kind_number_wiki_key = "datastore_kind_number_wiki"
+change_base_config_key = "change_base_config"
 
 def get_number_wiki(n):
     print("Start - Entering get_number_wiki...")
@@ -18,6 +23,9 @@ def get_number_wiki(n):
     # Process request to populate the results dictionary
     process_request(number_wiki)
 
+    # Get entityKind config from Datastore
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],datastore_kind_number_wiki_key)['config_value']
+    
     # Insert the generated Output Dictionary in Datastore
     insert_response = insert_in_datastore_and_get_id(entityKind,number_wiki)
     if not insert_response['validOutputReturned']:
@@ -45,7 +53,7 @@ def declare_output_dictionary(n):
     number_wiki['wiki_list'] = []
     number_wiki['message'] = ""
     number_wiki['validOutputReturned'] = True
-    number_wiki['showUserHelp'] = envVariables['showUserHelp']
+    number_wiki['showUserHelp'] = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"showUserHelp")['config_value']
     return number_wiki
 
 def process_request(number_wiki):
@@ -105,6 +113,9 @@ def process_request(number_wiki):
         wikiListItem['value'] = ",".join(strList)
     # Append the Prime Factors element to the list
     wikiList.append(wikiListItem)
+
+    # Get changeBaseConfig config from Datastore
+    changeBaseConfig = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],change_base_config_key)['config_value']
 
     # Change Base Processing for bases defined in Config
     for (key,value) in changeBaseConfig.items():

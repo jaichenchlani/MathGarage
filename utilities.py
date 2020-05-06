@@ -1,13 +1,16 @@
 from google.cloud import datastore
 import os, re, datetime
 import datastoreoperations, encryptionoperations
-from config import read_configurations_from_config_file
+import config
 
 
 # Load Defaults from Config
-envVariables = read_configurations_from_config_file()
+envVariables = config.read_configurations_from_config_file()
 password_vault_entityKind = envVariables['password_vault_entityKind']
 password_vault_account_field_name = envVariables['password_vault_account_field_name']
+
+# Load Environment
+env = config.get_environment_from_env_file()
 
 # Shortlist the valid list items from the superset list based on difficulty level
 def identify_valid_items_in_list(allItemsInList,difficultyLevel):
@@ -95,15 +98,14 @@ def insert_in_datastore_and_get_id(entityKind,entity):
     return response
 
 # Get the ID from the datastore for key passed as parameter.
-def read_datastore_and_get_id(entityKind,key):
+def read_datastore_and_get_id(entityKind,property,key):
     print("Entering read_datastore_and_get_id...")
     # Initialize the response dictionary
     response = {
         "id": None,
-        "message": "Process completed successfully. ID returned.",
-        "validOutputReturned": True
+        "message": "Process completed successfully. ID returned."
     }
-    entityList = datastoreoperations.get_datastore_entity_by_property(entityKind,"key",key)  
+    entityList = datastoreoperations.get_datastore_entity_by_property(entityKind,property,key)  
     number_of_records = 0
     for entity in entityList['entityList']:
         number_of_records += 1
@@ -111,7 +113,6 @@ def read_datastore_and_get_id(entityKind,key):
     if number_of_records > 1:
         # More than 1 records exist in the DB. Something wrong. Return False.
         response['message'] = "More than 1 record for key {} exist in the DB. No action taken.".format(key)
-        response['validOutputReturned'] = False
         return response
     
     if number_of_records == 0:
@@ -124,6 +125,28 @@ def read_datastore_and_get_id(entityKind,key):
 
     return response
 
+def get_value_by_entityKind_and_key(entityKind, key):
+    print("Entering get_value_by_entityKind_and_key...")
+    # Initialize the response dictionary
+    response = {
+        "config_value": None,
+        "message": "Process completed successfully. Config value returned."
+    }
+    read = read_datastore_and_get_id(entityKind,"key",key)
+    if not read['id']:
+        # Key not found.
+        response['message'] = "Value not defined for Kind {} and {}.".format(entityKind,key)
+        return response
+    
+    # Key found.
+    entity = datastoreoperations.get_datastore_entity(entityKind,read['id'])
+    if not entity['validOutputReturned']:
+        # Error returned from 
+        response['message'] = entity['message']
+        return response
+
+    response['config_value'] = entity['entity']['value']
+    return response
 
 def create_key_value_pair_in_datastore(entityKind,key,value):
     print("Entering create_key_value_pair_in_datastore...")
@@ -146,8 +169,6 @@ def create_key_value_pair_in_datastore(entityKind,key,value):
 
     response['message'] = "{}:{} {}".format(key,value,response['message'])
     return response
-
-
 
 
 def create_password_in_password_vault(account,password):
