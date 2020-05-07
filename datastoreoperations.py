@@ -1,14 +1,12 @@
 from google.cloud import datastore
-import os
-import datetime
-from config import read_configurations_from_config_file
+import os, datetime
+import config
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-credential_key_file = envVariables['credential_key_file']
+# Load Environment
+env = config.get_environment_from_env_file()
 
 # Create the datastore client to be used by all functions
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = env['credential_key_file']
 client = datastore.Client()
 
 # Create, populate and persist an entity with keyID passed as argument

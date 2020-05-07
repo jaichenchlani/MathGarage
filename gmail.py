@@ -1,16 +1,14 @@
-import smtplib, imaplib, email
+import smtplib, imaplib, email, config
 from email.message import EmailMessage
-from config import read_configurations_from_config_file
 import utilities
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-admin_email_id = envVariables['admin_email_id']
-USERNAME = admin_email_id
-gmail_smtp = envVariables['gmail_smtp']
+# Load Environment
+env = config.get_environment_from_env_file()
 
 def send_email(emailTo, emailCC, emailSubject, emailBody):
     print("Entering send_email...")
+    # Get the email attributes from Config
+    email_attributes = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"email_attributes")['config_value']
     # Initialize the response dictionary
     response = {
         "result": True,
@@ -24,7 +22,7 @@ def send_email(emailTo, emailCC, emailSubject, emailBody):
 
     # Establish connection
     try:  
-        server = smtplib.SMTP(gmail_smtp)
+        server = smtplib.SMTP(email_attributes['gmail_smtp'])
         server.ehlo()
         server.starttls()
         server.ehlo()
@@ -42,8 +40,8 @@ def send_email(emailTo, emailCC, emailSubject, emailBody):
     # Connection established successfully. Log in to the email account.
     try:
         # Get password from password vault
-        PASSWORD = utilities.get_password_from_password_vault(admin_email_id)
-        server.login(USERNAME, PASSWORD)
+        password = utilities.get_password_from_password_vault(email_attributes['admin_email_id'])
+        server.login(email_attributes['admin_email_id'], password)
         print("Logged in.")
     except Exception as e: 
         errorMessage = "Exception ocurred while logging in."
@@ -58,7 +56,7 @@ def send_email(emailTo, emailCC, emailSubject, emailBody):
 
     # Logged in successfully. Send email now.
     try:  
-        server.sendmail(USERNAME,emailTo,message.as_string())
+        server.sendmail(email_attributes['admin_email_id'],emailTo,message.as_string())
         print("Email sent.")
     except Exception as e: 
         errorMessage = "Exception ocurred while sending email."
@@ -76,9 +74,12 @@ def send_email(emailTo, emailCC, emailSubject, emailBody):
     return response
 
 def read_email():
+    print("Entering read_email...")
+    # Get the email attributes from Config
+    email_attributes = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"email_attributes")['config_value']
     mail = imaplib.IMAP4_SSL("imap.gmail.com")
-    PASSWORD = utilities.get_password_from_password_vault(admin_email_id)
-    mail.login(USERNAME, PASSWORD)
+    password = utilities.get_password_from_password_vault(email_attributes['admin_email_id'])
+    mail.login(email_attributes['admin_email_id'], password)
     folders = mail.list()[1]
     mail.select("Shopping")
     result, data = mail.uid('search', None, "ALL")

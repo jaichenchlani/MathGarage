@@ -1,22 +1,29 @@
 from google.cloud import kms_v1
-from config import read_configurations_from_config_file
-import traceback, sys
+import utilities, config
+import sys
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-password_encryption_codes = envVariables['password_encryption_codes']
-project_id = password_encryption_codes['project_id']
-location_id = password_encryption_codes['location_id']
-key_ring_id = password_encryption_codes['key_ring_id']
-crypto_key_id = password_encryption_codes['crypto_key_id']
-# Create an API client for the KMS API.
-client = kms_v1.KeyManagementServiceClient()
-# The resource name of the CryptoKey.
-crypto_key_name = client.crypto_key_path(project_id, location_id, key_ring_id, crypto_key_id)
-exc_traceback = sys.exc_info()
+# Load Environment
+env = config.get_environment_from_env_file()
+
+def initialize_config(kms_config):
+    password_encryption_codes = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"password_encryption_codes")['config_value']
+    project_id = password_encryption_codes['project_id']
+    location_id = password_encryption_codes['location_id']
+    key_ring_id = password_encryption_codes['key_ring_id']
+    crypto_key_id = password_encryption_codes['crypto_key_id']
+    # Create an API client for the KMS API.
+    kms_config['client'] = kms_v1.KeyManagementServiceClient()
+    # The resource name of the CryptoKey.
+    kms_config['crypto_key_name'] = kms_config['client'].crypto_key_path(project_id, location_id, key_ring_id, crypto_key_id)
 
 def  encrypt_symmetric(plaintext):
     print("Entering encrypt_symmetric...")
+    # Initialize Config
+    kms_config = {
+        "client": None,
+        "crypto_key_name": None
+    }
+    initialize_config(kms_config)
     # Initialize the response dictionary
     response = {
         "result": True,
@@ -26,7 +33,7 @@ def  encrypt_symmetric(plaintext):
     }
     try:
         # Use the KMS API to encrypt the data.
-        encryption = client.encrypt(crypto_key_name, plaintext.encode())
+        encryption = kms_config['client'].encrypt(kms_config['crypto_key_name'], plaintext.encode())
     except Exception as e:
         # Error performing the KMS operation
         errorMessage = "Error performing encryption."
@@ -41,6 +48,12 @@ def  encrypt_symmetric(plaintext):
 
 def decrypt_symmetric(ciphertext):
     print("Entering decrypt_symmetric...")
+    # Initialize Config
+    kms_config = {
+        "client": None,
+        "crypto_key_name": None
+    }
+    initialize_config(kms_config)
     # Initialize the response dictionary
     response = {
         "result": True,
@@ -50,7 +63,8 @@ def decrypt_symmetric(ciphertext):
     }
     try:
         # Use the KMS API to decrypt the data.
-        decryption = client.decrypt(crypto_key_name, ciphertext)
+        decryption = kms_config['client'].decrypt(kms_config['crypto_key_name'], ciphertext)
+        print(decryption)
     except Exception as e:
         # Error performing the KMS operation
         errorMessage = "Error performing decryption."

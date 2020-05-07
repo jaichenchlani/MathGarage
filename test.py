@@ -1,29 +1,8 @@
-# from utilities import identify_valid_items_in_list
-# from multiplicationfacts import get_multiplication_facts
-import login, config, utilities, gmail
-import datetime
-import os
-# from sequencepuzzlegenerator import generate_sequence_puzzle
-# from linearequationsgenerator import generate_linear_equations
-# from basicarithmaticoperations import generate_basic_arithmatic_operations
-# from datastoreoperations import create_datastore_entity, delete_datastore_entity, update_datastore_entity, get_datastore_entity, get_datastore_entities_by_kind
-# # from login import isValidLogin, isValidUser, create_user, delete_user, update_user, encrypt_password, decrypt_password
-# from google.cloud import datastore
-# from mathfunctions import isEven, isPrime, isPositive, getFactors, getPrimeFactors, changeBase
-# from numberwiki import get_number_wiki
-# # from utilities import isValidEmail, create_password_in_password_vault
-# import utilities
-# # from gcpsdkinteractionreference import get_keyrings, encrypt_symmetric, decrypt_symmetric
-# from config import read_configurations_from_config_file
-# from encryptionoperations import encrypt_symmetric, decrypt_symmetric
-# from gmail import send_email
+import datastoreoperations, utilities, login, gmail
+import datetime, os
 
-# Load Defaults from Config
-envVariables = config.read_configurations_from_config_file()
-credential_key_file = envVariables['credential_key_file']
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
-password_encryption_codes = envVariables['password_encryption_codes']
-admin_email_id = envVariables['admin_email_id']
+# Load Environment
+env = utilities.get_environment_from_env_file()
 
 
 # Test only. Comment out for Production

@@ -1,13 +1,8 @@
-from config import read_configurations_from_config_file
-from utilities import identify_valid_items_in_list, insert_in_datastore_and_get_id
-from datastoreoperations import create_datastore_entity, update_datastore_entity
+import datastoreoperations, utilities, config
 import datetime
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-default_table_of = envVariables['multiplication_facts_table_of']
-default_limit = envVariables['multiplication_facts_limit']
-entityKind = envVariables['datastore_kind_multiplication_facts']
+# Load Environment
+env = config.get_environment_from_env_file()
 
 def get_multiplication_facts(str_table_of, str_limit):
 
@@ -30,7 +25,9 @@ def get_multiplication_facts(str_table_of, str_limit):
         generated_multiplication_facts["result"] = [tableof*i for i in range(1, limit+1)]
 
     # Insert the generated Output Dictionary in Datastore
-    insert_response = insert_in_datastore_and_get_id(entityKind,generated_multiplication_facts)
+    # Get entityKind config from Datastore
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_multiplication_facts")['config_value']
+    insert_response = utilities.insert_in_datastore_and_get_id(entityKind,generated_multiplication_facts)
     if not insert_response['validOutputReturned']:
         # Error creating datastore entity
         generated_multiplication_facts['validOutputReturned'] = False

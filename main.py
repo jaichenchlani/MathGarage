@@ -1,13 +1,8 @@
 from flask import Flask, render_template, url_for, jsonify, request, redirect
 from datetime import datetime
 import os
-from multiplicationfacts import get_multiplication_facts
-from sequencepuzzlegenerator import generate_sequence_puzzle, update_datastore_sequence_puzzles
-from linearequationsgenerator import generate_linear_equations, update_datastore_linear_equations
-from numberwiki import get_number_wiki
-from login import login, create_account, reset_password, get_forgot_password_question
-from basicarithmaticoperations import generate_basic_arithmatic_operations, update_datastore_basic_arithmatic_operations
-
+import multiplicationfacts, sequencepuzzlegenerator, linearequationsgenerator
+import numberwiki, login, basicarithmaticoperations
 
 print("Entering main.py...")
 
@@ -26,7 +21,7 @@ def render_multiplication_facts_template():
 @app.route('/get-multiplication-facts/<int:tableof>/<int:limit>', methods=['POST', 'GET'])
 def process_multiplication_facts(tableof,limit):
     print("Entering process_multiplication_facts...")
-    data = get_multiplication_facts(tableof, limit)
+    data = multiplicationfacts.get_multiplication_facts(tableof, limit)
     return jsonify(data), 200
 
 @app.route('/number-wiki')
@@ -37,7 +32,7 @@ def render_number_wiki_template():
 @app.route('/number-wiki/<int:n>')
 def process_number_wiki(n):
     print("Enterning process_number_wiki...")
-    data = get_number_wiki(n)
+    data = numberwiki.get_number_wiki(n)
     return jsonify(data), 200
 
 @app.route('/sequence-puzzles')
@@ -49,14 +44,14 @@ def render_sequence_puzzles_template():
 def process_generate_sequence_puzzle():
     print("Enterning process_generate_sequence_puzzle...")
     difficultyLevel = request.json
-    data = generate_sequence_puzzle(difficultyLevel)
+    data = sequencepuzzlegenerator.generate_sequence_puzzle(difficultyLevel)
     return jsonify(data), 200
 
 @app.route('/sequence-puzzles/submit', methods=['PUT', 'GET'])
 def submit_sequence_puzzles():
     print("Enterning submit_sequence_puzzles...")
     input_sequence_puzzles = request.json
-    status = update_datastore_sequence_puzzles(input_sequence_puzzles)
+    status = sequencepuzzlegenerator.update_datastore_sequence_puzzles(input_sequence_puzzles)
     return jsonify(status), 200
 
 @app.route('/linear-equations')
@@ -68,14 +63,14 @@ def render_linear_equations_template():
 def process_generate_linear_equations_puzzle():
     print("Enterning process_generate_linear_equations_puzzle...")
     requestData = request.json
-    data = generate_linear_equations(requestData)
+    data = linearequationsgenerator.generate_linear_equations(requestData)
     return jsonify(data), 200
 
 @app.route('/linear-equations/submit', methods=['PUT', 'GET'])
 def submit_linear_equations():
     print("Enterning submit_linear_equations...")
     input_linear_equations = request.json
-    status = update_datastore_linear_equations(input_linear_equations)
+    status = linearequationsgenerator.update_datastore_linear_equations(input_linear_equations)
     return jsonify(status), 200
 
 @app.route('/login-initial-load')
@@ -87,21 +82,21 @@ def render_login_template():
 def process_login():
     print("Enterning process_login...")
     login_credentials = request.json
-    data = login(login_credentials)
+    data = login.login(login_credentials)
     return jsonify(data), 200
 
 @app.route('/reset-password', methods=['PUT', 'GET'])
 def process_reset_password():
     print("Enterning process_reset_password...")
     login_credentials = request.json
-    data = reset_password(login_credentials)
+    data = login.reset_password(login_credentials)
     return jsonify(data), 200
 
 @app.route('/get-forgot-password-question', methods=['PUT', 'GET'])
 def process_get_forgot_password_question():
     print("Enterning process_get_forgot_password_question...")
     login_credentials = request.json
-    data = get_forgot_password_question(login_credentials)
+    data = login.get_forgot_password_question(login_credentials)
     return jsonify(data), 200
 
 @app.route('/create-account-initial-load')
@@ -113,7 +108,7 @@ def render_create_account_template():
 def process_create_account():
     print("Enterning process_create_account...")
     userInfo = request.json
-    data = create_account(userInfo)
+    data = login.create_account(userInfo)
     return jsonify(data), 200
 
 @app.route('/basic-arithematic-operations-initial-load')
@@ -125,14 +120,14 @@ def render_basic_arithematic_operations_template():
 def process_basic_arithematic_operations():
     print("Enterning def process_basic_arithematic_operations...")
     requestData = request.json
-    data = generate_basic_arithmatic_operations(requestData)
+    data = basicarithmaticoperations.generate_basic_arithmatic_operations(requestData)
     return jsonify(data), 200
 
 @app.route('/basic-arithematic-operations/submit', methods=['PUT', 'GET'])
 def submit_basic_arithematic_operations():
     print("Enterning def submit_basic_arithematic_operations...")
     input_basic_arithematic_operation = request.json
-    status = update_datastore_basic_arithmatic_operations(input_basic_arithematic_operation)
+    status = basicarithmaticoperations.update_datastore_basic_arithmatic_operations(input_basic_arithematic_operation)
     return jsonify(status), 200
 
 if __name__ == "__main__":

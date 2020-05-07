@@ -1,13 +1,11 @@
-from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list, insert_in_datastore_and_get_id
+import datastoreoperations, utilities, config
 from mathfunctions import isInteger
-from datastoreoperations import create_datastore_entity, update_datastore_entity
 import datetime
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-entityKind = envVariables['datastore_kind_basic_arithematic_operations']
+# Load Environment
+env = config.get_environment_from_env_file()
+datastore_kind_basic_arithematic_operations_key = "datastore_kind_basic_arithematic_operations"
 
 def generate_basic_arithmatic_operations(requestData):
     print("Start - Entering generate_basic_arithmatic_operation...")
@@ -25,7 +23,9 @@ def generate_basic_arithmatic_operations(requestData):
         process_request(generated_basic_arithmatic_operation)
     
     # Insert the generated Output Dictionary in Datastore
-    insert_response = insert_in_datastore_and_get_id(entityKind,generated_basic_arithmatic_operation)
+    # Get entityKind config from Datastore
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],datastore_kind_basic_arithematic_operations_key)['config_value']
+    insert_response = utilities.insert_in_datastore_and_get_id(entityKind,generated_basic_arithmatic_operation)
     if not insert_response['validOutputReturned']:
         # Error creating datastore entity
         generated_basic_arithmatic_operation['validOutputReturned'] = False
@@ -55,7 +55,7 @@ def declare_output_dictionary(requestData):
     generated_basic_arithmatic_operation['questions'] = []
     generated_basic_arithmatic_operation['message'] = ""
     generated_basic_arithmatic_operation['validOutputReturned'] = True
-    generated_basic_arithmatic_operation['showUserHelp'] = envVariables['showUserHelp']
+    generated_basic_arithmatic_operation['showUserHelp'] = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"showUserHelp")['config_value']
     
     return generated_basic_arithmatic_operation
 
@@ -64,12 +64,12 @@ def get_config(generated_basic_arithmatic_operation):
     difficultyLevel = generated_basic_arithmatic_operation['difficultyLevel']
 
     # All(i.e. all Difficulty Levels) Valid Puzzle Configurations from Config
-    allConfigurations = envVariables['basic_arithematic_operation_configurations']
+    allConfigurations = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"basic_arithematic_operation_configurations")['config_value']
     # print("allConfigurations:{},{}".format(allConfigurations, type(allConfigurations)))
     # print("Total Puzzle Configurations: {}".format(len(allConfigurations)))
 
     # Shortlist the valid puzzle configurations based on difficulty level
-    validConfigurations = identify_valid_items_in_list(allConfigurations,difficultyLevel)
+    validConfigurations = utilities.identify_valid_items_in_list(allConfigurations,difficultyLevel)
     # print("validConfigurations:{},{}".format(validConfigurations, type(validConfigurations)))
     # print("Valid Puzzle Configurations: {}".format(len(validConfigurations)))
 
@@ -92,7 +92,7 @@ def is_valid_configuration(generated_basic_arithmatic_operation):
 
     # Validate the request operations against the allowed operations in Config
     requested_operation = generated_basic_arithmatic_operation['operator']
-    valid_operations = envVariables['valid_basic_arithmatic_operations_list']
+    valid_operations = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"valid_basic_arithmatic_operations_list")['config_value']
     if requested_operation not in valid_operations:
         user_message = "{} is invalid Math operator; Valid operators are {}.".format(requested_operation,valid_operations)
         generated_basic_arithmatic_operation['message'] = user_message
@@ -158,7 +158,7 @@ def process_request(generated_basic_arithmatic_operation):
                 question_dictionary['second_number'] = 1
             question_dictionary['answer'] =  question_dictionary['first_number'] // question_dictionary['second_number']
         else:
-            user_message = "{} is invalid Math operator; Valid operators are {}.".format(generated_basic_arithmatic_operation['operator'],envVariables['valid_basic_arithmatic_operations_list'])
+            user_message = "{} is invalid Math operator; Valid operators are {}.".format(generated_basic_arithmatic_operation['operator'],utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"valid_basic_arithmatic_operations_list")['config_value'])
             generated_basic_arithmatic_operation['message'] = user_message
             generated_basic_arithmatic_operation['validOutputReturned'] = False
             return
@@ -174,5 +174,7 @@ def update_datastore_basic_arithmatic_operations(input_basic_arithematic_operati
     "last_modified_timestamp": datetime.datetime.now(),
     "questions": input_basic_arithematic_operation['questions']
     }
-    status = update_datastore_entity(entityKind,id,updated_entity)
+    # Get entityKind config from Datastore
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],datastore_kind_basic_arithematic_operations_key)['config_value']
+    status = datastoreoperations.update_datastore_entity(entityKind,id,updated_entity)
     return status

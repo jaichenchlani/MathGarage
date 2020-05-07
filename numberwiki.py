@@ -1,18 +1,9 @@
 from mathfunctions import isEven, isPrime, isPositive, getFactors, changeBase, getPrimeFactors
-import config, utilities
-from datastoreoperations import create_datastore_entity, update_datastore_entity
-from utilities import insert_in_datastore_and_get_id
+import datastoreoperations, utilities, config
 import datetime
-
-    # Load Defaults from Config
-    # envVariables = config.read_configurations_from_config_file()
-    # entityKind = envVariables['datastore_kind_number_wiki']
-    # changeBaseConfig = envVariables['change_base_config']
 
 # Load Environment
 env = config.get_environment_from_env_file()
-datastore_kind_number_wiki_key = "datastore_kind_number_wiki"
-change_base_config_key = "change_base_config"
 
 def get_number_wiki(n):
     print("Start - Entering get_number_wiki...")
@@ -24,10 +15,10 @@ def get_number_wiki(n):
     process_request(number_wiki)
 
     # Get entityKind config from Datastore
-    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],datastore_kind_number_wiki_key)['config_value']
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_number_wiki")['config_value']
     
     # Insert the generated Output Dictionary in Datastore
-    insert_response = insert_in_datastore_and_get_id(entityKind,number_wiki)
+    insert_response = utilities.insert_in_datastore_and_get_id(entityKind,number_wiki)
     if not insert_response['validOutputReturned']:
         # Error creating datastore entity
         number_wiki['validOutputReturned'] = False
@@ -115,7 +106,7 @@ def process_request(number_wiki):
     wikiList.append(wikiListItem)
 
     # Get changeBaseConfig config from Datastore
-    changeBaseConfig = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],change_base_config_key)['config_value']
+    changeBaseConfig = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"change_base_config")['config_value']
 
     # Change Base Processing for bases defined in Config
     for (key,value) in changeBaseConfig.items():

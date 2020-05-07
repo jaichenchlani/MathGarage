@@ -1,12 +1,9 @@
-from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list, insert_in_datastore_and_get_id
-from datastoreoperations import create_datastore_entity, update_datastore_entity
+import datastoreoperations, utilities, config
 import datetime
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-entityKind = envVariables['datastore_kind_linear_equations']
+# Load Environment
+env = config.get_environment_from_env_file()
 
 def generate_linear_equations(requestData):
     print("Start - Entering generate_linear_equations...")
@@ -28,7 +25,8 @@ def generate_linear_equations(requestData):
         pass
 
     # Insert the generated Output Dictionary in Datastore
-    insert_response = insert_in_datastore_and_get_id(entityKind,generated_linear_equations)
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_linear_equations")['config_value']
+    insert_response = utilities.insert_in_datastore_and_get_id(entityKind,generated_linear_equations)
     if not insert_response['validOutputReturned']:
         # Error creating datastore entity
         generated_linear_equations['validOutputReturned'] = False
@@ -51,7 +49,7 @@ def select_random_equation_config(requestData,generated_linear_equations):
     # variableCount = requestData['variableCount']
 
     # All(i.e. all Difficulty Levels) Valid Equation Configurations from Config
-    allEquationConfigurations = envVariables['linear_equation_configurations']
+    allEquationConfigurations = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"linear_equation_configurations")['config_value']
     # print("allEquationConfigurations:{},{}".format(allEquationConfigurations, type(allEquationConfigurations)))
     # print("Total Equation Configurations: {}".format(len(allEquationConfigurations)))
 
@@ -86,7 +84,7 @@ def declare_output_dictionary():
     generated_linear_equations['answer'] = []
     generated_linear_equations['message'] = ""
     generated_linear_equations['validOutputReturned'] = True
-    generated_linear_equations['showUserHelp'] = envVariables['showUserHelp']
+    generated_linear_equations['showUserHelp'] = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"showUserHelp")['config_value']
 
     return generated_linear_equations
 
@@ -295,5 +293,7 @@ def update_datastore_linear_equations(input_linear_equations):
     "last_modified_timestamp": datetime.datetime.now(),
     "answer": input_linear_equations['answer']
     }
-    status = update_datastore_entity(entityKind,id,updated_entity)
+    # Get entityKind config from Datastore
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_linear_equations")['config_value']
+    status = datastoreoperations.update_datastore_entity(entityKind,id,updated_entity)
     return status

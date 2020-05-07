@@ -1,12 +1,9 @@
-from config import read_configurations_from_config_file
 from random import randint
-from utilities import identify_valid_items_in_list, insert_in_datastore_and_get_id
-from datastoreoperations import create_datastore_entity, update_datastore_entity
+import datastoreoperations, utilities, config
 import datetime
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-entityKind = envVariables['datastore_kind_sequence_puzzles']
+# Load Environment
+env = config.get_environment_from_env_file()
 
 def generate_sequence_puzzle(difficultyLevel):
     print("Start - Entering generate_sequence_puzzle...")
@@ -29,7 +26,9 @@ def generate_sequence_puzzle(difficultyLevel):
         pass
 
     # Insert the generated Output Dictionary in Datastore
-    insert_response = insert_in_datastore_and_get_id(entityKind,generated_sequence_puzzle)
+    # Get entityKind config from Datastore
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_sequence_puzzles")['config_value']
+    insert_response = utilities.insert_in_datastore_and_get_id(entityKind,generated_sequence_puzzle)
     if not insert_response['validOutputReturned']:
         # Error creating datastore entity
         generated_sequence_puzzle['validOutputReturned'] = False
@@ -245,12 +244,12 @@ def select_random_sequence_puzzle(difficultyLevel,generated_sequence_puzzle):
     # print("difficultyLevel:{},{}".format(difficultyLevel, type(difficultyLevel)))
     
     # All(i.e. all Difficulty Levels) Valid Puzzle Configurations from Config
-    allPuzzleConfigurations = envVariables['puzzle_configurations']
+    allPuzzleConfigurations = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"puzzle_configurations")['config_value']
     # print("allPuzzleConfigurations:{},{}".format(allPuzzleConfigurations, type(allPuzzleConfigurations)))
     # print("Total Puzzle Configurations: {}".format(len(allPuzzleConfigurations)))
 
     # Shortlist the valid puzzle configurations based on difficulty level
-    validPuzzleConfigurations = identify_valid_items_in_list(allPuzzleConfigurations,difficultyLevel)
+    validPuzzleConfigurations = utilities.identify_valid_items_in_list(allPuzzleConfigurations,difficultyLevel)
     # print("Valid Puzzle Configurations: {}".format(len(validPuzzleConfigurations)))
 
     # Select a random puzzle type
@@ -282,7 +281,7 @@ def declare_output_dictionary():
     generated_sequence_puzzle['answer_logic'] = []
     generated_sequence_puzzle['message'] = ""
     generated_sequence_puzzle['validOutputReturned'] = True
-    generated_sequence_puzzle['showUserHelp'] = envVariables['showUserHelp']
+    generated_sequence_puzzle['showUserHelp'] = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"showUserHelp")['config_value']
 
     return generated_sequence_puzzle
 
@@ -294,7 +293,9 @@ def update_datastore_sequence_puzzles(input_sequence_puzzles):
     "last_modified_timestamp": datetime.datetime.now(),
     "missing_elements": input_sequence_puzzles['missing_elements']
     }
-    status = update_datastore_entity(entityKind,id,updated_entity)
+    # Get entityKind config from Datastore
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_sequence_puzzles")['config_value']
+    status = datastoreoperations.update_datastore_entity(entityKind,id,updated_entity)
     return status
 
 

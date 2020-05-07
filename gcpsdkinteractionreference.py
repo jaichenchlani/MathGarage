@@ -1,11 +1,11 @@
 from google.cloud import storage
 from google.cloud import datastore, kms_v1
 import os
-from config import read_configurations_from_config_file
+import utilities, config
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-credential_key_file = envVariables['credential_key_file']
+# Load Environment
+env = config.get_environment_from_env_file()
+credential_key_file = env['credential_key_file']
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_key_file
 
 def get_buckets():

@@ -1,42 +1,51 @@
-import utilities, datastoreoperations
+import datastoreoperations, utilities, config
 import json
-from config import read_configurations_from_config_file
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-entityKind = envVariables['config_entityKind']
+# Load Environment
+env = config.get_environment_from_env_file()
 
-def update_datastore_config_from_json(entityKind):
+def update_datastore_config_from_json():
     print("Entering update_config...")
+    entityKind = env['config_entityKind']
+    envVariables = config.read_configurations_from_config_file()
     # Process
-    count = 0
+    countTotal = len(envVariables)
+    countCreate = 0
+    countUpdate = 0
+    countNoChange = 0
     for (key,value) in envVariables.items():
         # Check whether the key already exists in the DB.
-        entity = utilities.read_datastore_and_get_id(entityKind,"key",key)
-        # if not entity['validOutputReturned']:
-        #     # Not a valid output from read_datastore_and_get_id. Print message and proceed.
-        #     print(entity['message'])
-        if not entity['id']:
+        read = utilities.read_datastore_and_get_id(entityKind,"key",key)
+        if not read['id']:
             # Key not found. Create.
             create = utilities.create_key_value_pair_in_datastore(entityKind,key,value)
-            print(create)
-            count += 1
-        elif entity['id']:
-            # Key found. Update.
-            updatedEntity = {
-                "key": key,
-                "value": value
-            }
-            update = datastoreoperations.update_datastore_entity(entityKind,entity['id'],updatedEntity)
-            print(update)
+            countCreate += 1
+        elif read['id']:
+            # Key found. 
+            # Check whether the json supplied value has changed.
+            entity = datastoreoperations.get_datastore_entity(entityKind,read['id'])
+            if value == entity['entity']['value']:
+                # json supplied value has NOT changed. Update NOT needed.
+                pass
+            else:
+                # json supplied value has changed. Update.
+                jsonEntity = {
+                    "key": key,
+                    "value": value
+                }
+                update = datastoreoperations.update_datastore_entity(entityKind,read['id'],jsonEntity)
+                countUpdate += 1
         else:
             # Will never get here.
             pass
+    # Calculate count of no change
+    countNoChange = countTotal - countCreate - countUpdate
+    print("Process completed. Total Configurations:{}. Created:{}, Updated:{}, No Change:{}.".format(countTotal, countCreate, countUpdate, countNoChange)) 
 
-    print("Process completed. Updated {} entities in Datastore.".format(count)) 
-
-def download_datastore_kind_into_json(entityKind, filename):
+def download_datastore_kind_into_json():
     print("Entering download_datastore_kind_into_json...")
+    entityKind = env['config_entityKind']
+    filename = env['config_json']
     # Process
     json_dictionary = {}
     count = 0
@@ -62,5 +71,5 @@ def download_datastore_kind_into_json(entityKind, filename):
     
     print("Process completed. Downloaded {} entities from Datastore in the json file {}.".format(count,filename)) 
 
-# update_datastore_config_from_json(entityKind)
-download_datastore_kind_into_json(entityKind,"prodconfig.json")
+# update_datastore_config_from_json()
+download_datastore_kind_into_json()

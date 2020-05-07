@@ -1,13 +1,6 @@
 from google.cloud import datastore
-import os, re, datetime
-import datastoreoperations, encryptionoperations
-import config
-
-
-# Load Defaults from Config
-envVariables = config.read_configurations_from_config_file()
-password_vault_entityKind = envVariables['password_vault_entityKind']
-password_vault_account_field_name = envVariables['password_vault_account_field_name']
+import os, re, datetime, json
+import datastoreoperations, encryptionoperations, config
 
 # Load Environment
 env = config.get_environment_from_env_file()
@@ -184,15 +177,16 @@ def create_password_in_password_vault(account,password):
         "password": encrypted_password
     }
     # Create a datastore entry with the encrypted password.
+    password_vault_entityKind = get_value_by_entityKind_and_key(env['config_entityKind'],"password_vault_entityKind")['config_value']
     datastoreoperations.create_datastore_entity(password_vault_entityKind,password_valut_entity)
 
 
 def get_password_from_password_vault(account_value):
     print("Entering get_password_from_password_vault...")
     # Password Vault Entity
-    entityKind = password_vault_entityKind
+    entityKind = get_value_by_entityKind_and_key(env['config_entityKind'],"password_vault_entityKind")['config_value']
     # Configuted field name from Config
-    propertyKey = password_vault_account_field_name
+    propertyKey = get_value_by_entityKind_and_key(env['config_entityKind'],"password_vault_account_field_name")['config_value']
     # Passed argument
     propertyValue = account_value
     # Fetch the datastore operation function to get the password and return

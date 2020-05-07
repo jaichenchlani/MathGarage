@@ -1,24 +1,8 @@
-from config import read_configurations_from_config_file
-from datastoreoperations import create_datastore_entity, get_datastore_entity_by_property, delete_datastore_entity, update_datastore_entity
+import datastoreoperations, encryptionoperations, utilities, gmail, config
 import datetime
-import gmail, utilities
-from encryptionoperations import encrypt_symmetric, decrypt_symmetric
 
-# Load Defaults from Config
-envVariables = read_configurations_from_config_file()
-login_failure_message = envVariables['login_failure_message']
-login_success_message = envVariables['login_success_message']
-entityKind = envVariables['datastore_kind_users']
-entityProperty = envVariables['datastore_property_username']
-flag_user_hard_delete = envVariables['flag_user_hard_delete']
-login_user_message_codes = envVariables['login_user_message_codes']
-USERNAME_MINIMUM_LENGTH = envVariables['USERNAME_MINIMUM_LENGTH']
-PASSWORD_MINIMUM_LENGTH = envVariables['PASSWORD_MINIMUM_LENGTH']
-FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH = envVariables['FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH']
-FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH = envVariables['FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH']
-admin_email_id = envVariables['admin_email_id']
-password_reset_email_subject = envVariables['password_reset_email_subject']
-password_reset_email_body = envVariables['password_reset_email_body']
+# Load Environment
+env = config.get_environment_from_env_file()
 
 # Validate username and password
 def login(login_credentials):
@@ -26,6 +10,7 @@ def login(login_credentials):
     # Declare the output dictionary
     login_response = declare_login_response_dictionary(login_credentials)
     # Validate login against the Password
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
     login_response['is_valid_login_response'] = isValidLogin("login",entityKind,
         login_credentials['username'].lower(),
         login_credentials['password'])
@@ -50,6 +35,7 @@ def reset_password(login_credentials):
     # Declare the output dictionary
     reset_password_response = declare_reset_response_dictionary(login_credentials)
     # Declare the output dictionary
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
     reset_password_response['is_valid_login_response'] = isValidLogin("reset_password",entityKind,
         login_credentials['username'].lower(),
         login_credentials['forgot_password_answer'])
@@ -59,12 +45,14 @@ def reset_password(login_credentials):
         reset_password_response['message'] = "Invlid response from isValidLogin."
         return reset_password_response
 
+    # Get the email attributes from Config
+    email_attributes = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"email_attributes")['config_value']
     # Send the email with the password in clear text
     emailTo = reset_password_response['is_valid_login_response']['userDetails']['email']
-    emailCC = admin_email_id
-    emailSubject = password_reset_email_subject
+    emailCC = email_attributes['admin_email_id']
+    emailSubject = email_attributes['password_reset_email_subject']
     decrypted_password = utilities.decrypt_password(reset_password_response['is_valid_login_response']['userDetails']['password'])['decrypted_password']
-    emailBody = "{}\n\n\n{}".format(password_reset_email_body,decrypted_password)
+    emailBody = "{}\n\n\n{}".format(email_attributes['password_reset_email_body'],decrypted_password)
     email = gmail.send_email(emailTo, emailCC, emailSubject, emailBody)
     if not email['result']:
         reset_password_response['result'] = False
@@ -88,6 +76,7 @@ def declare_reset_response_dictionary(login_credentials):
 
 def get_forgot_password_question(login_credentials):
     print("Entering get_forgot_password_question..")
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
     user = isValidUser(entityKind,login_credentials['username'])
     login_credentials['validOutputReturned'] = user['validOutputReturned']
     login_credentials['isValidUser'] = user['result']
@@ -100,6 +89,7 @@ def create_account(userInfo):
     print("Entering create_account..")
     # Declare the output dictionary
     create_account_response = declare_create_account_response_dictionary(userInfo)
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
     create_account_response['created_userInfo'] = create_user(entityKind,userInfo)
     return create_account_response
 
@@ -120,7 +110,9 @@ def isValidUser(entityKind,username):
         "userDetails": {}
     }
     # Fetch entity from the datastore by property
-    entityList = get_datastore_entity_by_property(entityKind,entityProperty,username.lower())  
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
+    entityProperty = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_property_username")['config_value']
+    entityList = datastoreoperations.get_datastore_entity_by_property(entityKind,entityProperty,username.lower())  
     if not entityList['validOutputReturned']:
         # Error returned from get_datastore_entity_by_property
         response['message'] = entityList['message']
@@ -178,9 +170,10 @@ def isValidUser(entityKind,username):
 
 def isValidLogin(callingFrom,entityKind,username,password):
     print("Entering isValidLogin...")
+    login_user_message_codes = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"login_user_message_codes")['config_value']
     # Initialize the response dictionary
     response = {
-        "result": login_user_message_codes['LOGIN_FAILURE'],
+        "result": login_user_message_codes['login_failure'],
         "message": "",
         "validOutputReturned": True,
         "userDetails": {}
@@ -192,7 +185,7 @@ def isValidLogin(callingFrom,entityKind,username,password):
         # Error returned from isValidUser. 
         response['message'] = user['message']
         response['validOutputReturned'] = False
-        response['result'] = login_user_message_codes['LOGIN_SERVER_ERROR']
+        response['result'] = login_user_message_codes['login_server_error']
         # Return. Don't move forward.
         return response
     
@@ -200,7 +193,7 @@ def isValidLogin(callingFrom,entityKind,username,password):
     if not user['result']:
         # Invalid User. Return False.
         response['message'] = user['message']
-        response['result'] = login_user_message_codes['LOGIN_USER_DOES_NOT_EXIST']
+        response['result'] = login_user_message_codes['login_user_does_not_exist']
         # Return. Don't move forward.
         return response
 
@@ -215,15 +208,15 @@ def isValidLogin(callingFrom,entityKind,username,password):
 
     if not dbPassword == password:
         # Incorrect password. Return False
-        response['message'] = login_failure_message
-        response['result'] = login_user_message_codes['LOGIN_FAILURE']
+        response['message'] = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"login_failure_message")['config_value']
+        response['result'] = login_user_message_codes['login_failure']
         # Return. Don't move forward.
         return response
 
     # All good. Valid user, correct password. Return True
     response = {
-        "result": login_user_message_codes['LOGIN_SUCCESS'],
-        "message": login_success_message,
+        "result": login_user_message_codes['login_success'],
+        "message": utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"login_success_message")['config_value'],
         "validOutputReturned": True,
         "userDetails": user['userDetails']
     }  
@@ -282,7 +275,8 @@ def create_user(entityKind,user_details):
             "last_logged_timestamp": datetime.datetime.now(),
             "last_modified_timestamp": datetime.datetime.now()
         }
-    entity = create_datastore_entity(entityKind,user_entity)
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
+    entity = datastoreoperations.create_datastore_entity(entityKind,user_entity)
     if not entity['validOutputReturned']:
         # Error returned from create_datastore_entity
         response['message'] = entity['message']
@@ -321,9 +315,11 @@ def delete_user(entityKind,username):
 
     # User exists. Go ahead with delete.
     id = user['userDetails']['id']
+    flag_user_hard_delete = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"flag_user_hard_delete")['config_value']
     if flag_user_hard_delete:
         # HARD delete from Datastore
-        delete_user = delete_datastore_entity(entityKind,id)
+        entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
+        delete_user = datastoreoperations.delete_datastore_entity(entityKind,id)
         if not delete_user['validOutputReturned']:
             # Error returned from delete_user
             response['message'] = delete_user['message']
@@ -340,7 +336,8 @@ def delete_user(entityKind,username):
         updated_user = {
             "active": False
         }
-        updated_user = update_datastore_entity(entityKind,id,updated_user)
+        entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
+        updated_user = datastoreoperations.update_datastore_entity(entityKind,id,updated_user)
         if not updated_user['validOutputReturned']:
             # Error returned from update_datastore_entity
             response['message'] = updated_user['message']
@@ -354,6 +351,8 @@ def delete_user(entityKind,username):
 
 def validate_user_attributes(user_details):
     print("Entering validate_user_attributes...")
+    # Get the User attributes from Config
+    user_attributes = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"user_attributes")['config_value']
     # Initialize the response dictionary
     response = {
         "result": False,
@@ -362,12 +361,12 @@ def validate_user_attributes(user_details):
     }
     if user_details['username'] is None or user_details['username'] == "":
         response['message'] = "Invalid attribute. Username missing."
-    elif len(user_details['username']) < USERNAME_MINIMUM_LENGTH:
-        response['message'] = "Invalid attribute. Username should be atleast {} characters.".format(USERNAME_MINIMUM_LENGTH)
+    elif len(user_details['username']) < user_attributes['username_minimum_length']:
+        response['message'] = "Invalid attribute. Username should be atleast {} characters.".format(user_attributes['username_minimum_length'])
     elif user_details['password'] is None  or user_details['password'] == "":
         response['message'] = "Invalid attribute. password missing."
-    elif len(user_details['password']) < PASSWORD_MINIMUM_LENGTH:
-        response['message'] = "Invalid attribute. Password should be atleast {}} characters.".format(PASSWORD_MINIMUM_LENGTH)
+    elif len(user_details['password']) < user_attributes['password_minimum_length']:
+        response['message'] = "Invalid attribute. Password should be atleast {}} characters.".format(user_attributes['password_minimum_length'])
     elif user_details['first_name'] is None or user_details['first_name'] == "":
         response['message'] = "Invalid attribute. First Name missing."
     elif user_details['last_name'] is None  or user_details['last_name'] == "":
@@ -378,12 +377,12 @@ def validate_user_attributes(user_details):
         response['message'] = utilities.isValidEmail(user_details['email'])['message']
     elif user_details['forgot_password_question'] is None  or user_details['forgot_password_question'] == "":
         response['message'] = "Invalid attribute. Forgot Password Question missing."
-    elif len(user_details['forgot_password_question']) < FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH:
-        response['message'] = "Invalid attribute. Forgot Password Question should be atleast {} characters.".format(FORGOT_PASSWORD_QUESTION_MINIMUM_LENGTH)
+    elif len(user_details['forgot_password_question']) < user_attributes['forgot_password_question_minimum_length']:
+        response['message'] = "Invalid attribute. Forgot Password Question should be atleast {} characters.".format(user_attributes['forgot_password_question_minimum_length'])
     elif user_details['forgot_password_answer'] is None  or user_details['forgot_password_answer'] == "":
         response['message'] = "Invalid attribute. Forgot Password Answer missing."
-    elif len(user_details['forgot_password_answer']) < FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH:
-        response['message'] = "Invalid attribute. Forgot Password Answer should be atleast {} characters.".format(FORGOT_PASSWORD_ANSWER_MINIMUM_LENGTH)
+    elif len(user_details['forgot_password_answer']) < user_attributes['forgot_password_answer_minimum_length']:
+        response['message'] = "Invalid attribute. Forgot Password Answer should be atleast {} characters.".format(user_attributes['forgot_password_answer_minimum_length'])
     else:
         response['message'] = "All attributes are valid."
         response['result'] = True
@@ -447,7 +446,8 @@ def update_user(entityKind,user_details):
             "active": True,
             "last_modified_timestamp": datetime.datetime.now()
         }
-    entity = update_datastore_entity(entityKind,id,updated_user_entity)
+    entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
+    entity = datastoreoperations.update_datastore_entity(entityKind,id,updated_user_entity)
     if not entity['validOutputReturned']:
         # Error returned from update_datastore_entity
         response['message'] = entity['message']
