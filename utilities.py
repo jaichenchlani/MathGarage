@@ -1,6 +1,7 @@
 from google.cloud import datastore
 import os, re, datetime, json
-import datastoreoperations, encryptionoperations, config
+import datastoreoperations, encryptionoperations, pubsuboperations
+import config
 
 # Load Environment
 env = config.get_environment_from_env_file()
@@ -13,6 +14,16 @@ def identify_valid_items_in_list(allItemsInList,difficultyLevel):
             if int(config['active']):
                 validItemsInList.append(config)
     return validItemsInList
+
+def publish_login_message_to_pubsub(topic, message):
+    print("Entering publish_login_message_to_pubsub..")
+    try:
+        publish = pubsuboperations.publish_message_to_topic(message.encode(),topic)
+    except Exception as e:
+        # Error performing the PubSub operation
+        errorMessage = "Error publishing message {} to topic {}.".format(message,topic)
+        errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
+        print(errorMessage)
 
 def isValidEmail(email):
     email_rules = [
@@ -29,8 +40,8 @@ def isValidEmail(email):
         "message": {},
         "validOutputReturned": True
     }
-    pattern = re.compile('^[a-zA-Z0-9]{3,}@[a-zA-Z0-9]{3,}\.[a-zA-Z0-9]{2,}')
-    try:
+    pattern = re.compile('^[a-zA-Z0-9.]{3,}@[a-zA-Z0-9]{3,}.[a-zA-Z0-9]{2,}')
+    try:  
         patternMatch = re.search(pattern, email)
     except Exception as e:
         errorMessage = "Pattern match operation failed."

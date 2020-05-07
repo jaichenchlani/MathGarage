@@ -1,4 +1,5 @@
-import datastoreoperations, encryptionoperations, utilities, gmail, config
+import datastoreoperations, encryptionoperations, pubsuboperations
+import utilities, gmail, config
 import datetime
 
 # Load Environment
@@ -18,6 +19,13 @@ def login(login_credentials):
     if login_response['is_valid_login_response']['userDetails']:
         login_response['is_valid_login_response']['userDetails']['password'] = None
         login_response['is_valid_login_response']['userDetails']['forgot_password_answer'] = None
+    
+    # Publish a message on signin topic
+    pubsub_topics = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"pubsub_topics")['config_value']
+    pubsub_topic = pubsub_topics['signin_topic']
+    pubsub_message = "User {} attempted login. {}".format(login_credentials['username'],login_response['is_valid_login_response']['message'])
+    utilities.publish_login_message_to_pubsub(pubsub_topic,pubsub_message)
+
     return login_response
 
 # Helper function for login
@@ -91,6 +99,11 @@ def create_account(userInfo):
     create_account_response = declare_create_account_response_dictionary(userInfo)
     entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_users")['config_value']
     create_account_response['created_userInfo'] = create_user(entityKind,userInfo)
+    # Publish a message on signin topic
+    pubsub_topics = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"pubsub_topics")['config_value']
+    pubsub_topic = pubsub_topics['register_topic']
+    pubsub_message = "User {} registered. {}".format(userInfo['username'],create_account_response['created_userInfo']['message'])
+    utilities.publish_login_message_to_pubsub(pubsub_topic,pubsub_message)
     return create_account_response
 
 def declare_create_account_response_dictionary(userInfo):
@@ -228,7 +241,6 @@ def create_user(entityKind,user_details):
     response = {
         "result": True,
         "datastore_id": None,
-        # "userDetails": {},
         "message": "User created in the DB.",
         "validOutputReturned": True
     }

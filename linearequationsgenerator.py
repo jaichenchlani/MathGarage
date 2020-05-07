@@ -15,14 +15,18 @@ def generate_linear_equations(requestData):
     select_random_equation_config(requestData,generated_linear_equations)
     
     # Process only when there is a valid puzzle selected from Config.
-    if generated_linear_equations['config']:
-        # Apply Business Rules on Configuration Values.
-        # And, if all good, go ahead with generating the puzzle progression
-        if is_valid_configuration(generated_linear_equations):
-            process_request(generated_linear_equations)
-    else:
-        # No puzzle selected. Cannot move forward.
-        pass
+    if not generated_linear_equations['config']:
+        # No valid config. Cannot move forward.
+        return generated_linear_equations
+
+    # Apply Business Rules on Configuration Values.
+    # And, if all good, go ahead with generating the puzzle progression
+    if not is_valid_configuration(generated_linear_equations):
+        # Not a valid config. Cannot move forward.
+        return generated_linear_equations
+
+    # All good. Go ahead and process.
+    process_request(generated_linear_equations)
 
     # Insert the generated Output Dictionary in Datastore
     entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_linear_equations")['config_value']

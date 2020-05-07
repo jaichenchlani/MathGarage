@@ -7,7 +7,7 @@ env = config.get_environment_from_env_file()
 
 def initialize_config(kms_config):
     password_encryption_codes = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"password_encryption_codes")['config_value']
-    project_id = password_encryption_codes['project_id']
+    project_id = env['project_id']
     location_id = password_encryption_codes['location_id']
     key_ring_id = password_encryption_codes['key_ring_id']
     crypto_key_id = password_encryption_codes['crypto_key_id']
@@ -16,7 +16,7 @@ def initialize_config(kms_config):
     # The resource name of the CryptoKey.
     kms_config['crypto_key_name'] = kms_config['client'].crypto_key_path(project_id, location_id, key_ring_id, crypto_key_id)
 
-def  encrypt_symmetric(plaintext):
+def encrypt_symmetric(plaintext):
     print("Entering encrypt_symmetric...")
     # Initialize Config
     kms_config = {

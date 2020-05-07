@@ -1,9 +1,9 @@
-import datastoreoperations, utilities, login, gmail
+import utilities, login, gmail, config, setup
+import datastoreoperations, encryptionoperations, pubsuboperations
 import datetime, os
 
 # Load Environment
-env = utilities.get_environment_from_env_file()
-
+env = config.get_environment_from_env_file()
 
 # Test only. Comment out for Production
 difficultyLevel = { 
@@ -356,10 +356,7 @@ testUser = {
 # decrypted_password = decryption['decrypted_password']
 # print("decrypted_password:{},{}".format(decrypted_password,type(decrypted_password)))
 
-# # Create Password Vault Entry
-# create_datastore_entity(entityKind,encrypted_password)
 
-# utilities.create_password_in_password_vault(account,password)
 
 
 # entityList = utilities.get_password_from_password_vault(account)
@@ -370,5 +367,39 @@ testUser = {
 # print("password:{},{}".format(password,type(password)))
 
 
-entityKind = utilities.get_value_by_entityKind_and_key("mathgarage-prod","change_base_config")['config_value']
-print(entityKind)
+# entityKind = utilities.get_value_by_entityKind_and_key("mathgarage-prod","change_base_config")['config_value']
+# print(entityKind)
+
+
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = env['credential_key_file']
+# print(os.getenv('GOOGLE_APPLICATION_CREDENTIALS['project_id'])) 
+
+# PUBSUB TESTING...
+
+# pubsub_topics = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"pubsub_topics")['config_value']
+# topic = pubsub_topics['register_topic']
+# # Test Create Topic
+# response = pubsuboperations.create_topic(topic)
+# for key,value in response.items():
+#     print("{}: {},{}".format(key,value,type(value)))
+
+# # Test Publish Messages to a PubSub Topic
+# # message = str(datetime.datetime.now())
+# message = "Test message for cloud functions."
+# response = pubsuboperations.publish_message_to_topic(message.encode(),topic)
+# print(response)
+# for key,value in response.items():
+#     print("{}: {},{}".format(key,value,type(value)))
+
+
+# setup.update_datastore_config_from_json()
+# setup.download_datastore_kind_into_json()
+
+# email = "jai.chenchlani@mindtree.com"
+# response = utilities.isValidEmail(email)
+# for key,value in response.items():
+#     print("{}: {},{}".format(key,value,type(value)))
+
+
+# # Create Password Vault Entry
+# utilities.create_password_in_password_vault('jaichenchlani@gmail.com',"")

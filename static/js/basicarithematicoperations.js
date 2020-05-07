@@ -9,10 +9,17 @@
             console.log("Entering onUserComplete...");
             $scope.operation = response.data;
             console.log($scope.operation);
-            // Set the focus on the Submit Answer button.
-            $scope.showResultSection = true
-            $scope.gotoResultSection();
-            $window.document.getElementById('submitAnswer').focus();
+            if (!$scope.operation.validOutputReturned) {
+                $scope.errorMessage = $scope.operation.message;
+                $window.document.getElementById('checkboxEasy').focus();
+                $scope.showSystemAnswer = false
+                $scope.showResultSection = false
+            } else {
+                // Set the focus on the Submit Answer button.
+                $scope.showResultSection = true
+                $scope.gotoResultSection();
+                $window.document.getElementById('submitAnswer').focus();
+            }
         }
 
         var onSubmitComplete = function(response) {

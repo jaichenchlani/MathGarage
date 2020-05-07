@@ -17,10 +17,19 @@ def generate_basic_arithmatic_operations(requestData):
     get_config(generated_basic_arithmatic_operation)
     # print("Selected Puzzle Configuration:{}".format(selected_random_puzzle))
 
+    # Process only when there is a valid puzzle selected from Config.
+    if not generated_basic_arithmatic_operation['config']:
+        # No valid config. Cannot move forward.
+        return generated_basic_arithmatic_operation
+    
     # Apply Business Rules on Operation Request.
     # And, if all good, go ahead with generating the puzzle progression
-    if is_valid_configuration(generated_basic_arithmatic_operation):
-        process_request(generated_basic_arithmatic_operation)
+    if not is_valid_configuration(generated_basic_arithmatic_operation):
+        # Not a valid config. Cannot move forward.
+        return generated_basic_arithmatic_operation
+
+    # All good. Go ahead and process.
+    process_request(generated_basic_arithmatic_operation)    
     
     # Insert the generated Output Dictionary in Datastore
     # Get entityKind config from Datastore

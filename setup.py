@@ -70,6 +70,3 @@ def download_datastore_kind_into_json():
         print(errorMessage)
     
     print("Process completed. Downloaded {} entities from Datastore in the json file {}.".format(count,filename)) 
-
-# update_datastore_config_from_json()
-download_datastore_kind_into_json()

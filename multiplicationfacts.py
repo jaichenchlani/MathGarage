@@ -19,10 +19,13 @@ def get_multiplication_facts(str_table_of, str_limit):
 
     # Apply Business Rules on Operation Request.
     # And, if all good, go ahead with generating the Multiplication Facts
-    if is_valid_request(generated_multiplication_facts):
-        tableof = generated_multiplication_facts['request']['tableof']
-        limit = generated_multiplication_facts['request']['limit']
-        generated_multiplication_facts["result"] = [tableof*i for i in range(1, limit+1)]
+    if not is_valid_request(generated_multiplication_facts):
+        # No valid config. Cannot move forward.
+        return generated_multiplication_facts
+
+    tableof = generated_multiplication_facts['request']['tableof']
+    limit = generated_multiplication_facts['request']['limit']
+    generated_multiplication_facts["result"] = [tableof*i for i in range(1, limit+1)]
 
     # Insert the generated Output Dictionary in Datastore
     # Get entityKind config from Datastore

@@ -16,15 +16,19 @@ def generate_sequence_puzzle(difficultyLevel):
     # print("Selected Puzzle Configuration:{}".format(selected_random_puzzle))
 
     # Process only when there is a valid puzzle selected from Config.
-    if selected_random_puzzle:
-        # Apply Business Rules on Configuration Values.
-        # And, if all good, go ahead with generating the puzzle progression
-        if is_valid_configuration(selected_random_puzzle, generated_sequence_puzzle):
-            process_request(generated_sequence_puzzle)
-    else:
-        # No puzzle selected. Cannot move forward.
-        pass
+    if not selected_random_puzzle:
+        # No valid config. Cannot move forward.
+        return generated_sequence_puzzle
+    
+    # Apply Business Rules on Configuration Values.
+    # And, if all good, go ahead with generating the puzzle progression
+    if not is_valid_configuration(selected_random_puzzle, generated_sequence_puzzle):
+        # Not a valid config. Cannot move forward.
+        return generated_sequence_puzzle
 
+    # All good. Go ahead and process.
+    process_request(generated_sequence_puzzle)
+    
     # Insert the generated Output Dictionary in Datastore
     # Get entityKind config from Datastore
     entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_sequence_puzzles")['config_value']
