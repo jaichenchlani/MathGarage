@@ -32,7 +32,7 @@ def generate_basic_arithmatic_operations(requestData):
         generated_basic_arithmatic_operation['message'] = insert_response['message']
     else:
         pass
-        print("Persisted generated_linear_equations object in Datastore...")
+        print("Persisted generated_basic_arithmatic_operation object in Datastore...")
         # Update the Datastore ID in the Output Dictionary
         generated_basic_arithmatic_operation['datastore_id'] = insert_response['id']
 

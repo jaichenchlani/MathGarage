@@ -1,0 +1,9 @@
+{
+    "build_folder": "mathgarage",
+    "app_name": "mathgarage",
+    "app_version": "v0.96",
+    "gcp_project_id": "mathgarage",
+    "gcr_image_prefix": "gcr.io",
+    "build_flag": 1,
+    "deploy_flag": 1
+}
