@@ -1,8 +1,8 @@
 {
-    "build_folder": "mathgarage",
-    "app_name": "mathgarage",
+    "build_folder": "Desktop/localdata/software/mathgarage",
+    "app_name": "mathgarage-sandbox",
     "app_version": "v0.96",
-    "gcp_project_id": "mathgarage",
+    "gcp_project_id": "mathgarage-sandbox",
     "gcr_image_prefix": "gcr.io",
     "build_flag": 1,
     "deploy_flag": 1
