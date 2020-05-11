@@ -1,6 +1,7 @@
 import datastoreoperations, encryptionoperations, pubsuboperations
 import utilities, gmail, config
 import datetime
+from flask import session
 
 # Load Environment
 env = config.get_environment_from_env_file()
@@ -20,6 +21,9 @@ def login(login_credentials):
         login_response['is_valid_login_response']['userDetails']['password'] = None
         login_response['is_valid_login_response']['userDetails']['forgot_password_answer'] = None
     
+    # Store the user information in sesson
+    # session['user_details'] = login_response['is_valid_login_response']['userDetails']
+
     # Publish a message on signin topic
     pubsub_topics = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"pubsub_topics")['config_value']
     pubsub_topic = pubsub_topics['signin_topic']

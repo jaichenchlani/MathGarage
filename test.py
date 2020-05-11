@@ -1,6 +1,7 @@
 import utilities, login, gmail, config, setup
 import datastoreoperations, encryptionoperations, pubsuboperations
 import datetime, os
+import mathfunctions
 
 # Load Environment
 env = config.get_environment_from_env_file()
@@ -403,3 +404,15 @@ testUser = {
 
 # # Create Password Vault Entry
 # utilities.create_password_in_password_vault('jaichenchlani@gmail.com',"")
+
+
+# utilities.get_url()
+
+# print(mathfunctions.isEven(-1))
+
+# for i in range(-10,10):
+#     print("{}:{}".format(i,mathfunctions.isPrime(i)))
+
+timestamp = datetime.datetime.now()
+
+Mon, 11 May 2020 12:22:54 GMT

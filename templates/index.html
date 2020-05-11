@@ -8,10 +8,20 @@
 
 <div ng-app="homePage">
   <div class="container-fluid" ng-controller="MainController">
-    <h1 class="mt-4">Mathgarage</h1>
-    <p id="index-message">Math for fun!!</p>
-    <p id="index-message">v0.961</p>
-    <p id="index-message">{{'{{testMessage}}'}}</p>
+      <div class="row col-sm-12 border justify-content-center align-items-center">
+        <h4 class="col-sm-4 align-items-left text-left">Mathgarage</h4>
+        <h4 ng-show="username" class="col-sm-8 align-items-right text-primary text-right">Welcome {{'{{username}}'}}!</h4>
+        <h4 ng-show="!username" class="col-sm-8 align-items-right text-primary text-right"><a href="/login-initial-load">Login</a></h4>
+      </div>
+
+
+      <p id="index-message">Math for fun!!</p>
+      <p id="index-message">v0.961</p>
+
+      <div class="row col-sm-12 border justify-content-center align-items-center">
+          <span><a ng-show="username" class="align-items-right justify-content-right text-primary" href="#" ng-click="logout()">Logout</a></span>
+      </div>
+
   </div>
 </div>
 

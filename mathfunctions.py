@@ -128,23 +128,24 @@ def getFactors(n):
     }
     if not isInteger(n):
         # Invalid Input, Return error message and indicator.
-        response = {
-            "message": "Invalid input. Input must be a positive integer.",
-            "validOutputReturned": False
-            }
-    elif n == 0:
+        response['message'] = "Invalid input. Input must be a positive integer."
+        response['validOutputReturned'] = False
+        return response
+    
+    if n == 0:
+        # Invalid Input, Return error message and indicator.
+        response['message'] = "Invalid input. Zero has infinite factors. Cannot populate factors list."
+        response['validOutputReturned'] = False
+        return response
+
+    if not isPositive(n)['result']:
         # Invalid Input, Return error message and indicator.    
-        response = {
-            "message": "Invalid input. Zero has infinite factors. Cannot populate factors list.",
-            "validOutputReturned": True
-        }
-    elif not isPositive(n)['result']:
-        # Invalid Input, Return error message and indicator.    
-            response = {
-                "message": "Invalid input. Cannot process a negative number.",
-                "validOutputReturned": False
-            }
-    elif n == 1:
+        response['message'] = "Invalid input. Cannot process a negative number."
+        response['validOutputReturned'] = False
+        return response
+    
+    # All good. Go ahead with processing.
+    if n == 1:
         # Special Processing for 1
         factorsSet.add(n)
     else:

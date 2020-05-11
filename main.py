@@ -43,8 +43,8 @@ def render_sequence_puzzles_template():
 @app.route('/sequence-puzzles/get', methods=['PUT', 'GET'])
 def process_generate_sequence_puzzle():
     print("Enterning process_generate_sequence_puzzle...")
-    difficultyLevel = request.json
-    data = sequencepuzzlegenerator.generate_sequence_puzzle(difficultyLevel)
+    requestData = request.json
+    data = sequencepuzzlegenerator.generate_sequence_puzzle(requestData)
     return jsonify(data), 200
 
 @app.route('/sequence-puzzles/submit', methods=['PUT', 'GET'])

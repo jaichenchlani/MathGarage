@@ -9,7 +9,7 @@ def generate_linear_equations(requestData):
     print("Start - Entering generate_linear_equations...")
 
     # Declare the output dictionary
-    generated_linear_equations = declare_output_dictionary()
+    generated_linear_equations = declare_output_dictionary(requestData)
 
     # Read config file and and load the random selected puzzle type 
     select_random_equation_config(requestData,generated_linear_equations)
@@ -75,10 +75,16 @@ def select_random_equation_config(requestData,generated_linear_equations):
         generated_linear_equations['validOutputReturned'] = False
         generated_linear_equations['message'] = "No valid equation configurations found for selected Difficulty Levels."
 
-def declare_output_dictionary():
+def declare_output_dictionary(requestData):
     generated_linear_equations = {}
     generated_linear_equations['datastore_id'] = 0
-    generated_linear_equations['user'] = "Guest"
+    if requestData['username']:
+        generated_linear_equations['username'] = requestData['username']
+    else:
+        # Populate "guest" as username, if no username sent from the client
+        generated_linear_equations['username'] = "guest"
+    generated_linear_equations['userAnswerCorrect'] = False
+    generated_linear_equations['timeTaken'] = 0
     generated_linear_equations['create_timestamp'] = datetime.datetime.now()
     generated_linear_equations['last_modified_timestamp'] = datetime.datetime.now()
     generated_linear_equations['config'] = {}
@@ -295,7 +301,9 @@ def update_datastore_linear_equations(input_linear_equations):
     id = input_linear_equations['datastore_id']
     updated_entity = {
     "last_modified_timestamp": datetime.datetime.now(),
-    "answer": input_linear_equations['answer']
+    "answer": input_linear_equations['answer'],
+    "timeTaken": input_linear_equations['timeTaken'],
+    "userAnswerCorrect": input_linear_equations['userAnswerCorrect']
     }
     # Get entityKind config from Datastore
     entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_linear_equations")['config_value']

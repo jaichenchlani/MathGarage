@@ -2,6 +2,8 @@ from google.cloud import datastore
 import os, re, datetime, json
 import datastoreoperations, encryptionoperations, pubsuboperations
 import config
+from urllib import request
+
 
 # Load Environment
 env = config.get_environment_from_env_file()
@@ -261,3 +263,17 @@ def decrypt_password(encrypted_password):
     # All good. Return the response dictionary
     response['decrypted_password'] = decryption['plaintext']
     return response
+
+def get_url():
+    print("Entering decrypt_password...")
+    resp = request.urlopen("https://www.wikipedia.org/")
+    print(type(resp))
+    print(resp)
+    print(resp.code)
+    print(resp.length)
+    # print(resp.peek())
+    data = resp.read()
+    print(type(data))
+    print(len(data))
+    html = data.decode("UTF-8")
+    print(html)

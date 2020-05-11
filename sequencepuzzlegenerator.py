@@ -5,11 +5,12 @@ import datetime
 # Load Environment
 env = config.get_environment_from_env_file()
 
-def generate_sequence_puzzle(difficultyLevel):
+def generate_sequence_puzzle(requestData):
     print("Start - Entering generate_sequence_puzzle...")
 
+    difficultyLevel = requestData['difficultyLevel']
     # Declare the output dictionary
-    generated_sequence_puzzle = declare_output_dictionary()
+    generated_sequence_puzzle = declare_output_dictionary(requestData)
 
     # Read config file and and load the random selected puzzle type 
     selected_random_puzzle = select_random_sequence_puzzle(difficultyLevel,generated_sequence_puzzle)
@@ -270,10 +271,15 @@ def select_random_sequence_puzzle(difficultyLevel,generated_sequence_puzzle):
 
     return selected_random_puzzle
 
-def declare_output_dictionary():
+def declare_output_dictionary(requestData):
     generated_sequence_puzzle = {}
     generated_sequence_puzzle['datastore_id'] = 0
-    generated_sequence_puzzle['user'] = "Guest"
+    if requestData['username']:
+        generated_sequence_puzzle['username'] = requestData['username']
+    else:
+        generated_sequence_puzzle['username'] = "guest"
+    generated_sequence_puzzle['userAnswerCorrect'] = False
+    generated_sequence_puzzle['timeTaken'] = 0
     generated_sequence_puzzle['create_timestamp'] = datetime.datetime.now()
     generated_sequence_puzzle['last_modified_timestamp'] = datetime.datetime.now()
     generated_sequence_puzzle['config'] = {}
@@ -295,7 +301,9 @@ def update_datastore_sequence_puzzles(input_sequence_puzzles):
     id = input_sequence_puzzles['datastore_id']
     updated_entity = {
     "last_modified_timestamp": datetime.datetime.now(),
-    "missing_elements": input_sequence_puzzles['missing_elements']
+    "missing_elements": input_sequence_puzzles['missing_elements'],
+    "timeTaken": input_sequence_puzzles['timeTaken'],
+    "userAnswerCorrect": input_sequence_puzzles['userAnswerCorrect']
     }
     # Get entityKind config from Datastore
     entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],"datastore_kind_sequence_puzzles")['config_value']

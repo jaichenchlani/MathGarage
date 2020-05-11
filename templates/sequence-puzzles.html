@@ -9,7 +9,10 @@
 
     <div class="container-fluid" ng-controller="SequencePuzzlesController">
         <div class="modal-body">
-            <h3>Sequence Puzzles</h3>
+            <div class = "row">
+                <h4 class="col-sm-8 align-items-left text-left">Sequence Puzzles</h4>
+                <h4 class="col-sm-4 align-items-right text-primary text-right">{{'{{username}}'}}</h4>
+            </div>
             <form name="sequencePuzzlesForm" novalidate>
                 <span class="alert-danger">{{'{{errorMessage}}'}}</span>
                 <div class = "row border col-sm-12 justify-content-center align-items-center">
@@ -44,19 +47,22 @@
                     <div ng-show="puzzle.showUserHelp" class="col-sm-12">
                         <span class="alert-info">Difficulty Level: {{'{{puzzle.config.difficulty_level | uppercase}}'}} | {{'{{puzzle.message}}'}}</span>
                     </div>
-                    <div class="col-sm-12">
+                    <div ng-show="showSystemAnswer" class="col-sm-12">
                         <span ng-if="userAnswerFeedback.result" class="alert-success">{{'{{userAnswerFeedback.message}}'}}</span>
                         <span ng-if="!userAnswerFeedback.result" class="alert-danger">{{'{{userAnswerFeedback.message}}'}}</span>
+                        <span ng-if="userAnswerFeedback.result" class="alert-success font-weight-bold">{{'{{puzzle.timeTaken}}'}}</span>
+                        <span ng-if="!userAnswerFeedback.result" class="alert-danger font-weight-bold">{{'{{puzzle.timeTaken}}'}}</span>
                     </div>
                 </div>
                 <br>
 
                 <div class = "row justify-content-center align-items-center">
-                    <span class="col-sm-2"></span>
+                    <span class="col-sm-1"></span>
                     <input class="btn-primary" id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle()"/>
-                    <span class="col-sm-2"></span>
+                    <span class="col-sm-1"></span>
                     <input class="btn-success" id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer()"/>
-                    <span class="col-sm-2"></span>
+                    <span ng-show="showTimer" class="justify-content-right align-items-right text-primary col-sm-4 font-weight-bold">Timer(Secs):{{'{{timerSec}}'}}</span>
+                    <span class="col-sm-1"></span>
                 </div>
                 <br>
                 <br>

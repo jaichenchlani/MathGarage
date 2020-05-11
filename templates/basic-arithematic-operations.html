@@ -9,7 +9,10 @@
 <div ng-app="basicArithematicOperations">
     <div class="container-fluid" ng-controller="BasicArithematicOperationsController">
         <div class="modal-body">
-            <h3>Basic Arithematic Operations</h3>
+            <div class = "row">
+                <h4 class="col-sm-8 align-items-left text-left">Basic Arithematic Operations</h4>
+                <h4 class="col-sm-4 align-items-right text-primary text-right">{{'{{username}}'}}</h4>
+            </div>
             <form name="basicArithematicOperationsForm" novalidate>
                 <span class="alert-danger">{{'{{errorMessage}}'}}</span>
                 <div class = "row col-sm-12 border justify-content-center align-items-center">
@@ -37,12 +40,12 @@
 
                 <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span><br>
 
-                <div class = "row justify-content-center align-items-center">
-                    <span class="col-sm-2"></span>
-                    <input class="btn-primary" id="getBasicArithematicOperations" type="submit" value="Go" ng-click="getBasicArithematicOperations()"/>
-                    <span class="col-sm-2"></span>
-                    <input id="reset" ng-disabled="!showResultSection" class="col-sm-3" type="submit" value="Reset" ng-click="reset()"/>
-                    <span class="col-sm-2"></span>
+                <div class = "row border justify-content-center align-items-center">
+                    <input class="btn-primary" id="getBasicArithematicOperations" class="col-sm-4" type="submit" value="Get Questions" ng-click="getBasicArithematicOperations()"/>
+                    <span class="col-sm-1"></span>
+                    <input id="reset" ng-disabled="!showResultSection" class="col-sm-4" type="submit" value="Reset" ng-click="reset()"/>
+                    <span class="col-sm-1"></span>
+                    <span ng-show="showTimer" class="justify-content-right align-items-right text-primary col-sm-4 font-weight-bold">Timer(Secs):{{'{{timerSec}}'}}</span>
                 </div>
 
                 <br>
@@ -51,8 +54,9 @@
             </form>
 
             <div id="resultsection" ng-show="showResultSection">
-                <div class="col-sm-12">
+                <div class="col-sm-12" ng-show="showSystemAnswer">
                     <span class="alert-info">{{'{{userAnswerFeedback.message}}'}}</span>
+                    <span class="alert-info text-primary font-weight-bold">{{'{{operation.timeTaken}}'}}</span>
                 </div>
                 <table class="table table-striped table-bordered">
                     <thead class="thead-light">

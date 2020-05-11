@@ -4,6 +4,8 @@
     // Actions when HTTP call is completed successfully.
     var CreateAccountController = function($scope, $http, $window, $location, $rootScope) {
         console.log("Entering CreateAccountController...");
+        $scope.username = sessionStorage.getItem('username')
+        
         $scope.errorMessage = ""
         $scope.user = {
             "username": "",
@@ -16,9 +18,10 @@
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
             $scope.user = response.data;
-            console.log($scope.user)
+            // console.log($scope.user)
             if ($scope.user.created_userInfo.result) {
                 // All good. User got created in Data Store. Redirect to Home Page.
+                sessionStorage.setItem('username',$scope.user.userInfo.username)
                 $window.location.href = '/';
             } else {
                 $scope.errorMessage = $scope.user.created_userInfo.message

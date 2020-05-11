@@ -3,17 +3,24 @@
 
     var LinearEquationsController = function($scope, $http, $window, $interval) {
         console.log("Entering LinearEquationsController...");
+        $scope.username = sessionStorage.getItem('username')
+        $scope.showTimer = false
 
         // Actions when HTTP call is completed successfully.
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
             $scope.puzzle = response.data;
             console.log($scope.puzzle);
+            $window.document.getElementById('getEquations').value = "Get New Equation";
             if (!$scope.puzzle.validOutputReturned) {
                 $scope.errorMessage = $scope.puzzle.message;
                 $window.document.getElementById('checkboxEasy').focus();
             } else {
-                $window.document.getElementById('getEquations').focus();
+                $window.document.getElementById('submitAnswer').focus();
+                // Start Timer
+                $scope.timer = 0
+                $scope.showTimer = true
+                startTimer();
             }
         }
 
@@ -46,6 +53,20 @@
             $interval(decrementCountdown, 1000, $scope.countdown);
         };
 
+        var startTimer = function() {
+            $interval(incrementTimer, 1, $scope.timer);
+        };
+        var stopTimer = function() {
+            console.log("Entering stopTimer...")
+            $scope.timer = 0
+            $scope.timerSec = 0
+            $interval.cancel(startTimer())
+        };
+        var incrementTimer = function() {
+            $scope.timer += 1;
+            $scope.timerSec = $scope.timer / 1000;
+        };
+
         // Action from the HTML View
         $scope.getEquations = function () {
             console.log("Entering getEquations...");
@@ -57,12 +78,12 @@
                 "message": ""
             }
             $scope.showSystemAnswer = false
-            $window.document.getElementById('getEquations').value = "Get New Equation";
             // console.log(puzzle);
             calledURL = "/linear-equations/get"
             console.log("Calling " + calledURL + "...")
 
             requestData = {
+                "username": $scope.username,
                 "difficultyLevel": $scope.difficultyLevel,
                 "variableCount": $scope.variableCount
             }
@@ -75,6 +96,7 @@
         $scope.submitAnswer = function (showSystemAnswer) {
             // console.log($scope.puzzle.user_answers_list);
             // console.log($scope.puzzle.answers_list);
+            $scope.showTimer = false
             userMessage = ""
             userResult = 1
             for (i = 0; i < $scope.puzzle.config.number_of_variables; i++ ) {
@@ -96,17 +118,18 @@
 
             // databaseUpdatedMessage = "Answers updated in Datastore."
             databaseUpdatedMessage = ""
-
+            timeTakenMessage = "Time Taken(Secs): "
+            $scope.puzzle.timeTaken = $scope.timerSec
             if (userResult) {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": "Bravo. Correct Answer! " + databaseUpdatedMessage
+                    "message": "Bravo. Correct Answer! " + timeTakenMessage
                 };
+                $scope.puzzle.userAnswerCorrect = true
             } else {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    // "message": userMessage + " " + databaseUpdatedMessage
-                    "message": "Sorry. Incorrect Answer! See System Answer below." + databaseUpdatedMessage
+                    "message": "Sorry. Incorrect Answer! See System Answer below." + timeTakenMessage
                 };
             }
 
@@ -156,9 +179,9 @@
             "result": 0,
             "message": ""
         }
-        $scope.countdown = 5;
-        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
-        startCountdown();
+        // $scope.countdown = 5;
+        // $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        // startCountdown();
     };
 
     // Register the Controller with the app

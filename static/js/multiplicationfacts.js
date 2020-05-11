@@ -4,6 +4,7 @@
     // Actions when HTTP call is completed successfully.
     var MultiplicationFactsController = function($scope, $http, $window, $location, $interval) {
         console.log("Entering MultiplicationFactsController...");
+        $scope.username = sessionStorage.getItem('username')
         
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
@@ -105,9 +106,9 @@
             "tableof": 131,
             "limit": 50
         }
-        $scope.countdown = 5;
-        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
-        startCountdown();
+        // $scope.countdown = 5;
+        // $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        // startCountdown();
     };
 
     // Register the Controller with the app

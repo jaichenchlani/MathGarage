@@ -2,7 +2,7 @@
     var app = angular.module('loginMathgarage', []);
 
     // Actions when HTTP call is completed successfully.
-    var LoginController = function($scope, $http, $window, $location, $rootScope) {
+    var LoginController = function($scope, $http, $window, $location) {
         console.log("Entering LoginController...");
         $scope.errorMessage = ""
         $scope.resetPasswordErrorMessage = ""
@@ -13,27 +13,30 @@
             console.log("Entering onUserComplete...");
             $scope.loginInfo = response.data;
             console.log($scope.loginInfo)
-            $rootScope.loginInfo = $scope.loginInfo
 
             switch($scope.loginInfo.is_valid_login_response.result) {
                 case 0:
                   // LOGIN_SUCCESS
                   $scope.errorMessage = $scope.loginInfo.is_valid_login_response.message
+                  sessionStorage.setItem('username',$scope.loginCredentials.username)
                   $window.location.href = '/'
                   break;
                 case 1:
                   // LOGIN_FAILURE
                   $scope.errorMessage = $scope.loginInfo.is_valid_login_response.message
+                  sessionStorage.setItem('username',undefined)
                   $window.document.getElementById('forgotPassword').focus();
                   break;
                 case 2:
                   // LOGIN_USER_DOES_NOT_EXIST
                   $scope.errorMessage = $scope.loginInfo.is_valid_login_response.message
+                  sessionStorage.setItem('username',undefined)
                   $window.document.getElementById('createAccount').focus();
                   break;
                 case 3:
                   // LOGIN_SERVER_ERROR
                   $scope.errorMessage = $scope.loginInfo.is_valid_login_response.message
+                  sessionStorage.setItem('username',undefined)
                   $window.document.getElementById('inputUsername').focus();
                   break;
                 default:

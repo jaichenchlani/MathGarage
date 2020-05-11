@@ -9,7 +9,10 @@
 <div ng-app="numberWiki">
     <div class="container-fluid" ng-controller="NumberWikiController">
         <div class="modal-body">
-            <h3>Number Wiki</h3>
+            <div class = "row">
+                <h4 class="col-sm-8 align-items-left text-left">Number Wiki</h4>
+                <h4 class="col-sm-4 align-items-right text-primary text-right">{{'{{username}}'}}</h4>
+            </div>
             <form name="numberWikiForm" novalidate>
                 <span class="alert-danger">{{'{{errorMessage}}'}}</span>
                 <div class = "row col-sm-12 border justify-content-center align-items-center">

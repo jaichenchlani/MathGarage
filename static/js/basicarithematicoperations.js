@@ -4,11 +4,15 @@
     // Actions when HTTP call is completed successfully.
     var BasicArithematicOperationsController = function($scope, $http, $window, $location, $interval) {
         console.log("Entering BasicArithematicOperationsController...");
+        $scope.username = sessionStorage.getItem('username')
+        $scope.timeTaken = undefined
+        $scope.showTimer = false
 
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
             $scope.operation = response.data;
             console.log($scope.operation);
+            $window.document.getElementById('getBasicArithematicOperations').value = "Get New Question Set";
             if (!$scope.operation.validOutputReturned) {
                 $scope.errorMessage = $scope.operation.message;
                 $window.document.getElementById('checkboxEasy').focus();
@@ -18,12 +22,16 @@
                 // Set the focus on the Submit Answer button.
                 $scope.showResultSection = true
                 $scope.gotoResultSection();
-                $window.document.getElementById('submitAnswer').focus();
+                // Start Timer
+                $scope.timer = 0
+                $scope.showTimer = true
+                startTimer();
             }
         }
 
         var onSubmitComplete = function(response) {
             console.log("Entering onSubmitComplete...");
+            stopTimer()
             $scope.submit_status = response.data;
             console.log($scope.submit_status);
             // Set the focus on the Submit Answer button.
@@ -51,14 +59,28 @@
             $interval(decrementCountdown, 1000, $scope.countdown);
         };
 
+        var startTimer = function() {
+            $interval(incrementTimer, 1, $scope.timer);
+        };
+        var stopTimer = function() {
+            console.log("Entering stopTimer...")
+            $scope.timer = 0
+            $scope.timerSec = 0
+            $interval.cancel(startTimer())
+        };
+        var incrementTimer = function() {
+            $scope.timer += 1;
+            $scope.timerSec = $scope.timer / 1000;
+        };
+
         // Action from the HTML View
         $scope.getBasicArithematicOperations = function () {
             console.log("Entering getBasicArithematicOperations...");
             $scope.countdownMessage = undefined;
             $scope.errorMessage = "";
             $scope.showSystemAnswer = false
-
             requestData = {
+                "username": $scope.username,
                 "difficultyLevel": $scope.difficultyLevel,
                 "operator": $scope.operator,
                 "number_of_questions": $scope.number_of_questions
@@ -75,6 +97,7 @@
         // Action from the HTML View
         $scope.submitAnswer = function (showSystemAnswer) {
             console.log($scope.operation);
+            $scope.showTimer = false
             userMessage = ""
             userResult = 1
             countCorrectAnswers = 0
@@ -97,16 +120,19 @@
                 }
 
             }
-
+            $scope.operation.timeTaken = $scope.timerSec
             if (userResult) {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": "Bravo! All " + countCorrectAnswers + " of " + totalQuestions + " answers are correct."
+                    "message": "Bravo! All " + countCorrectAnswers + " of " + totalQuestions + 
+                    " answers are correct. Time Taken(Secs): "
                 };
+                $scope.operation.userAnswerCorrect = true
             } else {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": countCorrectAnswers + " of " + totalQuestions + " answers are correct."
+                    "message": countCorrectAnswers + " of " + totalQuestions + 
+                    " answers are correct. Time Taken(Secs): "
                 };
             }
 
@@ -125,10 +151,13 @@
         };
 
         $scope.reset = function() {
+            console.log("Entering reset...")
             $scope.operation = {}
             $window.document.getElementById('getBasicArithematicOperations').focus();
             $scope.errorMessage = ""
             $scope.showSystemAnswer = false
+            $scope.timeTaken = undefined
+            $scope.showTimer = false
             $scope.showResultSection = false
             $scope.countdownMessage = undefined;
             $scope.operation_request = {
@@ -180,9 +209,10 @@
             "result": 1,
             "message": ""
         };
-        $scope.countdown = 5;
-        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
-        startCountdown();
+        $scope.timer = 0;
+        // $scope.countdown = 5;
+        // $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        // startCountdown();
     };
 
     // Register the Controller with the app

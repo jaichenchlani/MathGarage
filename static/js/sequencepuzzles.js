@@ -3,6 +3,8 @@
 
     var SequencePuzzlesController = function($scope, $http, $window, $interval) {
         console.log("Entering SequencePuzzlesController...");
+        $scope.username = sessionStorage.getItem('username')
+        $scope.showTimer = false
         
         // Actions when HTTP call is completed successfully.
         var onUserComplete = function(response) {
@@ -14,7 +16,11 @@
                 $scope.errorMessage = $scope.puzzle.message;
                 $window.document.getElementById('checkboxEasy').focus();
             } else {
-                $window.document.getElementById('getPuzzle').focus();
+                $window.document.getElementById('submitAnswer').focus();
+                // Start Timer
+                $scope.timer = 0
+                $scope.showTimer = true
+                startTimer();
             }
         }
 
@@ -47,6 +53,20 @@
             $interval(decrementCountdown, 1000, $scope.countdown);
         };
 
+        var startTimer = function() {
+            $interval(incrementTimer, 1, $scope.timer);
+        };
+        var stopTimer = function() {
+            console.log("Entering stopTimer...")
+            $scope.timer = 0
+            $scope.timerSec = 0
+            $interval.cancel(startTimer())
+        };
+        var incrementTimer = function() {
+            $scope.timer += 1;
+            $scope.timerSec = $scope.timer / 1000;
+        };
+
         // Action from the HTML View
         $scope.getPuzzle = function () {
             console.log("Entering getPuzzle...");
@@ -64,19 +84,21 @@
             calledURL = "/sequence-puzzles/get"
             console.log("Calling " + calledURL + "...")
             
-            // console.log($scope.difficultyLevel);
+            requestData = {
+                "username": $scope.username,
+                "difficultyLevel": $scope.difficultyLevel
+            }
 
-            $http.put(calledURL, $scope.difficultyLevel)
+            $http.put(calledURL, requestData)
                 .then(onUserComplete, onError);
         };
 
         // Action from the HTML View
         $scope.submitAnswer = function () {
             console.log("Entering checkAnswer...");
-            // console.log($scope.puzzle.missing_elements_list_question);
-            // console.log($scope.puzzle.missing_elements_list_answer);
             userMessage = ""
             userResult = 1
+            $scope.showTimer = false
             for (i = 0; i < $scope.puzzle.config.missing_elements_count; i++ ) {
                 // console.log(i)
                 // console.log($scope.puzzle.missing_elements[i])
@@ -97,18 +119,20 @@
                 }
             }
 
-            // messageAddendum = "Answers updated in Datastore. Check rationale below."
             messageAddendum = ""
+            timeTakenMessage = "Time Taken(Secs): "
+            $scope.puzzle.timeTaken = $scope.timerSec
 
             if (userResult) {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": "Bravo. Correct Answer! " + messageAddendum
+                    "message": "Bravo. Correct Answer! " + timeTakenMessage
                 };
+                $scope.puzzle.userAnswerCorrect = true
             } else {
                 $scope.userAnswerFeedback = {
                     "result": userResult,
-                    "message": "Sorry. Incorrect Answer! See Rationale below." + messageAddendum
+                    "message": "Sorry. Incorrect Answer! See Rationale below." + timeTakenMessage
                 };
             }
 
@@ -142,9 +166,9 @@
             "result": 0,
             "message": ""
         }
-        $scope.countdown = 5;
-        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
-        startCountdown();
+        // $scope.countdown = 5;
+        // $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        // startCountdown();
     };
 
     // Register the Controller with the app

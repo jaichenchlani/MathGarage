@@ -1,7 +1,7 @@
 from random import randint
 import datastoreoperations, utilities, config
 from mathfunctions import isInteger
-import datetime
+import datetime, pytz
 
 # Load Environment
 env = config.get_environment_from_env_file()
@@ -54,9 +54,15 @@ def declare_output_dictionary(requestData):
     
     generated_basic_arithmatic_operation = {}
     generated_basic_arithmatic_operation['datastore_id'] = 0
-    generated_basic_arithmatic_operation['user'] = "Guest"
+    if requestData['username']:
+        generated_basic_arithmatic_operation['username'] = requestData['username']
+    else:
+        generated_basic_arithmatic_operation['username'] = "guest"
+    generated_basic_arithmatic_operation['userAnswerCorrect'] = False
+    generated_basic_arithmatic_operation['timeTaken'] = 0
     generated_basic_arithmatic_operation['create_timestamp'] = datetime.datetime.now()
     generated_basic_arithmatic_operation['last_modified_timestamp'] = datetime.datetime.now()
+    generated_basic_arithmatic_operation['submit_timestamp'] = datetime.datetime.now()
     generated_basic_arithmatic_operation['operator'] = requestData['operator']
     generated_basic_arithmatic_operation['number_of_questions'] = int(requestData['number_of_questions'])
     generated_basic_arithmatic_operation['difficultyLevel'] = requestData['difficultyLevel']
@@ -179,10 +185,14 @@ def update_datastore_basic_arithmatic_operations(input_basic_arithematic_operati
     print("Entering update_datastore_basic_arithmatic_operations...")
     # Update Datastore Entity
     id = input_basic_arithematic_operation['datastore_id']
+    
     updated_entity = {
     "last_modified_timestamp": datetime.datetime.now(),
-    "questions": input_basic_arithematic_operation['questions']
+    "timeTaken": input_basic_arithematic_operation['timeTaken'],
+    "questions": input_basic_arithematic_operation['questions'],
+    "userAnswerCorrect": input_basic_arithematic_operation['userAnswerCorrect']
     }
+    
     # Get entityKind config from Datastore
     entityKind = utilities.get_value_by_entityKind_and_key(env['config_entityKind'],datastore_kind_basic_arithematic_operations_key)['config_value']
     status = datastoreoperations.update_datastore_entity(entityKind,id,updated_entity)

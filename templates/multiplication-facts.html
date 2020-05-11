@@ -9,7 +9,10 @@
 <div ng-app="multiplicationFacts">
     <div class="container-fluid" ng-controller="MultiplicationFactsController">
         <div class="modal-body">
-            <h3>Multiplication Facts</h3>
+            <div class = "row">
+                <h4 class="col-sm-8 align-items-left text-left">Multiplication Facts</h4>
+                <h4 class="col-sm-4 align-items-right text-primary text-right">{{'{{username}}'}}</h4>
+            </div>
             <form name="multiplicationFactsForm" novalidate>
                 <span class="alert-danger">{{'{{errorMessage}}'}}</span>
                 <div class = "row border justify-content-center align-items-center">

@@ -3,7 +3,7 @@
 
     var NumberWikiController = function($scope, $http, $window, $interval) {
         console.log("Entering NumberWikiController...");
-        
+        $scope.username = sessionStorage.getItem('username')
         
         // Actions when HTTP call is completed successfully.
         var onUserComplete = function(response) {
@@ -76,9 +76,9 @@
         $window.document.getElementById('numberInput').focus();
         $scope.errorMessage = "";
         $scope.userMessage = "Input number should be less than 10 Million i.e. Max 9,999,999.";
-        $scope.countdown = 5;
-        $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
-        startCountdown();
+        // $scope.countdown = 5;
+        // $scope.countdownMessage = "Starting the default search in " + $scope.countdown + " secs."
+        // startCountdown();
     };
 
     // Register the Controller with the app
