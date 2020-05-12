@@ -413,6 +413,6 @@ testUser = {
 # for i in range(-10,10):
 #     print("{}:{}".format(i,mathfunctions.isPrime(i)))
 
-timestamp = datetime.datetime.now()
+# timestamp = datetime.datetime.now()
 
-Mon, 11 May 2020 12:22:54 GMT
+print(config.get_environment_from_env_file())
