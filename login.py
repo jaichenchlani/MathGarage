@@ -197,7 +197,6 @@ def isValidLogin(callingFrom,entityKind,username,password):
     }
 
     user = isValidUser(entityKind,username)
-    print(user)
     if not user['validOutputReturned']:
         # Error returned from isValidUser. 
         response['message'] = user['message']

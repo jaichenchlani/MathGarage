@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, jsonify, request, redirect
 from datetime import datetime
 import os
 import multiplicationfacts, sequencepuzzlegenerator, linearequationsgenerator
-import numberwiki, login, basicarithmaticoperations
+import numberwiki, login, basicarithmaticoperations, dashboard
 
 print("Entering main.py...")
 
@@ -118,17 +118,26 @@ def render_basic_arithematic_operations_template():
 
 @app.route('/basic-arithematic-operations', methods=['PUT', 'GET'])
 def process_basic_arithematic_operations():
-    print("Enterning def process_basic_arithematic_operations...")
+    print("Enterning process_basic_arithematic_operations...")
     requestData = request.json
     data = basicarithmaticoperations.generate_basic_arithmatic_operations(requestData)
     return jsonify(data), 200
 
 @app.route('/basic-arithematic-operations/submit', methods=['PUT', 'GET'])
 def submit_basic_arithematic_operations():
-    print("Enterning def submit_basic_arithematic_operations...")
+    print("Enterning submit_basic_arithematic_operations...")
     input_basic_arithematic_operation = request.json
     status = basicarithmaticoperations.update_datastore_basic_arithmatic_operations(input_basic_arithematic_operation)
     return jsonify(status), 200
+
+@app.route('/get-dashboard', methods=['PUT', 'GET'])
+def process_user_dashboard():
+    print("Enterning process_user_dashboard...")
+    requestData = request.json
+    print(requestData)
+    metrics = dashboard.generate_user_dashboard(requestData)
+    print(metrics)
+    return jsonify(metrics), 200
 
 if __name__ == "__main__":
     print("Starting MathGarage Python Flask App on Port 5000...")
