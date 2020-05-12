@@ -1,7 +1,7 @@
 import utilities, login, gmail, config, setup
 import datastoreoperations, encryptionoperations, pubsuboperations
 import datetime, os
-import mathfunctions
+import mathfunctions, dashboard
 
 # Load Environment
 env = config.get_environment_from_env_file()
@@ -415,4 +415,6 @@ testUser = {
 
 # timestamp = datetime.datetime.now()
 
-print(config.get_environment_from_env_file())
+# print(config.get_environment_from_env_file())
+
+print(dashboard.generate_user_dashboard("jaichenchlani"))
