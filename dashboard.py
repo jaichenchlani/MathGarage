@@ -116,10 +116,14 @@ def build_basic_arithematic_operations_metrics(puzzle_category, entityList,):
             else:
                 metrics['count_by_result']['incorrect'] += 1
         # Distribute the total time taken proportionately by result
-        temp = metrics['total_time_spent']*metrics['count_by_result']['correct']/metrics['count_questions_attempted']
-        metrics['total_time_spent_by_result']['correct'] +=round(temp,2)
-        temp = metrics['total_time_spent']*metrics['count_by_result']['incorrect']/metrics['count_questions_attempted']
-        metrics['total_time_spent_by_result']['incorrect'] += round(temp,2)
+        metrics['total_time_spent_by_result']['correct'] += \
+            perform_division(puzzle_category, \
+                metrics['total_time_spent']*metrics['count_by_result']['correct'], \
+                    metrics['count_questions_attempted'])
+        metrics['total_time_spent_by_result']['incorrect'] += \
+            perform_division(puzzle_category, \
+                metrics['total_time_spent']*metrics['count_by_result']['incorrect'], \
+                    metrics['count_questions_attempted'])
 
         counter += 1
 
@@ -154,8 +158,10 @@ def build_basic_arithematic_operations_metrics(puzzle_category, entityList,):
         metrics['average_time_spent_by_operator'][key] = averageTimeTaken
     
     # Calculate Perdentage Score
-    temp = metrics['count_by_result']['correct'] * 100/ metrics['count_questions_attempted']
-    metrics['percentage_score'] = round(temp,2)
+    metrics['percentage_score'] += \
+            perform_division(puzzle_category, \
+                metrics['count_by_result']['correct']*100, \
+                    metrics['count_questions_attempted'])
 
     return metrics
 
@@ -192,11 +198,15 @@ def build_linear_equations_metrics(puzzle_category, entityList):
             else:
                 metrics['count_by_result']['incorrect'] += 1
         # Distribute the total time taken proportionately by result
-        temp = metrics['total_time_spent']*metrics['count_by_result']['correct']/metrics['count_questions_attempted']
-        metrics['total_time_spent_by_result']['correct'] += round(temp,2)
-        temp = metrics['total_time_spent']*metrics['count_by_result']['incorrect']/metrics['count_questions_attempted']
-        metrics['total_time_spent_by_result']['incorrect'] += round(temp,2)
-
+        metrics['total_time_spent_by_result']['correct'] += \
+            perform_division(puzzle_category, \
+                metrics['total_time_spent']*metrics['count_by_result']['correct'], \
+                    metrics['count_questions_attempted'])
+        
+        metrics['total_time_spent_by_result']['incorrect'] += \
+            perform_division(puzzle_category, \
+                metrics['total_time_spent']*metrics['count_by_result']['incorrect'], \
+                    metrics['count_questions_attempted'])
         counter += 1
 
     # Calculate Averages (Average time is in Seconds, while Total time is in Hours)
@@ -231,8 +241,9 @@ def build_linear_equations_metrics(puzzle_category, entityList):
         metrics['average_time_spent_by_number_of_variables'][key] = averageTimeTaken
     
     # Calculate Perdentage Score
-    temp = metrics['count_by_result']['correct'] * 100/ metrics['count_questions_attempted']
-    metrics['percentage_score'] = round(temp,2)
+    metrics['percentage_score'] = perform_division(puzzle_category, \
+            metrics['count_by_result']['correct']*100, \
+                metrics['count_questions_attempted'])
 
     return metrics
 
@@ -269,10 +280,15 @@ def build_sequence_puzzles_metrics(puzzle_category, entityList):
             else:
                 metrics['count_by_result']['incorrect'] += 1
         # Distribute the total time taken proportionately by result
-        temp = metrics['total_time_spent']*metrics['count_by_result']['correct']/metrics['count_questions_attempted']
-        metrics['total_time_spent_by_result']['correct'] += round(temp,2)
-        temp = metrics['total_time_spent']*metrics['count_by_result']['incorrect']/metrics['count_questions_attempted']
-        metrics['total_time_spent_by_result']['incorrect'] += round(temp,2)
+        metrics['total_time_spent_by_result']['correct'] += \
+            perform_division(puzzle_category, \
+                metrics['total_time_spent']*metrics['count_by_result']['correct'], \
+                    metrics['count_questions_attempted'])
+
+        metrics['total_time_spent_by_result']['incorrect'] += \
+            perform_division(puzzle_category, \
+                metrics['total_time_spent']*metrics['count_by_result']['incorrect'], \
+                    metrics['count_questions_attempted'])
 
         counter += 1
 
@@ -308,8 +324,11 @@ def build_sequence_puzzles_metrics(puzzle_category, entityList):
         metrics['average_time_spent_by_number_of_missing_elements'][key] = averageTimeTaken
 
     # Calculate Perdentage Score
-    temp = metrics['count_by_result']['correct'] * 100/ metrics['count_questions_attempted']
-    metrics['percentage_score'] = round(temp,2)
+    metrics['percentage_score'] += \
+            perform_division(puzzle_category, \
+                metrics['count_by_result']['correct']*100, \
+                    metrics['count_questions_attempted'])
+
     return metrics
 
 def build_metrics_applicable_to_all_puzzle_types(generated_user_dashboard):
@@ -687,23 +706,23 @@ def build_metrics_applicable_to_all_puzzle_types(generated_user_dashboard):
     # Populate the response dictionary with the metrics built
     generated_user_dashboard['metrics_applicable_to_all'] = metrics
 
-def perform_division(puzzle_category, timeTaken, count):
+def perform_division(puzzle_category, dividend, divisor):
     # Standard Logging
     logger = logging.getLogger( __name__ )
     module = logger.name
     function = inspect.stack()[0][3]
-    print("Function:{}.{}; Argument1:puzzle_category:{}; Argument3:Count:{}; Argument4:timeTaken:{}".format(module,function,puzzle_category, count, timeTaken))
+    print("Function:{}.{}; Argument1:puzzle_category:{}; Argument3:Dividend:{}; Argument4:Divisor:{}".format(module,function,puzzle_category, dividend, divisor))
     try:
-        averageTime = timeTaken / count
-        averageTime = round(averageTime,2)
+        answer = dividend / divisor
+        answer = round(answer,2)
     except Exception as e:
-        # Error performing the DB operation
-        errorMessage = "Error calculating average time spent for Puzzle Category {} Count {} and timeTaken {}.".format(puzzle_category,count,timeTaken)
+        # Error performing the divison
+        errorMessage = "Error performing the divison for Puzzle Category {} Dividend {} and Divisor {}.".format(puzzle_category,dividend, divisor)
         errorMessage = "{0} Stacktrace: {1}".format(errorMessage,e)
         print(errorMessage)
         return 0
     else:
-        return averageTime
+        return answer
 
 def build_metrics_basic_arithematic_operations_operator(generated_user_dashboard):
     # Standard Logging
@@ -762,7 +781,7 @@ def build_metrics_basic_arithematic_operations_operator(generated_user_dashboard
 
     # Average Time Spent
     average_time_spent_by_operator = {
-        "metric": "Total Time Spent(Hours)",
+        "metric": "Average Time Spent(Secs)",
         "addition": generated_user_dashboard['metrics_basic_arithematic_operations']['average_time_spent_by_operator']['+'],
         "subtraction": generated_user_dashboard['metrics_basic_arithematic_operations']['average_time_spent_by_operator']['-'],
         "multiplication": generated_user_dashboard['metrics_basic_arithematic_operations']['average_time_spent_by_operator']['x'],
@@ -854,7 +873,7 @@ def build_metrics_linear_equations_variables(generated_user_dashboard):
             total_time_spent_by_number_of_variables['four_plus_variable']*60, \
                 count_questions_attempted['four_plus_variable'])
     average_time_spent_by_number_of_variables = {
-        "metric": "Total Time Spent(Hours)",
+        "metric": "Average Time Spent(Secs)",
         "one_variable": generated_user_dashboard['metrics_linear_equations']['average_time_spent_by_number_of_variables']['1'],
         "two_variable": generated_user_dashboard['metrics_linear_equations']['average_time_spent_by_number_of_variables']['2'],
         "three_variable": generated_user_dashboard['metrics_linear_equations']['average_time_spent_by_number_of_variables']['3'],
@@ -921,7 +940,7 @@ def build_metrics_sequence_puzzles_missing_elements(generated_user_dashboard):
 
     # Average Time Spent
     average_time_spent_by_missing_elements = {
-        "metric": "Total Time Spent(Hours)",
+        "metric": "Average Time Spent(Secs)",
         "one_missing": generated_user_dashboard['metrics_sequence_puzzles']['average_time_spent_by_number_of_missing_elements']['1'],
         "two_missing": generated_user_dashboard['metrics_sequence_puzzles']['average_time_spent_by_number_of_missing_elements']['2'],
         "three_missing": generated_user_dashboard['metrics_sequence_puzzles']['average_time_spent_by_number_of_missing_elements']['3']
