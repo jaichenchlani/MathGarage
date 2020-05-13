@@ -6,7 +6,7 @@ import numberwiki, login, basicarithmaticoperations, dashboard
 
 print("Entering main.py...")
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
 
 @app.route('/')
 def render_index_template():

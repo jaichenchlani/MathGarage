@@ -393,7 +393,7 @@ testUser = {
 #     print("{}: {},{}".format(key,value,type(value)))
 
 
-# setup.update_datastore_config_from_json()
+setup.update_datastore_config_from_json()
 # setup.download_datastore_kind_into_json()
 
 # email = "jai.chenchlani@mindtree.com"
@@ -405,6 +405,7 @@ testUser = {
 # # Create Password Vault Entry
 # utilities.create_password_in_password_vault('jaichenchlani@gmail.com',"")
 
+# print(config.get_environment_from_env_file())
 
 # utilities.get_url()
 
@@ -418,3 +419,5 @@ testUser = {
 # print(config.get_environment_from_env_file())
 
 # print(dashboard.generate_user_dashboard("jaichenchlani"))
+
+
