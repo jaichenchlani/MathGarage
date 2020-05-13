@@ -1,5 +1,5 @@
 Flask==1.0.2
 google-cloud-datastore
 google-cloud-kms
-google-cloud-pubsub
+google-cloud-pubsu
 pytest
