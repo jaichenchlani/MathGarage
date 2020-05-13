@@ -9,7 +9,6 @@ keys/
 
 # Distribution / packaging
 bin/
-build/
 develop-eggs/
 dist/
 eggs/
@@ -52,3 +51,4 @@ coverage.xml
 docs/_build/
 
 .DS_Store
+delete/
