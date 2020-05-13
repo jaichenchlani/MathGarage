@@ -35,7 +35,10 @@
                     <input id="checkboxHard" type="checkbox" ng-model="difficultyLevel.hard" ng-true-value="1" ng-false-value="0"><span>Hard</span></input>
                     <input id="checkboxSuperHard" type="checkbox" ng-model="difficultyLevel.superhard" ng-true-value="1" ng-false-value="0"><span>Super Hard</span></input>
                 </div>
-                <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span><br>
+                <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span>
+                <div class = "row justify-content-center align-items-center">
+                    <span ng-show="showTimer" class="justify-content-right align-items-right text-primary col-sm-4 font-weight-bold">Timer(Secs):{{'{{timerSec}}'}}</span>
+                </div>
                 <div class = "row border justify-content-center align-items-center">
                          <table class="table">
                             <tbody>
@@ -89,7 +92,6 @@
                     <input class="btn-primary" id="getEquations" class="col-sm-3" type="submit" value="Get Equation" ng-click="getEquations(puzzle, errorMessage)"/>
                     <span class="col-sm-1"></span>
                     <input class="btn-success" id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer()"/>
-                    <span ng-show="showTimer" class="justify-content-right align-items-right text-primary col-sm-4 font-weight-bold">Timer(Secs):{{'{{timerSec}}'}}</span>
                     <span class="col-sm-1"></span>
                 </div>
             </form>

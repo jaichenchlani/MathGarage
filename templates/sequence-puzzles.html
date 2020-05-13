@@ -24,7 +24,10 @@
                 <div class="col-sm-12">
                     <input id="puzzle" class="form-control text-center text-primary" type="text" ng-disabled="1" ng-model="puzzle.question" required><br>
                 </div>
-                <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span><br>
+                <span ng-show="countdownMessage" class="col-sm-12 alert-warning">{{'{{countdownMessage}}'}}</span>
+                <div class = "row justify-content-center align-items-center">
+                        <span ng-show="showTimer" class="justify-content-right align-items-right text-primary col-sm-4 font-weight-bold">Timer(Secs):{{'{{timerSec}}'}}</span>    
+                </div>
                 <div class = "row border justify-content-center align-items-center">
                     <div class="col-sm-12">
                         <table class="table">
@@ -61,7 +64,6 @@
                     <input class="btn-primary" id="getPuzzle" class="col-sm-3" type="submit" value="Get Puzzle" ng-click="getPuzzle()"/>
                     <span class="col-sm-1"></span>
                     <input class="btn-success" id="submitAnswer" ng-disabled="showSystemAnswer" class="col-sm-3" type="submit" value="Submit Answer" ng-click="submitAnswer()"/>
-                    <span ng-show="showTimer" class="justify-content-right align-items-right text-primary col-sm-4 font-weight-bold">Timer(Secs):{{'{{timerSec}}'}}</span>
                     <span class="col-sm-1"></span>
                 </div>
                 <br>
