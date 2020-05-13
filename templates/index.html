@@ -9,27 +9,20 @@
 <div ng-app="homePage">
   <div class="container-fluid" ng-controller="MainController">
       <div class="row col-sm-12 border justify-content-center align-items-center">
-        <h4 class="col-sm-4 align-items-left text-left">Mathgarage</h4>
-        <h4 ng-show="username" class="col-sm-8 align-items-right text-primary text-right">Welcome {{'{{username}}'}}!</h4>
-        <h4 ng-show="!username" class="col-sm-8 align-items-right text-primary text-right"><a href="/login-initial-load">Login</a></h4>
+          <h4 class="justify-content-left align-items-left text-left">Mathgarage</h4>
+          <span class="col-sm-2"></span>
+          <h4 ng-show="username" class="align-items-right text-primary text-right">Welcome {{'{{username}}'}}!</h4>
+          <h4 ng-show="!username" class="align-items-right text-primary text-right"><a href="/login-initial-load">Login</a></h4>
+          <span class="col-sm-2"></span>
+          <h4><a ng-show="username" class="align-items-right justify-content-right text-primary" href="#" ng-click="logout()">Logout</a></h4>
       </div>
 
-
-      <p id="index-message">Math for fun!!</p>
-      <p id="index-message">v0.97</p>
-
-      <span class="alert-success">{{'{{userMessage}}'}}</span>
+      <div class="row col-sm-12 border justify-content-left align-items-left">
+        <h5><span class="alert-success">{{'{{userMessage}}'}}</span></h5>
+      </div>
       <div id="dashboard" ng-show="showDashboard">
           <span class="alert-info">{{'{{dashboard.message}}'}}</span>
           <table class="table table-striped table-bordered">
-              <!-- <thead class="thead-light">
-                  <tr>
-                      <th>Metric</th>
-                      <th>Basic Arithematic Operations</th>
-                      <th>Linear Equations</th>
-                      <th>Sequence Puzzles</th>
-                  </tr>
-              </thead> -->
               <thead class="thead-light">
                   <tr>
                       <th>{{'{{dashboard.metrics_applicable_to_all_header.metric_number}}'}}</th>
@@ -37,43 +30,109 @@
                       <th>{{'{{dashboard.metrics_applicable_to_all_header.puzzle_1}}'}}</th>
                       <th>{{'{{dashboard.metrics_applicable_to_all_header.puzzle_2}}'}}</th>
                       <th>{{'{{dashboard.metrics_applicable_to_all_header.puzzle_3}}'}}</th>
+                      <th>{{'{{dashboard.metrics_applicable_to_all_header.row_total}}'}}</th>
                   </tr>
               </thead>
-              <!-- <tbody>
-                  <tr>
-                    <th>Questions Attempted</th>
-                    <th>{{'{{dashboard.metrics_basic_arithematic_operations.count_questions_attempted}}'}}</th>
-                    <th>{{'{{dashboard.metrics_linear_equations.count_questions_attempted}}'}}</th>
-                    <th>{{'{{dashboard.metrics_sequence_puzzles.count_questions_attempted}}'}}</th>
-                  </tr>
-                  <tr>
-                    <th>Total Time Spent</th>
-                    <th>{{'{{dashboard.metrics_basic_arithematic_operations.total_time_spent}}'}}</th>
-                    <th>{{'{{dashboard.metrics_linear_equations.total_time_spent}}'}}</th>
-                    <th>{{'{{dashboard.metrics_sequence_puzzles.total_time_spent}}'}}</th>
-                  </tr>
-                  <tr>
-                    <th>Average time per question</th>
-                    <th>{{'{{dashboard.metrics_basic_arithematic_operations.average_time_per_question}}'}}</th>
-                    <th>{{'{{dashboard.metrics_linear_equations.average_time_per_question}}'}}</th>
-                    <th>{{'{{dashboard.metrics_sequence_puzzles.average_time_per_question}}'}}</th>
-                  </tr>
-              </tbody class="thead-light"> -->
-
               <tbody>
                   <tr ng-repeat="(i,item) in dashboard.metrics_applicable_to_all track by $index">
-                          <th>{{'{{i+1 | number}}'}}</span>
-                          <th class="text-left">{{'{{dashboard.metrics_applicable_to_all[i].metric}}'}}</th>
-                          <th>{{'{{dashboard.metrics_applicable_to_all[i].basic_arithematic_operations | number}}'}}</th>
-                          <th>{{'{{dashboard.metrics_applicable_to_all[i].linear_equations | number}}'}}</th>
-                          <th>{{'{{dashboard.metrics_applicable_to_all[i].sequence_puzzles | number}}'}}</th>
+                    <th>{{'{{i+1 | number}}'}}</span>
+                    <th class="text-left">{{'{{dashboard.metrics_applicable_to_all[i].metric}}'}}</th>
+                    <th>{{'{{dashboard.metrics_applicable_to_all[i].basic_arithematic_operations | number}}'}}</th>
+                    <th>{{'{{dashboard.metrics_applicable_to_all[i].linear_equations | number}}'}}</th>
+                    <th>{{'{{dashboard.metrics_applicable_to_all[i].sequence_puzzles | number}}'}}</th>
+                    <th>{{'{{dashboard.metrics_applicable_to_all[i].row_total | number}}'}}</th>
                   </tr>
               </tbody class="thead-light">
           </table>
       </div>
-      <div class="row col-sm-12 border justify-content-center align-items-center">
-          <span><a ng-show="username" class="align-items-right justify-content-right text-primary" href="#" ng-click="logout()">Logout</a></span>
-      </div>
+
+      <div class="row col-sm-12 border justify-content-left align-items-left">
+          <h5><span class="alert-success">{{'{{userMessageBasicArithematicOperations}}'}}</span></h5>
+        </div>
+        <div id="dashboard" ng-show="showDashboard">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                      <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator_header.metric_number}}'}}</th>
+                      <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator_header.metric}}'}}</th>
+                      <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator_header.addition}}'}}</th>
+                      <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator_header.subtraction}}'}}</th>
+                      <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator_header.multiplication}}'}}</th>
+                      <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator_header.division}}'}}</th>
+                      <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator_header.row_total}}'}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(i,item) in dashboard.metrics_basic_arithematic_operations_operator track by $index">
+                        <th>{{'{{i+1 | number}}'}}</span>
+                        <th class="text-left">{{'{{dashboard.metrics_basic_arithematic_operations_operator[i].metric}}'}}</th>
+                        <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator[i].addition | number}}'}}</th>
+                        <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator[i].subtraction | number}}'}}</th>
+                        <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator[i].multiplication | number}}'}}</th>
+                        <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator[i].division | number}}'}}</th>
+                        <th>{{'{{dashboard.metrics_basic_arithematic_operations_operator[i].row_total | number}}'}}</th>
+                    </tr>
+                </tbody class="thead-light">
+            </table>
+        </div>
+
+        <div class="row col-sm-12 border justify-content-left align-items-left">
+            <h5><span class="alert-success">{{'{{userMessageLinearEquations}}'}}</span></h5>
+          </div>
+          <div id="dashboard" ng-show="showDashboard">
+              <table class="table table-striped table-bordered">
+                  <thead class="thead-light">
+                      <tr>
+                        <th>{{'{{dashboard.metrics_linear_equations_variables_header.metric_number}}'}}</th>
+                        <th>{{'{{dashboard.metrics_linear_equations_variables_header.metric}}'}}</th>
+                        <th>{{'{{dashboard.metrics_linear_equations_variables_header.one_variable}}'}}</th>
+                        <th>{{'{{dashboard.metrics_linear_equations_variables_header.two_variable}}'}}</th>
+                        <th>{{'{{dashboard.metrics_linear_equations_variables_header.three_variable}}'}}</th>
+                        <th>{{'{{dashboard.metrics_linear_equations_variables_header.four_plus_variable}}'}}</th>
+                        <th>{{'{{dashboard.metrics_linear_equations_variables_header.row_total}}'}}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="(i,item) in dashboard.metrics_linear_equations_variables track by $index">
+                          <th>{{'{{i+1 | number}}'}}</span>
+                          <th class="text-left">{{'{{dashboard.metrics_linear_equations_variables[i].metric}}'}}</th>
+                          <th>{{'{{dashboard.metrics_linear_equations_variables[i].one_variable | number}}'}}</th>
+                          <th>{{'{{dashboard.metrics_linear_equations_variables[i].two_variable | number}}'}}</th>
+                          <th>{{'{{dashboard.metrics_linear_equations_variables[i].three_variable | number}}'}}</th>
+                          <th>{{'{{dashboard.metrics_linear_equations_variables[i].four_plus_variable | number}}'}}</th>
+                          <th>{{'{{dashboard.metrics_linear_equations_variables[i].row_total | number}}'}}</th>
+                      </tr>
+                  </tbody class="thead-light">
+              </table>
+          </div>
+
+          <div class="row col-sm-12 border justify-content-left align-items-left">
+              <h5><span class="alert-success">{{'{{userMessageSequencePuzzles}}'}}</span></h5>
+            </div>
+            <div id="dashboard" ng-show="showDashboard">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                          <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements_header.metric_number}}'}}</th>
+                          <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements_header.metric}}'}}</th>
+                          <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements_header.one_missing}}'}}</th>
+                          <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements_header.two_missing}}'}}</th>
+                          <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements_header.three_missing}}'}}</th>
+                          <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements_header.row_total}}'}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(i,item) in dashboard.metrics_sequence_puzzles_missing_elements track by $index">
+                            <th>{{'{{i+1 | number}}'}}</span>
+                            <th class="text-left">{{'{{dashboard.metrics_sequence_puzzles_missing_elements[i].metric}}'}}</th>
+                            <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements[i].one_missing | number}}'}}</th>
+                            <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements[i].two_missing | number}}'}}</th>
+                            <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements[i].three_missing | number}}'}}</th>
+                            <th>{{'{{dashboard.metrics_sequence_puzzles_missing_elements[i].row_total | number}}'}}</th>
+                        </tr>
+                    </tbody class="thead-light">
+                </table>
+            </div>
 
   </div>
 </div>

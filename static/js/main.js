@@ -41,10 +41,16 @@
 
         if ($scope.username) {
             $scope.getDashboard()
-            $scope.userMessage = "Thank you for being a Math Mechanic. Here's your Dashboard."
+            $scope.userMessage = "Thank you for being an awesome Math Mechanic. Here's your Dashboard."
+            $scope.userMessageBasicArithematicOperations = "Basic Arithematic Operations - Additional Metrics:"
+            $scope.userMessageLinearEquations = "Linear Equations - Additional Metrics:"
+            $scope.userMessageSequencePuzzles = "Sequence Puzzles - Additional Metrics:"
             $scope.showDashboard = true
         } else {
             $scope.userMessage = "Hi there Math Mechanic! Please login to see your dashboard."
+            $scope.userMessageBasicArithematicOperations = undefined
+            $scope.userMessageLinearEquations = undefined
+            $scope.userMessageSequencePuzzles = undefined
             $scope.showDashboard = false
         }
     };
