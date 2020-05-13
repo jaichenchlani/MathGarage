@@ -5,13 +5,13 @@
     var MainController = function($scope, $http, $window, $location) {
         console.log("Entering MainController...");
         $scope.username = sessionStorage.getItem('username')
-        console.log($scope.username)
 
         // Actions when HTTP call is completed successfully.
         var onUserComplete = function(response) {
             console.log("Entering onUserComplete...");
             $scope.dashboard = response.data;
             console.log($scope.dashboard);
+            console.log($scope.showDashboard)
         }
 
         // Actions when HTTP call fails.
@@ -41,6 +41,11 @@
 
         if ($scope.username) {
             $scope.getDashboard()
+            $scope.userMessage = "Thank you for being a Math Mechanic. Here's your Dashboard."
+            $scope.showDashboard = true
+        } else {
+            $scope.userMessage = "Hi there Math Mechanic! Please login to see your dashboard."
+            $scope.showDashboard = false
         }
     };
 

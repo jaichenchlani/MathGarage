@@ -136,7 +136,6 @@ def process_user_dashboard():
     requestData = request.json
     print(requestData)
     metrics = dashboard.generate_user_dashboard(requestData)
-    print(metrics)
     return jsonify(metrics), 200
 
 if __name__ == "__main__":
